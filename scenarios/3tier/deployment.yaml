@@ -1,0 +1,147 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: web
+  labels:
+    name: bottle
+spec:
+  terminationGracePeriodSeconds: 10
+  containers:
+  - name: sensor
+    image: bottle:pliny
+    command: ["/bin/bash", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; ./start_sensor.sh"]
+    securityContext:
+      capabilities:
+        add:
+          - NET_ADMIN
+          - NET_RAW
+          - SYS_ADMIN
+    volumeMounts:
+      - mountPath: /usr/local/tet
+        name: tet
+  - name: generator
+    image: bottle:pliny
+    volumeMounts:
+      - mountPath: /etc/bottle
+        name: config
+      - mountPath: /usr/local/tet
+        name: tet
+  volumes:
+    - name: tet
+      emptyDir: {}
+    - name: config
+      configMap:
+          name: 3tier-config
+          items:
+          - key: web
+            path:  conf.yaml
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: app
+  labels:
+    name: bottle
+spec:
+  clusterIP: None
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    tier: app
+
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: app
+  labels:
+    name: bottle
+    tier: app
+spec:
+  terminationGracePeriodSeconds: 10
+  containers:
+  - name: sensor
+    image: bottle:pliny
+    command: ["/bin/sh", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; ./start_sensor.sh"]
+    securityContext:
+      capabilities:
+        add:
+          - NET_ADMIN
+          - NET_RAW
+          - SYS_ADMIN
+    volumeMounts:
+      - mountPath: /usr/local/tet
+        name: tet
+  - name: generator
+    image: bottle:pliny
+    volumeMounts:
+      - mountPath: /etc/bottle
+        name: config
+      - mountPath: /usr/local/tet
+        name: tet
+  volumes:
+    - name: tet
+      emptyDir: {}
+    - name: config
+      configMap:
+          name: 3tier-config
+          items:
+          - key: app
+            path:  conf.yaml
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: db
+  labels:
+    name: bottle
+spec:
+  clusterIP: None
+  ports:
+  - port: 3306
+    protocol: TCP
+  selector:
+    tier: db
+
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: db
+  labels:
+    name: bottle
+    tier: db
+spec:
+  terminationGracePeriodSeconds: 10
+  containers:
+  - name: sensor
+    image: bottle:pliny
+    command: ["/bin/sh", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; ./start_sensor.sh"]
+    securityContext:
+      capabilities:
+        add:
+          - NET_ADMIN
+          - NET_RAW
+          - SYS_ADMIN
+    volumeMounts:
+      - mountPath: /usr/local/tet
+        name: tet
+  - name: generator
+    image: bottle:pliny
+    volumeMounts:
+      - mountPath: /etc/bottle
+        name: config
+      - mountPath: /usr/local/tet
+        name: tet
+  volumes:
+    - name: tet
+      emptyDir: {}
+    - name: config
+      configMap:
+          name: 3tier-config
+          items:
+          - key: db
+            path:  conf.yaml

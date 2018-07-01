@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: 3tier-config
+  labels:
+    name: bottle
+data:
+
+  web: |
+    clients:
+      - app:80
+
+  app: |
+    clients:
+      - db:3306
+    servers:
+      - 80
+
+  db: |
+    servers:
+      - 3306
