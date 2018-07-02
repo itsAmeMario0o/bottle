@@ -22,7 +22,7 @@ spec:
   - name: generator
     image: bottle:pliny
     volumeMounts:
-      - mountPath: /etc/bottle
+      - mountPath: /etc/ship
         name: config
       - mountPath: /usr/local/tet
         name: tet
@@ -77,7 +77,7 @@ spec:
   - name: generator
     image: bottle:pliny
     volumeMounts:
-      - mountPath: /etc/bottle
+      - mountPath: /etc/ship
         name: config
       - mountPath: /usr/local/tet
         name: tet
@@ -132,7 +132,7 @@ spec:
   - name: generator
     image: bottle:pliny
     volumeMounts:
-      - mountPath: /etc/bottle
+      - mountPath: /etc/ship
         name: config
       - mountPath: /usr/local/tet
         name: tet

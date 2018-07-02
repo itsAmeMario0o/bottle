@@ -1,14 +1,14 @@
 FROM golang:latest AS builder
 
-WORKDIR /go/src/bottle
-COPY bottle.go .
+WORKDIR /go/src/ship
+COPY src/ship/ship.go .
 
 RUN go get -d .
-RUN go build bottle
+RUN go build ship
 
 FROM centos:7
 
-COPY --from=builder /go/src/bottle/bottle .
+COPY --from=builder /go/src/ship/ship .
 COPY sensor/sensor.rpm .
 COPY sensor/api_credentials.json .
 
@@ -16,4 +16,4 @@ RUN yum install -y iptables ipset which redhat-lsb-core dmidecode openssl net-to
 
 RUN touch /.sensor_container
 
-CMD ["./bottle"]
+CMD ["./ship"]
