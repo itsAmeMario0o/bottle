@@ -35,20 +35,6 @@ type Ship struct {
 	Servers  []int    `yaml:"servers"`
 }
 
-func (s *Scenario) getScenario(filename string) *Scenario {
-
-	yamlFile, err := ioutil.ReadFile(filename)
-	if err != nil {
-		log.Fatalf("error opening scenario #%v ", err)
-	}
-	err = yaml.Unmarshal(yamlFile, s)
-	if err != nil {
-		log.Fatalf("Unmarshal: %v", err)
-	}
-
-	return s
-}
-
 // Run the bottle traffic generator
 func (b *Bottle) Run() {
 	scenarioFilename := flag.String("f", "scenario.yaml", "scenario file to deploy")
@@ -64,16 +50,33 @@ func (b *Bottle) Run() {
 }
 
 func (b *Bottle) create() {
-	fmt.Printf("deploying %s with container image %s\n\n", b.scenario.Name, b.image)
+	fmt.Printf("Deploying scenario \"%s\" with container image \"%s\"\n", b.scenario.Name, b.image)
 
 	for name, ship := range b.scenario.Ships {
-		fmt.Println(name)
+		fmt.Println("\nTier: " + name)
+		fmt.Println(" replicas: " + strconv.Itoa(ship.Replicas))
+		fmt.Println(" clients:  " + strconv.Itoa(len(ship.Clients)))
 		for _, client := range ship.Clients {
-			fmt.Println(" " + client)
+			fmt.Println("  " + client)
 		}
+		fmt.Println(" servers:  " + strconv.Itoa(len(ship.Servers)))
 		for _, server := range ship.Servers {
-			fmt.Println(" " + strconv.Itoa(server))
+			fmt.Println("  " + strconv.Itoa(server))
 
 		}
 	}
+}
+
+func (s *Scenario) getScenario(filename string) *Scenario {
+
+	yamlFile, err := ioutil.ReadFile(filename)
+	if err != nil {
+		log.Fatalf("error opening scenario #%v ", err)
+	}
+	err = yaml.Unmarshal(yamlFile, s)
+	if err != nil {
+		log.Fatalf("Unmarshal: %v", err)
+	}
+
+	return s
 }
