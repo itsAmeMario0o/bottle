@@ -66,20 +66,20 @@ An example bottle scenario to simulate that three tier web app, with traffic flo
 ```yaml
 name: 3tier
 ships:
-web: 
-    replicas: 3
-    clients:
-    - app:80
-app: 
-    replicas: 2
-    servers:
-    - 80
-    clients:
-    - db:3306
-db:
-    replicas: 3
-    servers:
-    - 3306
+    web: 
+        replicas: 3
+        clients:
+        - app:80
+    app: 
+        replicas: 2
+        servers:
+        - 80
+        clients:
+        - db:3306
+    db:
+        replicas: 3
+        servers:
+        - 3306
 ```
 
 Bottle will parse this file and create the necessary kubernetes components (services & deployments & pods) to simulate the environment.
