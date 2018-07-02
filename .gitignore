@@ -2,3 +2,4 @@ bottle
 conf.yaml
 debug
 sensor/*
+.DS_Store
