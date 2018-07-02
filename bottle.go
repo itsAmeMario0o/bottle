@@ -106,13 +106,13 @@ func (b *Bottle) runServers() {
 func (b *Bottle) client(address string) {
 	connection := 1
 	for {
-		log.Printf("connect %d to %s", connection, address)
+		log.Printf("[client] connect %d to %s", connection, address)
 		conn, err := net.Dial("tcp", address)
 		if err != nil {
-			log.Fatalf("connect error, err=%s", err)
+			log.Fatalf("[client] connect error, err=%s", err)
 		}
 		connection++
-		log.Printf("connected to %s on %s", conn.RemoteAddr(), conn.LocalAddr())
+		log.Printf("[client] connected to %s on %s", conn.RemoteAddr(), conn.LocalAddr())
 		hostname, err := os.Hostname()
 		if err != nil {
 			hostname = "unknown"
@@ -120,27 +120,27 @@ func (b *Bottle) client(address string) {
 		fmt.Fprintf(conn, "hello from "+hostname+"\r\n")
 		_, err = bufio.NewReader(conn).ReadString('\n')
 		conn.Close()
-		log.Printf("closed connection to %s on %s", conn.RemoteAddr(), conn.LocalAddr())
-		time.Sleep(5 * time.Second)
+		log.Printf("[client] closed connection to %s on %s", conn.RemoteAddr(), conn.LocalAddr())
+		time.Sleep(30 * time.Second)
 	}
 }
 
 func (b *Bottle) server(port int) {
-	log.Printf("serving on %d", port)
+	log.Printf("[server] serving on %d", port)
 
 	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
-		log.Fatalf("listen error, err=%s", err)
+		log.Fatalf("[server] listen error, err=%s", err)
 	}
 	accepted := 0
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
-			log.Fatalf("accept error, err=%s", err)
+			log.Fatalf("[server] accept error, err=%s", err)
 		}
 		accepted++
 		go b.handleConnection(conn)
-		log.Printf("connection %d accepted from %s to %s", accepted, conn.RemoteAddr(), conn.LocalAddr())
+		log.Printf("[server] connection %d accepted from %s to %s", accepted, conn.RemoteAddr(), conn.LocalAddr())
 	}
 }
 
