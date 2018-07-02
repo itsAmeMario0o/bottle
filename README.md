@@ -64,24 +64,22 @@ A standard three tier application might have a traffic flow diagram as such:
 An example bottle scenario to simulate that three tier web app, with traffic flowing between each tier:
 
 ```yaml
-  name: 3tier
-  ships:
-    web: |
-        replicas: 3
-        clients:
-        - app:80
-
-    app: |
-        replicas: 2
-        servers:
-        - 80
-        clients:
-        - db:3306
-
-    db: |
-        replicas: 3
-        servers:
-        - 3306
+name: 3tier
+ships:
+web: 
+    replicas: 3
+    clients:
+    - app:80
+app: 
+    replicas: 2
+    servers:
+    - 80
+    clients:
+    - db:3306
+db:
+    replicas: 3
+    servers:
+    - 3306
 ```
 
 Bottle will parse this file and create the necessary kubernetes components (services & deployments & pods) to simulate the environment.
@@ -94,9 +92,7 @@ Running the Tetration application dependency mapping algorithms on the deployed 
 
 ## Scenarios
 
-Scenarios describe the application components and the traffic between them, plus some optional metadata. 
-
-A scenario file contains a name and a list of application components that will be mimicked by traffic generator containers, known as "ships".
+Scenarios describe the application components ("ships") and the traffic between them, plus some optional metadata. 
 
 Each `ship` starts with a key to describe the component name, and:
 
@@ -120,7 +116,7 @@ The client will initiate a new connection after a 30 second wait.
 
 *Failure to do so will cause the scenario to fail to deploy.*
 
-The traffic generator pods will be deployed using the image you provide, this image must include a sensor and set of api credentials for the cluster you wish to analyse the traffic on.
+The traffic generator pods will be deployed using the image you provide, this image must include a sensor and set of API credentials for the cluster you wish to analyse the traffic on.
 
 ### Sensor
 
@@ -161,7 +157,7 @@ Once you have collected the sensor RPM and API credentials, you can build the im
 When building (or after) please tag the image and, if desired, push your image to a repository the target Kubernetes cluster has access to.
 
 ```bash
-# If you want to push the image to a custom registry, now you may do so
+# Tag the image and push to the docker registry
 > docker tag bottle:pliny <user>/bottle:pliny
 > docker push <user>/bottle:pliny
 ```
@@ -181,14 +177,14 @@ bottle -i bottle:<clustername> -f scenarios/<scenario name>.yaml [optional: -s <
 * each deployment will have a file loaded at `/etc/bottle/conf.yaml` with the client/server config
 * each deployment container will read the config file and set up the traffic streams
 * each deployment container will install and run a tetration sensor
-* each deployment container will create an annotation in Tetration (at the optional <scopename>)
+* each deployment container will create an annotation in Tetration (at the optional scopename)
 * all objects can be managed as usual kubernetes objects at this point
 
 ## Tips
 
 ### Remote VRF
 
-If you wish to assign the agents created by scenarios to a custom tenant, utilize remote vrf configuration on the cluster to assign the public addresses of the nodes in the kubernetes.
+If you wish to assign the agents created by scenarios to a custom scope, utilize remote vrf configuration on the cluster to assign the public addresses of the nodes in the kubernetes.
 
 ### Inspecting
 
@@ -225,7 +221,7 @@ The current goal of the project is to enrich the scenario specification DSL to i
 - [x] Scenario DSL to describe application topology
 - [x] Deployment to Kubernetes cluster
 - [x] Register Tetration agent at run time
-- [x] Generator stateful (TCP) application-like traffic
+- [x] Generate stateful (TCP) application-like traffic
 - [x] De-register Tetration agent at destroy time
 - [ ] Annotate endpoints with scenario and lifecycle
 - [ ] Support enforcement in container
