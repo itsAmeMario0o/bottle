@@ -1,0 +1,16 @@
+scenario: 3tier
+ships:
+    web: 
+        replicas: 3
+        clients:
+        - app:80
+    app: 
+        replicas: 2
+        servers:
+        - 80
+        clients:
+        - db:3306
+    db:
+        replicas: 1
+        servers:
+        - 3306

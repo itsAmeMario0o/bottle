@@ -1,0 +1,38 @@
+scenario: mesh
+ships:
+    tier1: 
+        replicas: 2
+        clients:
+        - tier1:1001
+        - tier2:1002
+        - tier3:1003
+        - tier4:1004
+        servers:
+        - 1001
+    tier2: 
+        replicas: 2
+        clients:
+        - tier1:1001
+        - tier2:1002
+        - tier3:1003
+        - tier4:1004
+        servers:
+        - 1002
+    tier3: 
+        replicas: 2
+        clients:
+        - tier1:1001
+        - tier2:1002
+        - tier3:1003
+        - tier4:1004
+        servers:
+        - 1003
+    tier4: 
+        replicas: 2
+        clients:
+        - tier1:1001
+        - tier2:1002
+        - tier3:1003
+        - tier4:1004
+        servers:
+        - 1004

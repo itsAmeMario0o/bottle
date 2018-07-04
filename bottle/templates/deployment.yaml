@@ -1,0 +1,72 @@
+{{- $scenario := .Values.scenario -}}
+{{- $image := .Values.image -}}
+{{ range $shipname, $ship := .Values.ships }}
+kind: Deployment
+apiVersion: extensions/v1beta1
+
+metadata:
+    name: {{ $shipname }}
+    labels:
+        scenario: {{ $scenario }}
+
+spec:
+    replicas: {{ $ship.replicas }}
+
+    selector:
+        matchLabels:
+            scenario: {{ $scenario }}
+            ship: {{ $shipname }}
+
+    template:
+        terminationGracePeriodSeconds: 5
+        metadata:
+            labels:
+                scenario: {{ $scenario }}
+                ship: {{ $shipname }}
+        spec:
+            shareProcessNamespace: true
+            containers:
+                - name: sensor
+                  image: {{ $image | default "bottle:latest" }}
+                  command: ["/bin/bash", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; ./start_sensor.sh"]
+                  volumeMounts:
+                      - mountPath: /usr/local/tet
+                        name: tet
+                  securityContext:
+                    capabilities:
+                        add:
+                            - SYS_PTRACE
+                - name: enforcer
+                  image: {{ $image | default "bottle:latest" }}
+                  command: ["/bin/bash", "-c", "sleep 120; cd /usr/local/tet ; ./tet-enforcer"]
+                  securityContext:
+                    capabilities:
+                        add:
+                            - SYS_PTRACE
+                            - NET_ADMIN
+                            - NET_RAW
+                  volumeMounts:
+                      - mountPath: /usr/local/tet
+                        name: tet
+                - name: generator
+                  image: {{ $image | default "bottle:pliny" }}
+                  securityContext:
+                    capabilities:
+                        add:
+                            - SYS_PTRACE
+                  volumeMounts:
+                    - mountPath: /etc/ship
+                      name: config
+                    - mountPath: /usr/local/tet
+                      name: tet
+            volumes:
+                - name: tet
+                  emptyDir: {}
+                - name: config
+                  configMap:
+                    name: {{ $scenario }}-config
+                    items:
+                        - key: {{ $shipname }}
+                          path: conf.yaml
+---
+{{end}}

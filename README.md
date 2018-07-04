@@ -17,20 +17,16 @@ Bottle intergrates with Tetration sensors to monitor and map application traffic
 To use bottle, you will need:
 
 * A kubernetes cluster
-* A machine with `kubectl` installed and configured
 * A machine with `docker` installed and configured
-* A machine with `go` installed and configured
+* A machine with `kubectl` installed and configured
+* A machine with `helm` installed and configured
 
 ### Quick Start
 
 ```bash
 # clone the repository
-> git clone https://github.com/amney/bottle
+> git clone https://cto-github.cisco.comcom/tigarner/bottle
 > cd bottle
-
-# install the bottle application
-> go get -d .
-> go install bottle
 
 # copy your clusters agent rpm
 > cp ~/Downloads/myclustersensor.rpm sensor/sensor.rpm
@@ -39,16 +35,60 @@ To use bottle, you will need:
 > cp ~/Downloads/api_credentials.json sensor/
 
 # build the image and tag
-> docker build --rm -f Dockerfile -t bottle:yourcluster .
+> docker build -f sensor/Dockerfile -t bottle:yourcluster .
 
 # run a scenario with the image
-> bottle -i bottle:yourcluster -f scenarios/3tier.yaml
+> helm install -f scenarios/3tier.yaml --set image=bottle:yourcluster ./bottle
 
-# check the pods are running
-> kubectl get pods -o wide -l scenario=3tier
+# example helm output
+# a unique name will be created for each deployed scenario
+# in this example output it is "interested-frog"
+# use this name to refer to the scenario while it is running
 
-# remove the created objects
-> kubectl delete all -l scenario=3tier
+    NAME:   interested-frog
+    LAST DEPLOYED: Tue Jul  3 11:36:49 2018
+    NAMESPACE: default
+    STATUS: DEPLOYED
+
+    RESOURCES:
+    ==> v1/ConfigMap
+    NAME          DATA  AGE
+    3tier-config  3     0s
+
+    ==> v1/Service
+    NAME  TYPE       CLUSTER-IP  EXTERNAL-IP  PORT(S)   AGE
+    db    ClusterIP  None        <none>       3306/TCP  0s
+    web   ClusterIP  None        <none>       <none>    0s
+    app   ClusterIP  None        <none>       80/TCP    0s
+
+    ==> v1beta1/Deployment
+    NAME  DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
+    app   1        1        1           0          0s
+    db    1        1        1           0          0s
+    web   1        1        1           0          0s
+
+    ==> v1/Pod(related)
+    NAME                  READY  STATUS             RESTARTS  AGE
+    app-58d5747d69-rd6nn  0/3    ContainerCreating  0         0s
+    db-5499fcffff-27t6k   0/3    ContainerCreating  0         0s
+    web-7558fc4c8f-swvv4  0/3    ContainerCreating  0         0s
+
+
+    NOTES:
+    Installed bottle scenario 3tier
+
+    Your release is named interested-frog.
+
+    To learn more about the release, try:
+
+    $ helm status interested-frog
+    $ helm get interested-frog
+
+# check the status of the scenario
+> helm status interested-frog 
+
+# delete the created objects
+> helm delete interested-frog
 ```
 
 ## Overview
@@ -77,7 +117,7 @@ ships:
         clients:
         - db:3306
     db:
-        replicas: 3
+        replicas: 1
         servers:
         - 3306
 ```
@@ -149,7 +189,7 @@ Once you have collected the sensor RPM and API credentials, you can build the im
 
 # The dockerfile must then be built, it will bake the RPM and API credentials into the image
 # This example will create a local image tagged as "bottle:pliny"
-> docker build --rm -f Dockerfile -t bottle:pliny .
+> docker build -f sensor/Dockerfile -t bottle:pliny .
 ```
 
 ### Tagging the Image
@@ -164,21 +204,21 @@ When building (or after) please tag the image and, if desired, push your image t
 
 ## Using Bottle
 
-Invoke the `bottle` command to deploy a scenario using a tagged image file. 
+Invoke the `helm install` command to deploy a scenario using a tagged image file. 
 
 ```
-bottle -i bottle:<clustername> -f scenarios/<scenario name>.yaml [optional: -s <scopename>]
+helm install -f scenarios/<scenario name>.yaml --set image=bottle:<clustername> ./bottle
 ```
 
-* The bottle executable will parse the the chosen scenario and extract the tier names
+* The helm executable will parse the the chosen scenario and extract the tier names
 * a config map will be created with the traffic generator settings
 * deployments will be created for each tier
 * services will be created for each tier server port
-* each deployment will have a file loaded at `/etc/bottle/conf.yaml` with the client/server config
+* each deployment will have a file loaded at `/etc/ship/conf.yaml` with the client/server config
 * each deployment container will read the config file and set up the traffic streams
 * each deployment container will install and run a tetration sensor
 * each deployment container will create an annotation in Tetration (at the optional scopename)
-* all objects can be managed as usual kubernetes objects at this point
+* all resources can be managed as usual kubernetes resources at this point
 
 ## Tips
 
@@ -195,16 +235,28 @@ Each "ship" is comprised of two containers in a pod, sharing a network namespace
 * The sensor container runs the Tetration sensor
 * The generator container runs the "ship" traffic generator executable
 
-To view logs for the sensor for a given `<scenario> <component> [sensor|generator]`:
+To view logs for the sensor for a given `<scenario> <component> [sensor|enforcer|generator]`:
 
 ```bash
-> kubectl logs -l scenario=<scenario> <component> [sensor|generator]
+> kubectl logs -l scenario=<scenario> <component> [sensor|enforcer|generator]
 ```
 
 To attach into the shell of a component (&container):
 
 ```bash
-> kubectl exec -it <component> -c [sensor|generator] -- /bin/bash
+> kubectl exec -it <component> -c [sensor|enforcer|generator] -- /bin/bash
+```
+
+### Enforcement
+
+If desired, each `ship` can can run the `tet-enforcer` process, and therefore control the `iptable` rules within the pod namespace.
+
+This allows you to test Tetraion's policy enforcement capability in a sandboxed environment.
+
+If you wish to view the iptable rules, you can either attach into the shell of the `generator` container as described above, or run the following command:
+
+```bash
+> kubectl exec <component> -c enforcer -- iptables -L -n
 ```
 
 ## Project Goals
@@ -223,8 +275,8 @@ The current goal of the project is to enrich the scenario specification DSL to i
 - [x] Register Tetration agent at run time
 - [x] Generate stateful (TCP) application-like traffic
 - [x] De-register Tetration agent at destroy time
+- [x] Support enforcement in container
 - [ ] Annotate endpoints with scenario and lifecycle
-- [ ] Support enforcement in container
 - [ ] Advanced scenario parameters
     - [ ] Client type (short request, long request, etc.)
     - [ ] Server type (small reply, large reply, etc.)

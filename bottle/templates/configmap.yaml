@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.scenario }}-config
+  labels:
+    scenario: {{ .Values.scenario }}
+data:
+{{- range $shipname, $ship := .Values.ships }}
+  {{ $shipname }}: | {{ $ship | toYaml | trimSuffix "\n" | nindent 3  }}
+{{ end }}

@@ -186,7 +186,7 @@ func (s *Ship) setupTetration() {
 
 	var uuid string
 
-	for i := 1; i <= 6; i++ {
+	for i := 1; i <= 12; i++ {
 		result, err := ioutil.ReadFile("/usr/local/tet/sensor_id")
 		if err != nil {
 			log.Printf("attempt %d, no sensor uuid (check if sensor is running) error=#%v", i, err)
