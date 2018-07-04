@@ -230,9 +230,10 @@ If you wish to assign the agents created by scenarios to a custom scope, utilize
 
 When you have deployed a scenario, you may be interested to check the status.
 
-Each "ship" is comprised of two containers in a pod, sharing a network namespace:
+Each "ship" is comprised of three containers in a pod, sharing a network namespace:
 
 * The sensor container runs the Tetration sensor
+* The enforcer container runs the Tetration enforcer
 * The generator container runs the "ship" traffic generator executable
 
 To view logs for the sensor for a given `<scenario> <component> [sensor|enforcer|generator]`:
