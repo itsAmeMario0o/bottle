@@ -1,5 +1,6 @@
 {{- $scenario := .Values.scenario -}}
 {{- $image := .Values.image -}}
+{{- $scope := .Values.scope -}}
 {{ range $shipname, $ship := .Values.ships }}
 kind: Deployment
 apiVersion: extensions/v1beta1
@@ -18,7 +19,7 @@ spec:
             ship: {{ $shipname }}
 
     template:
-        terminationGracePeriodSeconds: 5
+        terminationGracePeriodSeconds: 30
         metadata:
             labels:
                 scenario: {{ $scenario }}
@@ -28,37 +29,46 @@ spec:
             containers:
                 - name: sensor
                   image: {{ $image | default "bottle:latest" }}
-                  command: ["/bin/bash", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; ./start_sensor.sh"]
+                  command: ["/bin/sh", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; ./start_sensor.sh"]
                   volumeMounts:
                       - mountPath: /usr/local/tet
                         name: tet
-                  securityContext:
-                    capabilities:
-                        add:
-                            - SYS_PTRACE
-                - name: enforcer
-                  image: {{ $image | default "bottle:latest" }}
-                  command: ["/bin/bash", "-c", "sleep 120; cd /usr/local/tet ; ./tet-enforcer"]
                   securityContext:
                     capabilities:
                         add:
                             - SYS_PTRACE
                             - NET_ADMIN
                             - NET_RAW
+                - name: enforcer
+                  image: {{ $image | default "bottle:latest" }}
+                  command: ["/bin/sh", "-c", "sleep 120; cd /usr/local/tet ; ./tet-enforcer"]
                   volumeMounts:
                       - mountPath: /usr/local/tet
                         name: tet
-                - name: generator
-                  image: {{ $image | default "bottle:pliny" }}
                   securityContext:
                     capabilities:
                         add:
                             - SYS_PTRACE
+                            - NET_ADMIN
+                            - NET_RAW
+                - name: generator
+                  image: {{ $image | default "bottle:latest" }}
+                  env:
+                    - name: BOTTLE_SCOPE
+                      value: {{ $scope | default "Default"}}
+                    - name: BOTTLE_SCENARIO
+                      value: {{ $scenario }}
+                    - name: BOTTLE_SHIP
+                      value: {{ $shipname }}
                   volumeMounts:
                     - mountPath: /etc/ship
                       name: config
                     - mountPath: /usr/local/tet
                       name: tet
+                  securityContext:
+                    capabilities:
+                        add:
+                            - SYS_PTRACE
             volumes:
                 - name: tet
                   emptyDir: {}

@@ -42,6 +42,19 @@ type Credentials struct {
 	Secret string `json:"api_secret"`
 }
 
+// Annotation will be sent to Tetration to identify this ship
+type Annotation struct {
+	IP         string            `json:"ip"`
+	Attributes map[string]string `json:"attributes"`
+}
+
+// NewAnnotation creates an initialized annotation
+func NewAnnotation() *Annotation {
+	var annotation Annotation
+	annotation.Attributes = make(map[string]string)
+	return &annotation
+}
+
 func (c *Credentials) getCredentials() *Credentials {
 
 	jsonFile, err := ioutil.ReadFile("api_credentials.json")
@@ -107,9 +120,11 @@ func (s *Ship) client(address string) {
 	connection := 1
 	for {
 		log.Printf("[client] connect %d to %s", connection, address)
-		conn, err := net.Dial("tcp", address)
+		conn, err := net.DialTimeout("tcp", address, 10*time.Second)
 		if err != nil {
-			log.Fatalf("[client] connect error, err=%s", err)
+			log.Printf("[client] connect error, err=%s", err)
+			time.Sleep(20 * time.Second)
+			continue
 		}
 		connection++
 		log.Printf("[client] connected to %s on %s", conn.RemoteAddr(), conn.LocalAddr())
@@ -175,10 +190,68 @@ func (s *Ship) registerCleanup() {
 
 func (s *Ship) cleanup() {
 	log.Println("finishing! will unregister sensor")
+	s.annotateOnTearDown()
 	err := s.tetration.Delete("/sensors/"+s.uuid, "")
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "Other Error (204)") {
 		log.Fatalf("failed to unregister sensor, error=#%v", err)
 	}
+	log.Println("sensor unregistered")
+}
+
+func (s *Ship) annotate(annotation Annotation) {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		log.Panicln("no interfaces found to annotate")
+		return
+	}
+
+	for _, i := range ifaces {
+		addrs, err := i.Addrs()
+		if err != nil {
+			log.Printf("could not find any IP addresses to annotate on interface %s", i.Name)
+			return
+		}
+		for _, addr := range addrs {
+			var ip net.IP
+			switch v := addr.(type) {
+			case *net.IPNet:
+				ip = v.IP
+			case *net.IPAddr:
+				ip = v.IP
+			}
+			if ip.String() == "127.0.0.1" {
+				continue
+			}
+			scope := os.Getenv("BOTTLE_SCOPE")
+			annotation.IP = ip.String()
+			payload, err := json.Marshal(annotation)
+			if err != nil {
+				log.Printf("could not create annotation payload #error=%v", err)
+				return
+			}
+			_, err = s.tetration.Post("/inventory/tags/"+scope, string(payload))
+			if err != nil {
+				log.Printf("could not post annotation #error=%v", err)
+				return
+			}
+			log.Printf("annotations saved to cluster (ip=%s)", ip.String())
+		}
+	}
+}
+
+func (s *Ship) annotateOnSetup() {
+	annotation := NewAnnotation()
+	annotation.Attributes["bottle"] = "true"
+	annotation.Attributes["bottle_lifecycle"] = "active"
+	annotation.Attributes["bottle_scenario"] = os.Getenv("BOTTLE_SCENARIO")
+	annotation.Attributes["bottle_ship"] = os.Getenv("BOTTLE_SHIP")
+	s.annotate(*annotation)
+}
+
+func (s *Ship) annotateOnTearDown() {
+	annotation := NewAnnotation()
+	annotation.Attributes["bottle_lifecycle"] = "terminated"
+	s.annotate(*annotation)
 }
 
 func (s *Ship) setupTetration() {
@@ -227,4 +300,6 @@ func (s *Ship) setupTetration() {
 	}
 
 	s.registerCleanup()
+
+	s.annotateOnSetup()
 }

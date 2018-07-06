@@ -5,12 +5,12 @@ ships:
         clients:
         - app:80
     app: 
-        replicas: 2
+        replicas: 3
         servers:
         - 80
         clients:
         - db:3306
     db:
-        replicas: 1
+        replicas: 3
         servers:
         - 3306

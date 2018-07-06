@@ -144,13 +144,13 @@ Each `client` must be a hostname and port number, like `db:3306`.
 
 Each `server` must be a port number.
 
-Each `client` will attempt to connect to the named server (`ship` names will be resolvable from within the cluster)
+Each `client` will attempt to connect to the named `server` (`ship` names will be resolvable from within the cluster)
 
-Once successfully connected, the client will send a small request, and the server will respond, finally, the connection will close.
+Once successfully connected, the client will send a small request, the server will respond, finally, the connection will close.
 
 The client will initiate a new connection after a 30 second wait.
 
-## Generator Image
+## Traffic Generator Image
 
 *You must create a unique image tailored to the Tetration cluster you will monitor the scenario on.*
 
@@ -162,7 +162,7 @@ The traffic generator pods will be deployed using the image you provide, this im
 
 The sensor you provide should meet the following critiria:
 
-* Deep Visibility or Enforcement
+* Enforcement
 * CentOS 7.4
 
 ### Credentials
@@ -172,6 +172,8 @@ The API credentials you provide should meet the following critiria:
 * For the same cluster as the provided sensor
 * Have the "SW sensor management: API to configure and monitor status of SW sensors" capability
 * Have the "User data upload" capability
+
+>If the credentials do not have "User data upload" Bottle will still work, however, deployed endpoints will be harder to identify in Tetration as they will not be annotated.
 
 ### Building
 
@@ -250,9 +252,9 @@ To attach into the shell of a component (&container):
 
 ### Enforcement
 
-If desired, each `ship` can can run the `tet-enforcer` process, and therefore control the `iptable` rules within the pod namespace.
+If desired, each `ship` can run the `tet-enforcer` process, and therefore control the `iptable` rules within the pod namespace.
 
-This allows you to test Tetraion's policy enforcement capability in a sandboxed environment.
+This allows you to test Tetration's policy enforcement capability in a sandboxed environment.
 
 If you wish to view the iptable rules, you can either attach into the shell of the `generator` container as described above, or run the following command:
 
@@ -277,7 +279,7 @@ The current goal of the project is to enrich the scenario specification DSL to i
 - [x] Generate stateful (TCP) application-like traffic
 - [x] De-register Tetration agent at destroy time
 - [x] Support enforcement in container
-- [ ] Annotate endpoints with scenario and lifecycle
+- [x] Annotate endpoints with scenario and lifecycle
 - [ ] Advanced scenario parameters
     - [ ] Client type (short request, long request, etc.)
     - [ ] Server type (small reply, large reply, etc.)
