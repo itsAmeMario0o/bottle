@@ -1,4 +1,5 @@
 conf.yaml
 debug
 sensor/*
+!sensor/Dockerfile
 .DS_Store
