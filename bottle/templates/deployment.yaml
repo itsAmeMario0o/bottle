@@ -41,7 +41,7 @@ spec:
                             - NET_RAW
                 - name: enforcer
                   image: {{ $image | default "bottle:latest" }}
-                  command: ["/bin/sh", "-c", "sleep 120; cd /usr/local/tet ; ./tet-enforcer"]
+                  command: ["/bin/sh", "-c", "sleep 120; cd /usr/local/tet ; ./tet-enforcer --logtostderr"]
                   volumeMounts:
                       - mountPath: /usr/local/tet
                         name: tet
