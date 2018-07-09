@@ -1,12 +1,12 @@
 # Using bottle with Tetration
 
-This guide covers how to use bottle to setup a 3 tier application that can be used within Tetration
+This guide covers how to use bottle to create a 3 tier application that can be used within Tetration
 
 ## Setup 
 
 ### Software
 
-You do not need much to run bottle, any releatively recent installation of Kubernetes, Helm, and Docker will be sufficient.
+You do not need much to run bottle, any relatively recent installation of Kubernetes, Helm, and Docker will be sufficient.
 
 In this example the software versions are:
 
@@ -20,9 +20,13 @@ Bottle scales well with minimal resources. You do not need a heavily provisioned
 
 If you are new to docker and kubernetes, you may want to try the kube support in docker and run the examples on your laptop.
 
-On a 2017 MacBook Pro 15" (16GB RAM) bottle could scale to around 60 pods.
+![Docker](docker.png)
+
+On a 2016 MacBook Pro 15" (16GB RAM) bottle could scale to around 60 pods.
 
 In this example, a larger 8 node cluster will be used to demonstrate scale, comfortably running over 1000 pods.
+
+![Nodes](nodes.png)
 
 ## Guide
 
@@ -32,7 +36,7 @@ Download the CentOS 7.4 enforcer sensor from the target Tetration cluster
 
 Generate an API key with the following credentials:
 
-
+![API](api.png)
 
 Create the docker image
 
@@ -76,8 +80,15 @@ ships:
         - 3306
 ```
 
+The parameters passed to helm are 
+
+* `-f scenarios/3tier.yaml` - the path to the scenario file
+* `--set image=tigarner/bottle:pliny` - the image to deploy 
+* `--set scope=Bottle` - the root scope annotations will be placed under
+
 ```
-helm install -f scenarios/3tier.yaml --set image=tigarner/bottle:pliny --set scope=Bottle bottle
+> helm install -f scenarios/3tier.yaml --set image=tigarner/bottle:pliny --set scope=Bottle ./bottle
+
 NAME:   pondering-octopus
 LAST DEPLOYED: Fri Jul  6 22:53:18 2018
 NAMESPACE: default
@@ -139,7 +150,7 @@ web   3        3        3           0          1s
 app   3        3        3           0          1s
 ```
 
-Each replica will run a seperator traffic generator and sensor container
+Each replica will run a separator traffic generator and sensor container
 ```
 ==> v1/Pod(related)
 NAME                  READY  STATUS             RESTARTS  AGE
@@ -193,7 +204,7 @@ You can also view the status of the bottle resources on the Kubernetes dashboard
 
 ### Annotations and Scopes
 
-Each bottle host will get four annotions, we can search the inventory for `bottle_lifecycle=active and OS=CentOS` workloads:
+Each bottle host will get four annotations, we can search the inventory for `bottle_lifecycle=active and OS=CentOS` workloads:
 
 ![Inventory](inventory.png)
 
@@ -208,7 +219,7 @@ You can now quite easily create a scope tree to classify bottle endpoints using 
 
 ### Application Workspace
 
-Tetration will now be collecting data and assigning it the created scope tree continously. 
+Tetration will now be collecting data and assigning it the created scope tree continuously. 
 
 If you want to run ADM, you will need to leave the system running for 6 hours or more now.
 
@@ -297,7 +308,7 @@ RETURN     all  --  0.0.0.0/0            0.0.0.0/0
 
 ### Dynamic Policy
 
-What happens if we scale the scenario to 5, 10, 100, 1000 replicas? Our policy intent stays the same, but the workloads it applies to must dymaically scale
+What happens if we scale the scenario to 5, 10, 100, 1000 replicas? Our policy intent stays the same, but the workloads it applies to must dynamically scale
 to correctly classify and apply policy to the new endpoints.
 
 In Tetration we can convert the regular clusters into dynamic clusters based on the bottle annotations:
@@ -320,10 +331,17 @@ their traffic rejected:
 
 But bottle is supposed be scalable, so what about 300 replicas?!
 
+```
+kubectl scale deployment web app db --replicas=350
+deployment.extensions "web" scaled
+deployment.extensions "app" scaled
+deployment.extensions "db" scaled
+```
+
 ![Scale 350](scale350.png)
 ![Agents 350](agents350.png)
 
-Tetration seamlesslessly onboards the new agents, correctly assigns them into the clusters based on annotations, and finally applies the `iptable` security rules, all without any further administrator interaction.
+Tetration seamlessly on-boards the new agents, correctly assigns them into the clusters based on annotations, and finally applies the `iptable` security rules, all without any further administrator interaction.
 
 ![Policy 350](policy350.png)
 

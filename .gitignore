@@ -3,3 +3,4 @@ debug
 sensor/*
 !sensor/Dockerfile
 .DS_Store
+.vscode/
