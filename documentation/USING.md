@@ -405,6 +405,7 @@ To remove the scenario, execute the helm command to delete the release name:
 
 ```
 > helm ls
+
 NAME                    REVISION        UPDATED                         STATUS          CHART           NAMESPACE
 pondering-octopus       1               Fri Jul  6 22:53:18 2018        DEPLOYED        bottle-0.1.0    default
 
