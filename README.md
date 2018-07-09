@@ -130,6 +130,8 @@ Running the Tetration application dependency mapping algorithms on the deployed 
 
 ![adm](documentation/adm.png)
 
+[Using Bottle with Tetration scopes, dependency mapping, enforcement, and how to demo](documentation/USING.md)
+
 ## Scenarios
 
 Scenarios describe the application components ("ships") and the traffic between them, plus some optional metadata. 
