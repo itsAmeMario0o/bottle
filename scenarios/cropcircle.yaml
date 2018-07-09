@@ -1,0 +1,77 @@
+scenario: cropcircle
+ships:
+  center:
+    clients: ['ring1-tier0:1000', 'ring1-tier1:1001', 'ring1-tier2:1002', 'ring1-tier3:1003',
+      'ring1-tier4:1004', 'ring1-tier5:1005', 'ring1-tier6:1006', 'ring1-tier7:1007',
+      'ring1-tier8:1008', 'ring1-tier9:1009']
+    replicas: 1
+  ring1-tier0:
+    clients: ['ring1-tier1:1001', 'ring2-tier0:2000']
+    replicas: 1
+    servers: [1000]
+  ring1-tier1:
+    clients: ['ring1-tier2:1002', 'ring2-tier1:2001']
+    replicas: 1
+    servers: [1001]
+  ring1-tier2:
+    clients: ['ring1-tier3:1003', 'ring2-tier2:2002']
+    replicas: 1
+    servers: [1002]
+  ring1-tier3:
+    clients: ['ring1-tier4:1004', 'ring2-tier3:2003']
+    replicas: 1
+    servers: [1003]
+  ring1-tier4:
+    clients: ['ring1-tier5:1005', 'ring2-tier4:2004']
+    replicas: 1
+    servers: [1004]
+  ring1-tier5:
+    clients: ['ring1-tier6:1006', 'ring2-tier5:2005']
+    replicas: 1
+    servers: [1005]
+  ring1-tier6:
+    clients: ['ring1-tier7:1007', 'ring2-tier6:2006']
+    replicas: 1
+    servers: [1006]
+  ring1-tier7:
+    clients: ['ring1-tier8:1008', 'ring2-tier7:2007']
+    replicas: 1
+    servers: [1007]
+  ring1-tier8:
+    clients: ['ring1-tier9:1009', 'ring2-tier8:2008']
+    replicas: 1
+    servers: [1008]
+  ring1-tier9:
+    clients: ['ring1-tier0:1000', 'ring2-tier9:2009']
+    replicas: 1
+    servers: [1009]
+  ring2-tier0:
+    replicas: 1
+    servers: [2000]
+  ring2-tier1:
+    replicas: 1
+    servers: [2001]
+  ring2-tier2:
+    replicas: 1
+    servers: [2002]
+  ring2-tier3:
+    replicas: 1
+    servers: [2003]
+  ring2-tier4:
+    replicas: 1
+    servers: [2004]
+  ring2-tier5:
+    replicas: 1
+    servers: [2005]
+  ring2-tier6:
+    replicas: 1
+    servers: [2006]
+  ring2-tier7:
+    replicas: 1
+    servers: [2007]
+  ring2-tier8:
+    replicas: 1
+    servers: [2008]
+  ring2-tier9:
+    replicas: 1
+    servers: [2009]
