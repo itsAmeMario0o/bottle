@@ -321,6 +321,7 @@ their traffic rejected:
 But bottle is supposed be scalable, so what about 300 replicas?!
 
 ![Scale 350](scale350.png)
+![Agents 350](agents350.png)
 
 Tetration seamlesslessly onboards the new agents, correctly assigns them into the clusters based on annotations, and finally applies the `iptable` security rules, all without any further administrator interaction.
 
