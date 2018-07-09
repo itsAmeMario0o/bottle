@@ -10,7 +10,9 @@ Bottle uses Kubernetes to deploy distributed stateful traffic generators ("ships
 
 Bottle allows the user to spin up complex and high scaling scenarios with very little configuration or resources.
 
-Bottle intergrates with Tetration sensors to monitor and map application traffic and optionally enforce segmentation policy.
+Bottle integrates with Tetration sensors to monitor and map application traffic and optionally enforce segmentation policy.
+
+[A detailed walkthrough of using Bottle with Tetration scopes, dependency mapping, and enforcement](documentation/USING.md)
 
 ## Getting Started
 
@@ -130,8 +132,6 @@ Running the Tetration application dependency mapping algorithms on the deployed 
 
 ![adm](documentation/adm.png)
 
-[Using Bottle with Tetration scopes, dependency mapping, enforcement, and how to demo](documentation/USING.md)
-
 ## Scenarios
 
 Scenarios describe the application components ("ships") and the traffic between them, plus some optional metadata. 
@@ -162,14 +162,14 @@ The traffic generator pods will be deployed using the image you provide, this im
 
 ### Sensor
 
-The sensor you provide should meet the following critiria:
+The sensor you provide should meet the following criteria:
 
 * Enforcement
 * CentOS 7.4
 
 ### Credentials
 
-The API credentials you provide should meet the following critiria:
+The API credentials you provide should meet the following criteria:
 
 * For the same cluster as the provided sensor
 * Have the "SW sensor management: API to configure and monitor status of SW sensors" capability
@@ -211,7 +211,7 @@ When building (or after) please tag the image and, if desired, push your image t
 Invoke the `helm install` command to deploy a scenario using a tagged image file. 
 
 ```
-helm install -f scenarios/<scenario name>.yaml --set image=bottle:<clustername> ./bottle
+helm install -f scenarios/<scenario name>.yaml --set image=bottle:<clustername> --set scope=<scope|Default> ./bottle
 ```
 
 * The helm executable will parse the the chosen scenario and extract the tier names
@@ -221,7 +221,7 @@ helm install -f scenarios/<scenario name>.yaml --set image=bottle:<clustername> 
 * each deployment will have a file loaded at `/etc/ship/conf.yaml` with the client/server config
 * each deployment container will read the config file and set up the traffic streams
 * each deployment container will install and run a tetration sensor
-* each deployment container will create an annotation in Tetration (at the optional scopename)
+* each deployment container will create an annotation in Tetration (at the optional scope or "Default")
 * all resources can be managed as usual kubernetes resources at this point
 
 ## Tips
@@ -288,7 +288,7 @@ The current goal of the project is to enrich the scenario specification DSL to i
     - [ ] Network delay
     - [ ] Application delay
 - [ ] Report statistics to logging database
-- [ ] Visualize stastics from logging database
+- [ ] Visualize statistics from logging database
 
 
 
