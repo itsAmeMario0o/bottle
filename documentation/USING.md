@@ -210,9 +210,11 @@ Each bottle host will get four annotations, we can search the inventory for `bot
 
 ![Inventory](inventory.png)
 
->Take note: when a pod terminates, it will attempt to annotate itself with bottle_lifecycle=terminated, however if for any reason
->a pod is unexpectedly terminated it may fail to update the annotation, luckily after some time the agent will be unregistered and therefore the
->OS field will become blank
+>Take note: when a pod terminates, it will attempt to annotate itself with bottle_lifecycle=terminated and delete the sensor registration, however, if for any reason
+>a pod is unexpectedly terminated it may fail to update the annotation or delete the sensor registration. After some time you may end up with stale annotations and/or
+>stale agents registered. You may want to use qualifiers like `OS=CentOS` to prune out inactive annotations: if the agent is successfully 
+>unregistered the host profile will soon lose the OS metadata. You may want to search the agent list for sensors that have not checked in
+>recently and prune any stale bottle sensor entries, if they exist.
 
 You can now quite easily create a scope tree to classify bottle endpoints using Annotations
 
