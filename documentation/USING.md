@@ -234,15 +234,66 @@ If everything goes as expected, you should see ADM results that are exactly in l
 
 Now that the application policy has been discovered, we can test the policy against the constantly generated traffic to ensure we won't break anything
 
+![Analysis](analysis.png)
+
 ### Enforcing Policy
 
 All bottle pods can have policy enforced in them! Yes, even though it is a container there is a full local instance of iptables
 
->Note: bottle uses full (e.g. for VMs) enforcement sensors INSIDE the container image. This is NOT the recommended way to enforce policy inside 
->containers using Tetration. If you are using Tetration to enforce policy in normal application containers please see the container 
+>Note: bottle uses full (e.g. for VMs) enforcement sensors INSIDE the container image. This is NOT the recommended way to enforce policy when 
+>using containers with Tetration. If you are using Tetration to enforce policy in normal application containers please see the container 
 >enforcement documentation to understand how to install and use the feature.
 
 After clicking enforce in the Tetration UI, after a minute or so, you can get the iptable output from any of the running pods:
+
+```
+>kubectl exec app-58cd74b8c8-qnwtn -c enforcer -- iptables -L -n
+
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+TA_GOLDEN_INPUT  all  --  0.0.0.0/0            0.0.0.0/0
+TA_INPUT   all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy DROP)
+target     prot opt source               destination
+TA_GOLDEN_OUTPUT  all  --  0.0.0.0/0            0.0.0.0/0
+TA_OUTPUT  all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain TA_GOLDEN_INPUT (1 references)
+target     prot opt source               destination
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> src multiport sports 5660 ctstate ESTABLISHED
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> src multiport sports 5640 ctstate ESTABLISHED
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> src multiport sports 443 ctstate ESTABLISHED
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain TA_GOLDEN_OUTPUT (1 references)
+target     prot opt source               destination
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> dst multiport dports 5660 ctstate NEW,ESTABLISHED
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> dst multiport dports 5640 ctstate NEW,ESTABLISHED
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> dst multiport dports 443 ctstate NEW,ESTABLISHED
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain TA_INPUT (1 references)
+target     prot opt source               destination
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> src match-set ta_<snip> dst multiport sports 53 ctstate ESTABLISHED
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> src match-set ta_<snip> dst multiport sports 3306 ctstate ESTABLISHED
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> src match-set ta_<snip> dst multiport dports 80 ctstate NEW,ESTABLISHED
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> src match-set ta_<snip> dst multiport sports 443,5660 ctstate ESTABLISHED
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0
+
+Chain TA_OUTPUT (1 references)
+target     prot opt source               destination
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> src match-set ta_<snip> dst multiport dports 53 ctstate NEW,ESTABLISHED
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> src match-set ta_<snip> dst multiport dports 3306 ctstate NEW,ESTABLISHED
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> src match-set ta_<snip> dst multiport sports 80 ctstate ESTABLISHED
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            match-set ta_<snip> src match-set ta_<snip> dst multiport dports 443,5660 ctstate NEW,ESTABLISHED
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0
+```
 
 ### Dynamic Policy
 
@@ -251,15 +302,42 @@ to correctly classify and apply policy to the new endpoints.
 
 In Tetration we can convert the regular clusters into dynamic clusters based on the bottle annotations:
 
-We can then easily scale up the scenario replicas, how about 10:
+![Dynamic Cluster](dynamic.png)
 
-Or what about 300!
+We can then easily scale up the scenario replicas, how about 350:
+
+```
+kubectl scale deployment web app db --replicas=10
+deployment.extensions "web" scaled
+deployment.extensions "app" scaled
+deployment.extensions "db" scaled
+```
+
+![Scale 10](scale10.png)
+
+Tetration even helped identify the fact that the enforcement rules had not been updated since moving to dynamic policy, and therefore the new endpoints were having
+their traffic rejected:
+
+But bottle is supposed be scalable, so what about 300 replicas?!
+
+![Scale 350](scale350.png)
 
 Tetration seamlesslessly onboards the new agents, correctly assigns them into the clusters based on annotations, and finally applies the `iptable` security rules, all without any further administrator interaction.
 
+![Policy 350](policy350.png)
+
 And finally we can scale the application back down to our original three replicas:
 
+```
+kubectl scale deployment web app db --replicas=3
+deployment.extensions "web" scaled
+deployment.extensions "app" scaled
+deployment.extensions "db" scaled
+```
+
 And policy contracts as necessary
+
+![Policy 3](policy3.png)
 
 ### Cleaning Up
 
