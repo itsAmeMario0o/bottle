@@ -14,8 +14,8 @@ The application (known as "scenario" in bottle terminology),
 The scenario will run indefinitely looping this traffic pattern until deleted.
 
 The payload sent by bottle is **not** actual application traffic, it is random bytes,
-however, that is not the point of bottle; as Tetration is only concerned with layers 1-4 bottle can
-create the impression of real application policy as desired - without actually having to run the real
+however, that is not the point of bottle; as Tetration is only concerned with layers 1-4, bottle can
+create the impression of real application traffic as desired - without actually having to run the real
 application, which can be complicated and time consuming to setup and maintain, and, 
 fragile and resource intensive to scale.
 
@@ -37,13 +37,13 @@ Bottle scales well with minimal resources. You do not need a heavily provisioned
 
 If you are new to docker and kubernetes, you may want to try the kube support in docker and run the examples on your laptop.
 
-![Docker](docker.png)
+![Docker](images/docker.png)
 
 On a 2016 MacBook Pro 15" (16GB RAM) bottle could scale to around 60 pods.
 
 In this example, a larger 8 node cluster will be used to demonstrate scale, comfortably running over 1000 pods.
 
-![Nodes](nodes.png)
+![Nodes](images/nodes.png)
 
 ## Guide
 
@@ -53,7 +53,7 @@ Download the CentOS 7.5 enforcer sensor from the target Tetration cluster
 
 Generate an API key with the following credentials:
 
-![API](api.png)
+![API](images/api.png)
 
 Create the docker image
 
@@ -214,25 +214,25 @@ If all pods are running and the sensors do not appear, you may need to use Remot
 
 Assuming no other NAT, you can use the public IPs of the kube nodes as the source IP for the Remote VRF configuration
 
-![Remote VRF configuration](vrfs.png)
+![Remote VRF configuration](images/vrfs.png)
 
 All 9 pods are successfully connected and sending telemetry
 
-![Connected sensors](agent-list.png)
+![Connected sensors](images/agent-list.png)
 
 After a few minutes each agent will have a host profile page, where you can see four annotations have been created
 
-![Host Profile](host-profile.png)
+![Host Profile](images/host-profile.png)
 
 You can also view the status of the bottle resources on the Kubernetes dashboard
 
-![Dashboard Overview](dashboard-overview.png)
+![Dashboard Overview](images/dashboard-overview.png)
 
 ### Annotations and Scopes
 
 Each bottle host will get four annotations, we can search the inventory for `bottle_lifecycle=active and OS=CentOS` workloads:
 
-![Inventory](inventory.png)
+![Inventory](images/inventory.png)
 
 >Take note: when a pod terminates, it will attempt to annotate itself with bottle_lifecycle=terminated and delete the sensor registration, however, if for any reason
 >a pod is unexpectedly terminated it may fail to update the annotation or delete the sensor registration. After some time you may end up with stale annotations and/or
@@ -242,8 +242,8 @@ Each bottle host will get four annotations, we can search the inventory for `bot
 
 You can now quite easily create a scope tree to classify bottle endpoints using Annotations
 
-![Scope 1](scope1.png)
-![Scope 1](scope2.png)
+![Scope 1](images/scope1.png)
+![Scope 1](images/scope2.png)
 
 ### Application Workspace
 
@@ -257,26 +257,26 @@ If you want to write policy by hand, you can use the annotations to create dynam
 
 Create the application workspace for the 3tier scenario, and make sure to select Dynamic Mode.
 
-![Workspace](workspace.png)
+![Workspace](images/workspace.png)
 
 To run ADM, the settings can left as default, the only change of note is I created two filters restricted to the "Bottle" scope to represent the internal kubernetes DNS and Tetration IPs.
 
->![Filters](filters.png)
+>![Filters](images/filters.png)
 >Both filters are marked as restricted, the workspace for the scope "Bottle" has been marked as primary, and the filters are marked as public services.
 
-![Settings](settings.png)
+![Settings](images/settings.png)
 
 If everything goes as expected, you should see ADM results that are exactly in line with the Scenario specification
 
 
-![Policy 1](policy1.png)
-![Policy 2](policy2.png)
+![Policy 1](images/policy1.png)
+![Policy 2](images/policy2.png)
 
 ### Analysing Policy
 
 Now that the application policy has been discovered, we can test the policy against the constantly generated traffic to ensure we won't break anything
 
-![Analysis](analysis.png)
+![Analysis](images/analysis.png)
 
 ### Enforcing Policy
 
@@ -346,7 +346,7 @@ In Tetration we can convert the regular clusters into dynamic clusters based on 
 
 Here, detecting that the "web" cluster can be classified via the `bottle_ship=web` annotation
 
-![Dynamic Cluster](dynamic.png)
+![Dynamic Cluster](images/dynamic.png)
 
 We can then easily scale up the scenario replicas, how about 10:
 
@@ -359,12 +359,12 @@ deployment.extensions "db" scaled
 
 Within a few seconds, the agent count has increased from 9 (3 replicas x 3) to 30 (10 replicas x 3)
 
-![Scale 10](scale10.png)
+![Scale 10](images/scale10.png)
 
 Tetration even helped identify the fact that the enforcement rules had not been updated since moving to dynamic policy, and therefore the new endpoints were having
 their traffic rejected:
 
-![Rejected 10](rejected10.png)
+![Rejected 10](images/rejected10.png)
 
 But bottle is supposed be scalable, so what about 350 replicas?!
 
@@ -375,13 +375,13 @@ deployment.extensions "app" scaled
 deployment.extensions "db" scaled
 ```
 
-![Scale 350](scale350.png)
-![Agents 350](agents350.png)
-![Analysis 350](analysis350.png)
+![Scale 350](images/scale350.png)
+![Agents 350](images/agents350.png)
+![Analysis 350](images/analysis350.png)
 
 Tetration seamlessly on-boards the new agents, correctly assigns them into the clusters based on annotations, and finally applies the `iptable` security rules, all without any further administrator interaction.
 
-![Policy 350](policy350.png)
+![Policy 350](images/policy350.png)
 
 And finally we can scale the application back down to our original three replicas:
 
@@ -394,7 +394,7 @@ deployment.extensions "db" scaled
 
 And policy contracts as necessary
 
-![Policy 3](policy3.png)
+![Policy 3](images/policy3.png)
 
 ### Cleaning Up
 
