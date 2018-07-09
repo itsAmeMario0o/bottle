@@ -165,7 +165,7 @@ The traffic generator pods will be deployed using the image you provide, this im
 The sensor you provide should meet the following criteria:
 
 * Enforcement
-* CentOS 7.4
+* CentOS 7.5
 
 ### Credentials
 
