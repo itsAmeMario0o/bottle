@@ -8,12 +8,13 @@ RUN go build ship
 
 FROM centos:7
 
-RUN yum install -y iptables ipset which redhat-lsb-core dmidecode openssl net-tools
+RUN yum install -y iptables ipset which redhat-lsb-core openssl net-tools
 
-COPY --from=builder /go/src/ship/ship .
+RUN touch /.sensor_container
+
 COPY sensor/sensor.rpm .
 COPY sensor/api_credentials.json .
 
-RUN touch /.sensor_container
+COPY --from=builder /go/src/ship/ship .
 
 CMD ["./ship"]
