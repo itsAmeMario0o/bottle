@@ -2,22 +2,22 @@
 
 This guide covers how to use bottle to create a 3 tier application that can be used within Tetration
 
-The application (known as "scenario" in bottle terminology), is the simple three tier example that is often used for reference
+The application (known as "scenario" in bottle terminology),
 
 ```c
 [web]--[80]-->[app]--[3306]-->[db]
 ```
 
-* The `web` tier will submit a web request to the `app` tier on port `80`
-* The `app` tier will process the web request and send a query the `db` tier on port `3306`
+* The `web` tier will submit a http request to the `app` tier on port `80`
+* The `app` tier will process the http request and send a query to the `db` tier on port `3306`
 
 The scenario will run indefinitely looping this traffic pattern until deleted.
 
 The payload sent by bottle is **not** actual application traffic, it is random bytes,
-however, that is not the point of bottle; as Tetration is only concerned with layers 1-4 we can
-'trick' it into seeing the application policy we desired without actually having to run the real
-application, which can be tricky and time consuming to setup, maintain, and dynamically modify like 
-scaling or changing traffic behaviour
+however, that is not the point of bottle; as Tetration is only concerned with layers 1-4 bottle can
+create the impression of real application policy as desired - without actually having to run the real
+application, which can be complicated and time consuming to setup and maintain, and, 
+fragile and resource intensive to scale.
 
 ## Setup 
 
@@ -77,7 +77,9 @@ Tag the image and push to the docker registry
 > docker push tigarner/bottle:pliny
 ```
 
-Deploy the "3tier" scenario
+Observe the "3tier" scenario, it's a simple YAML file
+
+For more details, see the article on [Scenarios](SCENARIOS.md)
 
 ```yaml
 # scenarios/3tier.yaml
@@ -101,9 +103,11 @@ ships:
 
 The parameters passed to helm are 
 
+* `install` - this will deploy a new instance of the scenario
 * `-f scenarios/3tier.yaml` - the path to the scenario file
-* `--set image=tigarner/bottle:pliny` - the image to deploy 
+* `--set image=tigarner/bottle:pliny` - the image to pull and deploy 
 * `--set scope=Bottle` - the root scope annotations will be placed under
+* `./bottle` - use the helm chart found in the `bottle` directory
 
 ```
 > helm install -f scenarios/3tier.yaml --set image=tigarner/bottle:pliny --set scope=Bottle ./bottle
@@ -183,6 +187,9 @@ app-58cd74b8c8-92qvn  0/3    ContainerCreating  0         1s
 app-58cd74b8c8-qnwtn  0/3    ContainerCreating  0         1s
 app-58cd74b8c8-wm2js  0/3    ContainerCreating  0         1s
 ```
+
+>Note: in this output there are *three replicas per deployment (one replica per row)* and each replica
+>is made up of three containers (e.g. 0/3 READY)
 
 
 The services will be provided by the named ships
@@ -282,7 +289,7 @@ All bottle pods can have policy enforced in them! Yes, even though it is a conta
 After clicking enforce in the Tetration UI, after a minute or so, you can get the iptable output from any of the running pods:
 
 ```
->kubectl exec app-58cd74b8c8-qnwtn -c enforcer -- iptables -L -n
+> kubectl exec app-58cd74b8c8-qnwtn -c enforcer -- iptables -L -n
 
 Chain INPUT (policy DROP)
 target           prot opt source               destination
@@ -332,10 +339,12 @@ RETURN     all  --  0.0.0.0/0            0.0.0.0/0
 
 ### Dynamic Policy
 
-What happens if we scale the scenario to 5, 10, 100, 1000 replicas? Our policy intent stays the same, but the workloads it applies to must dynamically scale
+What happens if we scale the scenario to 5, 10, 100, 1000 replicas? Our policy intent stays the same, but the workloads it applies to must dynamically change
 to correctly classify and apply policy to the new endpoints.
 
 In Tetration we can convert the regular clusters into dynamic clusters based on the bottle annotations:
+
+Here, detecting that the "web" cluster can be classified via the `bottle_ship=web` annotation
 
 ![Dynamic Cluster](dynamic.png)
 
@@ -347,6 +356,8 @@ deployment.extensions "web" scaled
 deployment.extensions "app" scaled
 deployment.extensions "db" scaled
 ```
+
+Within a few seconds, the agent count has increased from 9 (3 replicas x 3) to 30 (10 replicas x 3)
 
 ![Scale 10](scale10.png)
 
