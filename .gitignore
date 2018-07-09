@@ -2,5 +2,6 @@ conf.yaml
 debug
 sensor/*
 !sensor/Dockerfile
+!sensor/singlebuild.Dockerfile
 .DS_Store
 .vscode/
