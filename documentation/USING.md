@@ -2,6 +2,23 @@
 
 This guide covers how to use bottle to create a 3 tier application that can be used within Tetration
 
+The application (known as "scenario" in bottle terminology), is the simple three tier example that is often used for reference
+
+```c
+[web]--[80]-->[app]--[3306]-->[db]
+```
+
+* The `web` tier will submit a web request to the `app` tier on port `80`
+* The `app` tier will process the web request and send a query the `db` tier on port `3306`
+
+The scenario will run indefinitely looping this traffic pattern until deleted.
+
+The payload sent by bottle is **not** actual application traffic, it is random bytes,
+however, that is not the point of bottle; as Tetration is only concerned with layers 1-4 we can
+'trick' it into seeing the application policy we desired without actually having to run the real
+application, which can be tricky and time consuming to setup, maintain, and dynamically modify like 
+scaling or changing traffic behaviour
+
 ## Setup 
 
 ### Software
