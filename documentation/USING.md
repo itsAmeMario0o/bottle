@@ -230,7 +230,7 @@ You can also view the status of the bottle resources on the Kubernetes dashboard
 
 ### Annotations and Scopes
 
-Each bottle host will get four annotations, we can search the inventory for `bottle_lifecycle=active and OS=CentOS` workloads:
+Each bottle host will get four annotations, we can search the inventory for `bottle_lifecycle=active and OS=CentOS`
 
 ![Inventory](images/inventory.png)
 
@@ -264,10 +264,11 @@ To run ADM, the settings can left as default, the only change of note is I creat
 >![Filters](images/filters.png)
 >Both filters are marked as restricted, the workspace for the scope "Bottle" has been marked as primary, and the filters are marked as public services.
 
+Submit the ADM run and let Tetration analyse the flow and process data to form an application policy 
+
 ![Settings](images/settings.png)
 
 If everything goes as expected, you should see ADM results that are exactly in line with the Scenario specification
-
 
 ![Policy 1](images/policy1.png)
 ![Policy 2](images/policy2.png)
@@ -286,7 +287,7 @@ All bottle pods can have policy enforced in them! Yes, even though it is a conta
 >using containers with Tetration. If you are using Tetration to enforce policy in normal application containers please see the container 
 >enforcement documentation to understand how to install and use the feature.
 
-After clicking enforce in the Tetration UI, after a minute or so, you can get the iptable output from any of the running pods:
+After clicking enforce in the Tetration UI, within a minute or so, you can get the iptable output from any of the running pods:
 
 ```
 > kubectl exec app-58cd74b8c8-qnwtn -c enforcer -- iptables -L -n
@@ -402,4 +403,11 @@ We could now leave the scenario running indefinitely and use this as a stable ex
 
 To remove the scenario, execute the helm command to delete the release name:
 
-`helm delete pondering-octopus`
+```
+> helm ls
+NAME                    REVISION        UPDATED                         STATUS          CHART           NAMESPACE
+pondering-octopus       1               Fri Jul  6 22:53:18 2018        DEPLOYED        bottle-0.1.0    default
+
+
+> helm delete pondering-octopus
+```
