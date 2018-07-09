@@ -32,7 +32,7 @@ In this example, a larger 8 node cluster will be used to demonstrate scale, comf
 
 ### Deploying Sensors
 
-Download the CentOS 7.4 enforcer sensor from the target Tetration cluster
+Download the CentOS 7.5 enforcer sensor from the target Tetration cluster
 
 Generate an API key with the following credentials:
 
@@ -55,7 +55,9 @@ Create the docker image
 Tag the image and push to the docker registry
 
 ```bash
-docker tag bottle:pliny tigarner/bottle:pliny
+> docker tag bottle:pliny tigarner/bottle:pliny
+
+> docker push tigarner/bottle:pliny
 ```
 
 Deploy the "3tier" scenario
@@ -150,7 +152,7 @@ web   3        3        3           0          1s
 app   3        3        3           0          1s
 ```
 
-Each replica will run a separator traffic generator and sensor container
+Each replica will run a separator traffic generator, sensor, and enforcer container
 ```
 ==> v1/Pod(related)
 NAME                  READY  STATUS             RESTARTS  AGE
@@ -180,9 +182,9 @@ app   ClusterIP  None        <none>       80/TCP    1s
 
 Each pod will run a unique sensor, which will register with Tetration as an enforcement sensor
 
-The reported IPs will be local to the Kube cluster and may be different depending on your setup, in this example they are in 192.168.0.0/16
+The reported IPs will be local to the Kube cluster and may be different depending on your setup, in this example they are in `192.168.0.0/16`
 
-If the sensors do not show up, you may need to check the status of the pods using `kubectl get pods -l scenario=3tier` or `helm status pondering-octopus` to check the state of pods.
+If the sensors do not show up, you may need to check the status of the pods using `kubectl get pods -l scenario=3tier` or `helm status pondering-octopus`.
 
 If all pods are running and the sensors do not appear, you may need to use Remote VRF configuration to assign sensors to the right Tenant. 
 
@@ -219,7 +221,7 @@ You can now quite easily create a scope tree to classify bottle endpoints using 
 
 ### Application Workspace
 
-Tetration will now be collecting data and assigning it the created scope tree continuously. 
+Tetration will now be collecting data and attributing it to the created scope tree continuously. 
 
 If you want to run ADM, you will need to leave the system running for 6 hours or more now.
 
@@ -315,7 +317,7 @@ In Tetration we can convert the regular clusters into dynamic clusters based on 
 
 ![Dynamic Cluster](dynamic.png)
 
-We can then easily scale up the scenario replicas, how about 350:
+We can then easily scale up the scenario replicas, how about 10:
 
 ```
 kubectl scale deployment web app db --replicas=10
@@ -329,7 +331,9 @@ deployment.extensions "db" scaled
 Tetration even helped identify the fact that the enforcement rules had not been updated since moving to dynamic policy, and therefore the new endpoints were having
 their traffic rejected:
 
-But bottle is supposed be scalable, so what about 300 replicas?!
+![Rejected 10](rejected10.png)
+
+But bottle is supposed be scalable, so what about 350 replicas?!
 
 ```
 kubectl scale deployment web app db --replicas=350
@@ -340,6 +344,7 @@ deployment.extensions "db" scaled
 
 ![Scale 350](scale350.png)
 ![Agents 350](agents350.png)
+![Analysis 350](analysis350.png)
 
 Tetration seamlessly on-boards the new agents, correctly assigns them into the clusters based on annotations, and finally applies the `iptable` security rules, all without any further administrator interaction.
 
