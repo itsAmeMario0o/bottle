@@ -16,8 +16,7 @@ The scenario will run indefinitely looping this traffic pattern until deleted.
 The payload sent by bottle is **not** actual application traffic, it is random bytes,
 however, that is not the point of bottle; as Tetration is only concerned with layers 1-4, bottle can
 create the impression of real application traffic as desired - without actually having to run the real
-application, which can be complicated and time consuming to setup and maintain, and, 
-fragile and resource intensive to scale.
+application, which can be complicated and time consuming to setup and maintain, and, resource intensive to scale.
 
 ## Setup 
 
@@ -35,7 +34,7 @@ In this example the software versions are:
 
 Bottle scales well with minimal resources. You do not need a heavily provisioned kube environment to get started.
 
-If you are new to docker and kubernetes, you may want to try the kube support in docker and run the examples on your laptop.
+If you are new to containers, you may want to try the kube support in docker and run the examples on your laptop.
 
 ![Docker](images/docker.png)
 
@@ -271,6 +270,11 @@ Submit the ADM run and let Tetration analyse the flow and process data to form a
 If everything goes as expected, you should see ADM results that are exactly in line with the Scenario specification
 
 ![Policy 1](images/policy1.png)
+
+The clusters will be named similarly to the deployment names; rename clusters for clarity if desired
+
+Policy will be created for infra flows (Kube, Tetration) - if you do not want them to show up use an exclusion filter
+
 ![Policy 2](images/policy2.png)
 
 ### Analysing Policy
@@ -377,7 +381,13 @@ deployment.extensions "db" scaled
 ```
 
 ![Scale 350](images/scale350.png)
+
+A total of 1,050 agents are seen registered
+
 ![Agents 350](images/agents350.png)
+
+And the policy analysis graph shows a large spike in flow observations
+
 ![Analysis 350](images/analysis350.png)
 
 Tetration seamlessly on-boards the new agents, correctly assigns them into the clusters based on annotations, and finally applies the `iptable` security rules, all without any further administrator interaction.
