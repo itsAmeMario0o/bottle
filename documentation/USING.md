@@ -261,17 +261,17 @@ After clicking enforce in the Tetration UI, after a minute or so, you can get th
 >kubectl exec app-58cd74b8c8-qnwtn -c enforcer -- iptables -L -n
 
 Chain INPUT (policy DROP)
-target     prot opt source               destination
+target           prot opt source               destination
 TA_GOLDEN_INPUT  all  --  0.0.0.0/0            0.0.0.0/0
-TA_INPUT   all  --  0.0.0.0/0            0.0.0.0/0
+TA_INPUT         all  --  0.0.0.0/0            0.0.0.0/0
 
 Chain FORWARD (policy ACCEPT)
 target     prot opt source               destination
 
 Chain OUTPUT (policy DROP)
-target     prot opt source               destination
+target            prot opt source               destination
 TA_GOLDEN_OUTPUT  all  --  0.0.0.0/0            0.0.0.0/0
-TA_OUTPUT  all  --  0.0.0.0/0            0.0.0.0/0
+TA_OUTPUT         all  --  0.0.0.0/0            0.0.0.0/0
 
 Chain TA_GOLDEN_INPUT (1 references)
 target     prot opt source               destination
