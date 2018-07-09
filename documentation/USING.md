@@ -227,15 +227,18 @@ Tetration will now be collecting data and attributing it to the created scope tr
 
 If you want to run ADM, you will need to leave the system running for 6 hours or more now.
 
-If you want to write policy by hand, you can use the annotations to create dynamic clusters right now - jump to [Dynamic Policy](#dynamic-policy) for some tips.
+If you want to write policy by hand, you can use the annotations to create dynamic clusters right now
 
-Create the application workspace for the 3tier scenario, and make sure to select Dynamic.
+- jump to [Dynamic Policy](#dynamic-policy) for some tips.
+
+Create the application workspace for the 3tier scenario, and make sure to select Dynamic Mode.
 
 ![Workspace](workspace.png)
 
-To run ADM, most settings should be ok set to defaults, the only change of note is I created two filters restricted to the "Bottle" scope to represent the internal kubernetes DNS and Tetration IPs.
+To run ADM, the settings can left as default, the only change of note is I created two filters restricted to the "Bottle" scope to represent the internal kubernetes DNS and Tetration IPs.
 
 >![Filters](filters.png)
+>Both filters are marked as restricted, the workspace for the scope "Bottle" has been marked as primary, and the filters are marked as public services.
 
 ![Settings](settings.png)
 
