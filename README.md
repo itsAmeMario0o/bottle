@@ -27,7 +27,7 @@ To use bottle, you will need:
 
 ```bash
 # clone the repository
-> git clone https://cto-github.cisco.comcom/tigarner/bottle
+> git clone https://cto-github.cisco.com/tigarner/bottle
 > cd bottle
 
 # copy your clusters agent rpm
