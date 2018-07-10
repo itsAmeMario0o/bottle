@@ -34,7 +34,7 @@ To use bottle, you will need:
 > cp ~/Downloads/myclustersensor.rpm sensor/sensor.rpm
 
 # copy your clusters api credentials (must have sw agent privilege)
-> cp ~/Downloads/api_credentials.json sensor/
+> cp ~/Downloads/api_credentials.json sensor/api_credentials.json
 
 # build the image and tag
 > docker build -f sensor/Dockerfile -t bottle:yourcluster .
@@ -189,7 +189,7 @@ Once you have collected the sensor RPM and API credentials, you can build the im
 > cp ~/Downloads/tet-sensor-2.3.1.45-1.el7-pliny.enforcer.x86_64.rpm sensor/sensor.rpm
 
 # If the api credentials have been downloaded with the name "api_credentials.json"
-> cp ~/Downloads/api_credentials.json sensor/
+> cp ~/Downloads/api_credentials.json sensor/api_credentials.json
 
 # The dockerfile must then be built, it will bake the RPM and API credentials into the image
 # This example will create a local image tagged as "bottle:pliny"
