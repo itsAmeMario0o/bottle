@@ -1,5 +1,6 @@
 {{- $scenario := .Values.scenario -}}
 {{ range $shipname, $ship := .Values.ships }}
+{{- if $ship.servers }}
 kind: Service
 apiVersion: v1
 metadata:
@@ -8,14 +9,15 @@ metadata:
     scenario: {{ $scenario }}
 spec:
   clusterIP: None
+  selector:
+    scenario: {{ $scenario }}
+    ship: {{ $shipname }}
   ports:
 {{- range $index, $service := $ship.servers }}
    - name: {{ $service | quote }}
      protocol: TCP
      port: {{ $service }}
 {{- end }}
-  selector:
-    scenario: {{ $scenario }}
-    ship: {{ $shipname }}
+{{- end }}
 ---
 {{ end }}
