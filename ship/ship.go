@@ -238,7 +238,7 @@ func (s *Ship) annotate(annotation Annotation) {
 			case *net.IPAddr:
 				ip = v.IP
 			}
-			if ip.String() == "127.0.0.1" {
+			if ip.IsLoopback() || ip.To4() == nil {
 				continue
 			}
 			scope := os.Getenv("BOTTLE_SCOPE")
