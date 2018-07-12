@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"os/signal"
@@ -117,8 +118,26 @@ func (s *Ship) runServers() {
 }
 
 func (s *Ship) client(address string) {
+	rand.Seed(time.Now().Unix())
+	host, port, err := net.SplitHostPort(address)
+	if err != nil {
+		log.Fatalf("[client] %s is not a valid remote host", address)
+	}
+
 	connection := 1
 	for {
+
+		backends, err := net.LookupHost(host)
+		if err != nil {
+			log.Printf("[client] DNS lookup error, err=%s", err)
+			time.Sleep(20 * time.Second)
+			continue
+		}
+
+		backend := backends[rand.Intn(len(backends))]
+		address = fmt.Sprintf("%s:%s", backend, port)
+		log.Printf("[client] service %s resolved to %d hosts, picked %s", host, len(backends), backend)
+
 		log.Printf("[client] connect %d to %s", connection, address)
 		conn, err := net.DialTimeout("tcp", address, 10*time.Second)
 		if err != nil {
