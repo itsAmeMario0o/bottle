@@ -1,6 +1,7 @@
 {{- $scenario := .Values.scenario -}}
 {{- $image := .Values.image -}}
 {{- $scope := .Values.scope -}}
+{{- $stats := .Values.stats -}}
 {{ range $shipname, $ship := .Values.ships }}
 kind: Deployment
 apiVersion: extensions/v1beta1
@@ -60,6 +61,8 @@ spec:
                       value: {{ $scenario }}
                     - name: BOTTLE_SHIP
                       value: {{ $shipname }}
+                    - name: BOTTLE_STATS
+                      value: {{ $stats | default "false" | toString | quote }}
                   volumeMounts:
                     - mountPath: /etc/ship
                       name: config

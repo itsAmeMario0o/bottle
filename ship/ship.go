@@ -4,10 +4,12 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"math/rand"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -96,6 +98,10 @@ func (s *Ship) Run() {
 
 	log.Printf("ship starting")
 
+	if os.Getenv("BOTTLE_STATS") == "true" {
+		log.Println("stats will be logged to collector")
+	}
+
 	log.Printf("ship servers starting")
 	go s.runServers()
 	time.Sleep(2 * time.Second)
@@ -115,6 +121,31 @@ func (s *Ship) runServers() {
 		go s.server(port)
 	}
 
+}
+
+func (s *Ship) logComplete(source string, target string) {
+	if os.Getenv("BOTTLE_STATS") == "true" {
+		resp, err := http.Get(fmt.Sprintf("http://svc-%s-stats:8080/log/complete/%s:%s", os.Getenv("BOTTLE_SCENARIO"), source, target))
+		if err != nil {
+			log.Printf("[client] failed to log a complete connection, err=%s", err)
+			return
+		}
+		io.Copy(ioutil.Discard, resp.Body)
+		resp.Body.Close()
+	}
+}
+
+func (s *Ship) logFailed(source string, target string) {
+	if os.Getenv("BOTTLE_STATS") == "true" {
+		resp, err := http.Get(fmt.Sprintf("http://svc-%s-stats:8080/log/failed/%s:%s", os.Getenv("BOTTLE_SCENARIO"), source, target))
+		if err != nil {
+			log.Printf("[client] failed to log a failed connection, err=%s", err)
+			return
+		}
+
+		io.Copy(ioutil.Discard, resp.Body)
+		resp.Body.Close()
+	}
 }
 
 func (s *Ship) client(address string) {
@@ -142,11 +173,13 @@ func (s *Ship) client(address string) {
 		conn, err := net.DialTimeout("tcp", address, 10*time.Second)
 		if err != nil {
 			log.Printf("[client] connect error, err=%s", err)
+			s.logFailed(os.Getenv("BOTTLE_SHIP"), host)
 			time.Sleep(20 * time.Second)
 			continue
 		}
 		connection++
 		log.Printf("[client] connected to %s on %s", conn.RemoteAddr(), conn.LocalAddr())
+		s.logComplete(os.Getenv("BOTTLE_SHIP"), host)
 		hostname, err := os.Hostname()
 		if err != nil {
 			hostname = "unknown"

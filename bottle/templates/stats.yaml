@@ -1,0 +1,87 @@
+{{- $scenario := .Values.scenario -}}
+{{- $image := .Values.image -}}
+{{- $scope := .Values.scope -}}
+{{- $shipname := "stats" }}
+{{- if .Values.stats  }}
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: svc-{{ $scenario }}-stats
+  labels:
+    scenario: {{ $scenario }}
+spec:
+  clusterIP: None
+  selector:
+    scenario: {{ $scenario }}
+    stats: "yes"
+  ports:
+   - name: stats
+     protocol: TCP
+     port: 8080
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+    name: {{ $scenario }}-stats
+    labels:
+        scenario: {{ $scenario }}
+        stats: "yes"
+spec:
+    containers:
+        - name: stats
+          image: tigarner/cargo:latest
+          volumeMounts:
+            - mountPath: /etc/cargo
+              name: stats-config
+        - name: sensor
+          image: {{ $image | default "bottle:latest" }}
+          command: ["/bin/sh", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; ./start_sensor.sh"]
+          volumeMounts:
+            - mountPath: /usr/local/tet
+              name: tet
+        - name: generator
+          image: {{ $image | default "bottle:latest" }}
+          env:
+            - name: BOTTLE_SCOPE
+              value: {{ $scope | default "Default"}}
+            - name: BOTTLE_SCENARIO
+              value: {{ $scenario }}
+            - name: BOTTLE_SHIP
+              value: {{ $shipname }}
+          volumeMounts:
+            - mountPath: /etc/ship
+              name: config
+            - mountPath: /usr/local/tet
+              name: tet
+    volumes:
+        - name: stats-config
+          configMap:
+            name: {{ $scenario }}-stats-config
+            items:
+                - key: ships
+                  path: conf.yaml
+        - name: config
+          configMap:
+            name: {{ $scenario }}-stats-config
+            items:
+                - key: stats
+                  path: conf.yaml
+        - name: tet
+          emptyDir: {}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.scenario }}-stats-config
+  labels:
+    scenario: {{ .Values.scenario }}
+data:
+  stats : ""
+  ships: | 
+    ships: {{ .Values.ships | toYaml | trimSuffix "\n" | nindent 5  }}
+{{- end }}
