@@ -22,6 +22,24 @@ spec:
 
 ---
 
+kind: Service
+apiVersion: v1
+metadata:
+  name: stats-{{ $scenario }}
+  labels:
+    scenario: {{ $scenario }}
+spec:
+  type: NodePort
+  selector:
+    scenario: {{ $scenario }}
+    stats: "yes"
+  ports:
+   - name: stats
+     protocol: TCP
+     port: 8080
+
+---
+
 kind: Pod
 apiVersion: v1
 metadata:
