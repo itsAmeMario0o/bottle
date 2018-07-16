@@ -237,7 +237,9 @@ helm install -f scenarios/<scenario name>.yaml --set image=bottle:<clustername> 
 
 By passing the `--set stats=true` parameter to the `helm install` command, a stats pod will be created.
 
-All ships will report each connection they initiate. On completion, the connection will either be reported as a success, or failure.
+All ships will report each connection they initiate. 
+
+On completion, the connection will either be reported as a success, or failure.
 
 The stats pod will agreggate and store all of the connection logs.
 
