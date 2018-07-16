@@ -235,21 +235,25 @@ helm install -f scenarios/<scenario name>.yaml --set image=bottle:<clustername> 
 
 ## Stats and Visualization
 
-By passing the `--set stats=true` parameter to the `helm install` command, a `stats` pod will be created.
+By passing the `--set stats=true` parameter to the `helm install` command, a stats pod will be created.
 
-All `ships` will report each connection they initiate. On completion, the connection will either be reported as a success, or failure.
+All ships will report each connection they initiate. On completion, the connection will either be reported as a success, or failure.
 
-The `stats` pod will agreggate and store all of the connection logs.
+The stats pod will agreggate and store all of the connection logs.
 
-The `stats` pod runs a webserver on port `8080` that provides a visualization of the last minutes connection logs, overlayed on the scenario topology.
+The stats pod runs a webserver on port `8080` that provides a visualization of the last minutes connection logs, overlayed on the scenario topology.
 
 This can be incredibly powerful to show the effect of scaling pods up or enforcing policy to deny traffic between ships.
 
->If you are using policy enforcement, don't forget to write a policy that allows the `ships` to report connection logs to the `stats` pod  
->If you are using Tetration, you can create a filter with the query: `bottle_lifecycle=active` and `bottle_ship=stats` and apply a global rule  
->to allow traffic from all sources destined to port 8080
+>If you are using policy enforcement, don't forget to write a policy that allows the `ships` to report connection logs to the stats pod   
+>  
+>If you are using Tetration, you can create a filter with the query:  
+> `bottle_lifecycle=active`  
+> `bottle_ship=stats`  
+>  
+> Apply a global rule to allow traffic from all sources destined to port 8080
 
-The `stats` pod will have a Kubernetes service of type `NodePort` created to allow access from outside the cluster.
+The stats pod will have a Kubernetes service of type `NodePort` created to allow access from outside the cluster.
 
 To access the visualizer UI:
 
