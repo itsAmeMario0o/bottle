@@ -42,6 +42,11 @@ To use bottle, you will need:
 # run a scenario with the image
 > helm install -f scenarios/3tier.yaml --set image=bottle:yourcluster ./bottle
 
+# if you want to set the scope, add
+# --set scope=<scopename>
+# if you want to add stats and visualization
+# --set stats=true
+
 # example helm output
 # a unique name will be created for each deployed scenario
 # in this example output it is "interested-frog"
@@ -131,6 +136,10 @@ Load generators will run on each tier sending and receiving traffic as laid out 
 Running the Tetration application dependency mapping algorithms on the deployed endpoints will result in a policy graph that mirrors the original scenario file, discovered via observed flow data.
 
 ![adm](documentation/adm.png)
+
+Optionally, centralised statistics can be logged and visualized, bringing the scenario to life, with traffic volume and policy drops easily demonstrated
+
+![stats](documentation/images/stats.png)
 
 ## Scenarios
 
@@ -224,6 +233,37 @@ helm install -f scenarios/<scenario name>.yaml --set image=bottle:<clustername> 
 * each deployment container will create an annotation in Tetration (at the optional scope or "Default")
 * all resources can be managed as usual kubernetes resources at this point
 
+## Stats and Visualization
+
+By passing the `--set stats=true` parameter to the `helm install` command, a `stats` pod will be created.
+
+All `ships` will report each connection they initiate. On completion, the connection will either be reported as a success, or failure.
+
+The `stats` pod will agreggate and store all of the connection logs.
+
+The `stats` pod runs a webserver on port `8080` that provides a visualization of the last minutes connection logs, overlayed on the scenario topology.
+
+This can be incredibly powerful to show the effect of scaling pods up or enforcing policy to deny traffic between ships.
+
+>If you are using policy enforcement, don't forget to write a policy that allows the `ships` to report connection logs to the `stats` pod  
+>If you are using Tetration, you can create a filter with the query: `bottle_lifecycle=active` and `bottle_ship=stats` and apply a global rule  
+>to allow traffic from all sources destined to port 8080
+
+The `stats` pod will have a Kubernetes service of type `NodePort` created to allow access from outside the cluster.
+
+To access the visualizer UI:
+
+```bash
+# Get the port that the visualizer will be listening on
+> kubectl get svc stats-3tier
+
+NAME          TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+stats-3tier   NodePort   10.99.196.98   <none>        8080:30533/TCP   23h
+
+# 10.28.121.31 is the public IP of a node in the Kubernetes cluster; you can pick any node
+> open http://10.28.121.31:30533
+```
+
 ## Tips
 
 ### Remote VRF
@@ -282,13 +322,13 @@ The current goal of the project is to enrich the scenario specification DSL to i
 - [x] De-register Tetration agent at destroy time
 - [x] Support enforcement in container
 - [x] Annotate endpoints with scenario and lifecycle
+- [x] Report statistics to logging database
+- [x] Visualize statistics from logging database
 - [ ] Advanced scenario parameters
     - [ ] Client type (short request, long request, etc.)
     - [ ] Server type (small reply, large reply, etc.)
     - [ ] Network delay
     - [ ] Application delay
-- [ ] Report statistics to logging database
-- [ ] Visualize statistics from logging database
 
 
 
