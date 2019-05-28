@@ -5,3 +5,4 @@ sensor/*
 !sensor/singlebuild.Dockerfile
 .DS_Store
 .vscode/
+ship/ship

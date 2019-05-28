@@ -102,6 +102,10 @@ func (s *Ship) Run() {
 		log.Println("stats will be logged to collector")
 	}
 
+	if os.Getenv("BOTTLE_NO_SENSOR") == "true" {
+		log.Println("no sensor will be utilised")
+	}
+
 	log.Printf("ship servers starting")
 	go s.runServers()
 	time.Sleep(2 * time.Second)
@@ -241,13 +245,16 @@ func (s *Ship) registerCleanup() {
 }
 
 func (s *Ship) cleanup() {
-	log.Println("finishing! will unregister sensor")
+	log.Println("finishing!")
 	s.annotateOnTearDown()
-	err := s.tetration.Delete("/sensors/"+s.uuid, "")
-	if err != nil && !strings.Contains(err.Error(), "Other Error (204)") {
-		log.Fatalf("failed to unregister sensor, error=#%v", err)
+	log.Println("removed annotations")
+	if os.Getenv("BOTTLE_NO_SENSOR") != "true" {
+		err := s.tetration.Delete("/sensors/"+s.uuid, "")
+		if err != nil && !strings.Contains(err.Error(), "Other Error (204)") {
+			log.Fatalf("failed to unregister sensor, error=#%v", err)
+		}
+		log.Println("sensor unregistered")
 	}
-	log.Println("sensor unregistered")
 }
 
 func (s *Ship) annotate(annotation Annotation) {
@@ -309,44 +316,49 @@ func (s *Ship) annotateOnTearDown() {
 func (s *Ship) setupTetration() {
 	s.credentials.getCredentials()
 
-	var uuid string
+	var url string
+	if os.Getenv("BOTTLE_NO_SENSOR") != "true" {
+		var uuid string
 
-	for i := 1; i <= 12; i++ {
-		result, err := ioutil.ReadFile("/usr/local/tet/sensor_id")
-		if err != nil {
-			log.Printf("attempt %d, no sensor uuid (check if sensor is running) error=#%v", i, err)
-			time.Sleep(10 * time.Second)
-		} else {
-			uuid = string(result)
-			break
+		for i := 1; i <= 12; i++ {
+			result, err := ioutil.ReadFile("/usr/local/tet/sensor_id")
+			if err != nil {
+				log.Printf("attempt %d, no sensor uuid (check if sensor is running) error=#%v", i, err)
+				time.Sleep(10 * time.Second)
+			} else {
+				uuid = string(result)
+				break
+			}
 		}
+
+		if uuid == "" {
+			log.Fatalf("could not open sensor_id file")
+		}
+
+		if strings.Contains(string(uuid), "uuid-") {
+			log.Fatalf("sensor is not registered %s", uuid)
+		}
+
+		log.Printf("sensor is registered with uuid=%s", uuid)
+
+		s.uuid = uuid
+
+		result, err := ioutil.ReadFile("/usr/local/tet/site.cfg")
+		if err != nil {
+			log.Fatalf("could not obtain site configuration, error=#%v", err)
+		}
+
+		configURL := strings.Split(string(result), "=")
+		url = configURL[1]
+		url = strings.Trim(url, "\n")
+		url = strings.Trim(url, "\"")
+	} else {
+		url = os.Getenv("BOTTLE_URL")
 	}
-
-	if uuid == "" {
-		log.Fatalf("could not open sensor_id file")
-	}
-
-	if strings.Contains(string(uuid), "uuid-") {
-		log.Fatalf("sensor is not registered %s", uuid)
-	}
-
-	log.Printf("sensor is registered with uuid=%s", uuid)
-
-	s.uuid = uuid
-
-	result, err := ioutil.ReadFile("/usr/local/tet/site.cfg")
-	if err != nil {
-		log.Fatalf("could not obtain site configuration, error=#%v", err)
-	}
-
-	configURL := strings.Split(string(result), "=")
-	url := configURL[1]
-	url = strings.Trim(url, "\n")
-	url = strings.Trim(url, "\"")
 
 	s.tetration = tetration.NewH4(url, s.credentials.Secret, s.credentials.Key, "/openapi/v1", false)
 
-	_, err = s.tetration.GetSWAgents()
+	_, err := s.tetration.GetSWAgents()
 	if err != nil {
 		log.Fatalf("failed reading sw agents (check provided API key has correct privilege) error=%v", err)
 	}
