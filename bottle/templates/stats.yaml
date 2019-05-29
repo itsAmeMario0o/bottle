@@ -57,7 +57,7 @@ spec:
               name: stats-config
         - name: sensor
           image: {{ $image | default "bottle:latest" }}
-          command: ["/bin/sh", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; ./start_sensor.sh"]
+          command: ["/bin/sh", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; echo 'ACTIVATION_KEY={{ $key }}' > user.cfg ; ./start_sensor.sh"]
           volumeMounts:
             - mountPath: /usr/local/tet
               name: tet
