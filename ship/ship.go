@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io"
 	"io/ioutil"
 	"log"
@@ -37,6 +38,15 @@ type Ship struct {
 type Config struct {
 	Clients []string `yaml:"clients"`
 	Servers []int    `yaml:"servers"`
+	UI      UI
+}
+
+// UI is used to create a simple webpage
+type UI struct {
+	Title      string `yaml:"title"`
+	Body       string `yaml:"body"`
+	ClientAddr string
+	Hostname   string
 }
 
 // Credentials holds the tetration API keys
@@ -106,6 +116,8 @@ func (s *Ship) Run() {
 		log.Println("no sensor will be utilised")
 	}
 
+	log.Printf("ship ui starting")
+	go s.runUI()
 	log.Printf("ship servers starting")
 	go s.runServers()
 	time.Sleep(2 * time.Second)
@@ -149,6 +161,29 @@ func (s *Ship) logFailed(source string, target string) {
 
 		io.Copy(ioutil.Discard, resp.Body)
 		resp.Body.Close()
+	}
+}
+
+func (s *Ship) runUI() {
+	ui := s.config.UI
+
+	if (ui != UI{}) {
+		log.Println("ui requested, starting")
+
+		tmpl := template.Must(template.ParseFiles("ui.html"))
+
+		hostname, err := os.Hostname()
+		if err != nil {
+			hostname = "unknown"
+		}
+		s.config.UI.Hostname = hostname
+
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			s.config.UI.ClientAddr = r.RemoteAddr
+			tmpl.Execute(w, s.config.UI)
+		})
+
+		http.ListenAndServe(":80", nil)
 	}
 }
 

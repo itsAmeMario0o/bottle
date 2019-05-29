@@ -1,16 +1,19 @@
 scenario: 3tier
 ships:
-    web: 
-        replicas: 3
+    web:
+        ui:
+            title: "Welcome to the Example Three Tier App"
+            body: "This content is specified under the 'UI' key in the scenario file."
+        replicas: 1
         clients:
-        - app:80
-    app: 
-        replicas: 3
+            - app:80
+    app:
+        replicas: 1
         servers:
-        - 80
+            - 80
         clients:
-        - db:3306
+            - db:3306
     db:
-        replicas: 3
+        replicas: 1
         servers:
-        - 3306
+            - 3306

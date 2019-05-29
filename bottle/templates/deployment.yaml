@@ -20,12 +20,12 @@ spec:
             ship: {{ $shipname }}
 
     template:
-        terminationGracePeriodSeconds: 30
         metadata:
             labels:
                 scenario: {{ $scenario }}
                 ship: {{ $shipname }}
         spec:
+            terminationGracePeriodSeconds: 10
             shareProcessNamespace: true
             containers:
                 - name: sensor

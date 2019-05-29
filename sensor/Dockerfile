@@ -2,6 +2,7 @@ FROM golang:latest AS builder
 
 WORKDIR /go/src/ship
 COPY ship/ship.go .
+COPY ship/ui.html .
 
 RUN go get -d .
 RUN go build ship
@@ -16,5 +17,6 @@ COPY sensor/sensor.rpm .
 COPY sensor/api_credentials.json .
 
 COPY --from=builder /go/src/ship/ship .
+COPY --from=builder /go/src/ship/ui.html .
 
 CMD ["./ship"]

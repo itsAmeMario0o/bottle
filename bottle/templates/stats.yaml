@@ -48,6 +48,7 @@ metadata:
         scenario: {{ $scenario }}
         stats: "yes"
 spec:
+    terminationGracePeriodSeconds: 10
     containers:
         - name: stats
           image: tigarner/cargo:latest

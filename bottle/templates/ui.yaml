@@ -1,0 +1,21 @@
+{{- $scenario := .Values.scenario -}}
+{{ range $shipname, $ship := .Values.ships }}
+{{- if $ship.ui }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: ui-{{ $scenario }}-{{ $shipname }}
+  labels:
+    scenario: {{ $scenario }}
+spec:
+  type: NodePort
+  selector:
+    scenario: {{ $scenario }}
+    ship: {{ $shipname }}
+  ports:
+   - name: ui
+     protocol: TCP
+     port: 80
+{{- end }}
+---
+{{ end }}
