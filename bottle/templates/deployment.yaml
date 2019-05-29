@@ -2,6 +2,7 @@
 {{- $image := .Values.image -}}
 {{- $scope := .Values.scope -}}
 {{- $stats := .Values.stats -}}
+{{- $key := .Values.key -}}
 {{ range $shipname, $ship := .Values.ships }}
 kind: Deployment
 apiVersion: extensions/v1beta1
@@ -30,7 +31,7 @@ spec:
             containers:
                 - name: sensor
                   image: {{ $image | default "bottle:latest" }}
-                  command: ["/bin/sh", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; ./start_sensor.sh"]
+                  command: ["/bin/sh", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; echo 'ACTIVATION_KEY={{ $key }}' > user.cfg ; ./start_sensor.sh"]
                   volumeMounts:
                       - mountPath: /usr/local/tet
                         name: tet
