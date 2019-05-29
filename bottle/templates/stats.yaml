@@ -1,6 +1,7 @@
 {{- $scenario := .Values.scenario -}}
 {{- $image := .Values.image -}}
 {{- $scope := .Values.scope -}}
+{{- $key := .Values.key -}}
 {{- $shipname := "stats" }}
 {{- if .Values.stats  }}
 

@@ -1,0 +1,122 @@
+scenario: builder
+ships:
+    web:
+        ui:
+            title: "Welcome to the Engineering Build System"
+            body: "This application is highly secure and should only be accessed by engineers and system administrators"
+        replicas: 1
+        clients:
+            - build-broker:443
+    build-broker:
+        replicas: 1
+        servers:
+            - 443
+        clients:
+            - build-region-1:443
+            - build-region-2:443
+            - build-region-3:443
+            - build-region-4:443
+            - build-region-5:443
+            - build-region-6:443
+    build-region-1:
+        replicas: 1
+        servers:
+            - 443
+        clients:
+            - message-queue:5672
+            - postgres-db:3306
+            - oracle-db:3306
+            - dockerhub:443
+            - github:443
+    build-region-2:
+        replicas: 1
+        servers:
+            - 443
+        clients:
+            - message-queue:5672
+            - postgres-db:3306
+            - oracle-db:3306
+            - dockerhub:443
+            - github:443
+    build-region-3:
+        replicas: 1
+        servers:
+            - 443
+        clients:
+            - message-queue:5672
+            - postgres-db:3306
+            - oracle-db:3306
+            - dockerhub:443
+            - github:443
+    build-region-4:
+        replicas: 1
+        servers:
+            - 443
+        clients:
+            - message-queue:5672
+            - postgres-db:3306
+            - oracle-db:3306
+            - dockerhub:443
+            - github:443
+    build-region-5:
+        replicas: 1
+        servers:
+            - 443
+        clients:
+            - message-queue:5672
+            - postgres-db:3306
+            - oracle-db:3306
+            - dockerhub:443
+            - github:443
+    build-region-6:
+        replicas: 1
+        servers:
+            - 443
+        clients:
+            - message-queue:5672
+            - postgres-db:3306
+            - oracle-db:3306
+            - dockerhub:443
+            - github:443
+    message-queue:
+        replicas: 1
+        servers:
+            - 5672
+    dockerhub:
+        replicas: 1
+        servers:
+            - 443
+    github:
+        replicas: 1
+        servers:
+            - 443
+    oracle-db:
+        replicas: 1
+        clients:
+            - oracle-db-onsite:3306
+            - oracle-db-offsite:3306
+        servers:
+            - 3306
+    oracle-db-onsite:
+        replicas: 1
+        servers:
+            - 3306
+    oracle-db-offsite:
+        replicas: 1
+        servers:
+            - 3306
+    postgres-db:
+        replicas: 1
+        clients:
+            - postgres-db-onsite:3306
+            - postgres-db-offsite:3306
+        servers:
+            - 3306
+    postgres-db-onsite:
+        replicas: 1
+        servers:
+            - 3306
+    postgres-db-offsite:
+        replicas: 1
+        servers:
+            - 3306

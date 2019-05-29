@@ -1,0 +1,77 @@
+scenario: payment
+ships:
+    frontend:
+        ui:
+            title: "Welcome to the Payments & Billing App"
+            body: "This application is highly secure and should only be accessed by finance administrators"
+        replicas: 1
+        clients:
+            - card-processing-broker:80
+    card-processing-broker:
+        replicas: 1
+        servers:
+            - 80
+        clients:
+            - card-processing-active:9000
+            - card-processing-standby:9000
+    card-processing-active:
+        replicas: 1
+        servers:
+            - 9000
+        clients:
+            - message-queue:5672
+            - postgres-db:3306
+    card-processing-standby:
+        replicas: 1
+        servers:
+            - 9000
+        clients:
+            - message-queue:5672
+            - postgres-db:3306
+    bill-generator:
+        replicas: 1
+        servers:
+            - 80
+        clients:
+            - message-queue:5672
+            - postgres-db:3306
+    message-queue:
+        replicas: 1
+        servers:
+            - 5672
+    active-directory:
+        replicas: 1
+        servers:
+            - 389
+        clients:
+            - oracle-db:3306
+    oracle-db:
+        replicas: 1
+        clients:
+            - oracle-db-onsite:3306
+            - oracle-db-offsite:3306
+        servers:
+            - 3306
+    oracle-db-onsite:
+        replicas: 1
+        servers:
+            - 3306
+    oracle-db-offsite:
+        replicas: 1
+        servers:
+            - 3306
+    postgres-db:
+        replicas: 1
+        clients:
+            - postgres-db-onsite:3306
+            - postgres-db-offsite:3306
+        servers:
+            - 3306
+    postgres-db-onsite:
+        replicas: 1
+        servers:
+            - 3306
+    postgres-db-offsite:
+        replicas: 1
+        servers:
+            - 3306
