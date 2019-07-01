@@ -49,7 +49,7 @@ metadata:
         scenario: {{ $scenario }}
         stats: "yes"
 spec:
-    terminationGracePeriodSeconds: 10
+    shareProcessNamespace: true
     containers:
         - name: stats
           image: tigarner/cargo:latest
@@ -62,8 +62,19 @@ spec:
           volumeMounts:
             - mountPath: /usr/local/tet
               name: tet
+          securityContext:
+            capabilities:
+                add:
+                    - SYS_PTRACE
+                    - NET_ADMIN
+                    - NET_RAW
         - name: generator
           image: {{ $image | default "bottle:latest" }}
+          command: ["./ship"]
+          lifecycle:
+            preStop:
+                exec:
+                  command: ["/bin/sh","-c","killall -SIGUSR1 ship; sleep 10"]
           env:
             - name: BOTTLE_SCOPE
               value: {{ $scope | default "Default"}}

@@ -4,8 +4,9 @@
 {{- $stats := .Values.stats -}}
 {{- $key := .Values.key -}}
 {{ range $shipname, $ship := .Values.ships }}
+{{- $binary_name := $ship.binary_name | default "ship" -}}
 kind: Deployment
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 
 metadata:
     name: {{ $shipname }}
@@ -26,7 +27,6 @@ spec:
                 scenario: {{ $scenario }}
                 ship: {{ $shipname }}
         spec:
-            terminationGracePeriodSeconds: 10
             shareProcessNamespace: true
             containers:
                 - name: sensor
@@ -55,6 +55,11 @@ spec:
                             - NET_RAW
                 - name: generator
                   image: {{ $image | default "bottle:latest" }}
+                  command: ["/bin/sh", "-c", "mv ship {{ $binary_name }}; ./{{ $binary_name }}"]
+                  lifecycle:
+                    preStop:
+                        exec:
+                          command: ["/bin/sh","-c","killall -SIGUSR1 {{ $binary_name }}; sleep 10"]
                   env:
                     - name: BOTTLE_SCOPE
                       value: {{ $scope | default "Default"}}
