@@ -29,6 +29,7 @@ func main() {
 // Ship runs to generate network traffic
 type Ship struct {
 	uuid        string
+	concount    int
 	config      Config
 	credentials Credentials
 	tetration   *tetration.H4
@@ -38,7 +39,14 @@ type Ship struct {
 type Config struct {
 	Clients []string `yaml:"clients"`
 	Servers []int    `yaml:"servers"`
+	Tags    []Tag    `yaml:"tags"`
 	UI      UI
+}
+
+// Tag holds a key value pair applied as annotations in TA
+type Tag struct {
+	Key   string `yaml:"key"`
+	Value string `yaml:"value"`
 }
 
 // UI is used to create a simple webpage
@@ -187,14 +195,7 @@ func (s *Ship) runUI() {
 	}
 }
 
-func (s *Ship) client(address string) {
-	rand.Seed(time.Now().Unix())
-	host, port, err := net.SplitHostPort(address)
-	if err != nil {
-		log.Fatalf("[client] %s is not a valid remote host", address)
-	}
-
-	connection := 1
+func (s *Ship) shortClient(host string, port string) {
 	for {
 
 		backends, err := net.LookupHost(host)
@@ -205,10 +206,10 @@ func (s *Ship) client(address string) {
 		}
 
 		backend := backends[rand.Intn(len(backends))]
-		address = fmt.Sprintf("%s:%s", backend, port)
+		address := fmt.Sprintf("%s:%s", backend, port)
 		log.Printf("[client] service %s resolved to %d hosts, picked %s", host, len(backends), backend)
 
-		log.Printf("[client] connect %d to %s", connection, address)
+		log.Printf("[client] connect %d to %s", s.concount, address)
 		conn, err := net.DialTimeout("tcp", address, 10*time.Second)
 		if err != nil {
 			log.Printf("[client] connect error, err=%s", err)
@@ -216,7 +217,7 @@ func (s *Ship) client(address string) {
 			time.Sleep(20 * time.Second)
 			continue
 		}
-		connection++
+		s.concount++
 		log.Printf("[client] connected to %s on %s", conn.RemoteAddr(), conn.LocalAddr())
 		s.logComplete(os.Getenv("BOTTLE_SHIP"), host)
 		hostname, err := os.Hostname()
@@ -229,6 +230,55 @@ func (s *Ship) client(address string) {
 		log.Printf("[client] closed connection to %s on %s", conn.RemoteAddr(), conn.LocalAddr())
 		time.Sleep(30 * time.Second)
 	}
+}
+
+func (s *Ship) longClient(host string, port string) {
+	for {
+
+		backends, err := net.LookupHost(host)
+		if err != nil {
+			log.Printf("[long-client] DNS lookup error, err=%s", err)
+			time.Sleep(20 * time.Second)
+			continue
+		}
+
+		backend := backends[rand.Intn(len(backends))]
+		address := fmt.Sprintf("%s:%s", backend, port)
+		log.Printf("[long-client] service %s resolved to %d hosts, picked %s", host, len(backends), backend)
+
+		log.Printf("[long-client] connect %d to %s", s.concount, address)
+		conn, err := net.DialTimeout("tcp", address, 10*time.Second)
+		if err != nil {
+			log.Printf("[long-client] connect error, err=%s", err)
+			s.logFailed(os.Getenv("BOTTLE_SHIP"), host)
+			time.Sleep(20 * time.Second)
+			continue
+		}
+		s.concount++
+		log.Printf("[long-client] connected to %s on %s", conn.RemoteAddr(), conn.LocalAddr())
+		s.logComplete(os.Getenv("BOTTLE_SHIP"), host)
+		hostname, err := os.Hostname()
+		if err != nil {
+			hostname = "unknown"
+		}
+		for {
+			fmt.Fprintf(conn, "long hello from "+hostname+"\r\n")
+			_, err = bufio.NewReader(conn).ReadString('\n')
+			time.Sleep(time.Minute)
+		}
+	}
+}
+
+func (s *Ship) client(address string) {
+	rand.Seed(time.Now().Unix())
+	host, port, err := net.SplitHostPort(address)
+	if err != nil {
+		log.Fatalf("[client] %s is not a valid remote host", address)
+	}
+
+	go s.shortClient(host, port)
+
+	s.longClient(host, port)
 }
 
 func (s *Ship) server(port int) {
@@ -269,14 +319,21 @@ func (s *Ship) handleConnection(conn net.Conn) {
 }
 
 func (s *Ship) registerCleanup() {
-	c := make(chan os.Signal)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	signals := make(chan os.Signal)
+	done := make(chan bool, 1)
+
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGUSR1)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
+
 	go func() {
 		log.Println("sensor cleanup function registered")
-		<-c
+		<-signals
 		s.cleanup()
-		os.Exit(1)
+		done <- true
 	}()
+	<-done
+	log.Println("process will terminate now")
+	os.Exit(0)
 }
 
 func (s *Ship) cleanup() {
@@ -339,6 +396,12 @@ func (s *Ship) annotateOnSetup() {
 	annotation.Attributes["bottle_lifecycle"] = "active"
 	annotation.Attributes["bottle_scenario"] = os.Getenv("BOTTLE_SCENARIO")
 	annotation.Attributes["bottle_ship"] = os.Getenv("BOTTLE_SHIP")
+
+	for _, tag := range s.config.Tags {
+		log.Printf("creating custom tag(%s=%s)", tag.Key, tag.Value)
+		annotation.Attributes[tag.Key] = tag.Value
+	}
+
 	s.annotate(*annotation)
 }
 
@@ -398,7 +461,7 @@ func (s *Ship) setupTetration() {
 		log.Fatalf("failed reading sw agents (check provided API key has correct privilege) error=%v", err)
 	}
 
-	s.registerCleanup()
+	go s.registerCleanup()
 
 	s.annotateOnSetup()
 }
