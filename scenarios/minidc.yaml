@@ -1,0 +1,610 @@
+scenario: minidc
+ships:
+    # app: builder
+    dc-app-builder-web:
+        ui:
+            title: "Welcome to the Engineering Build System"
+            body: "This application is highly secure and should only be accessed by engineers and system administrators"
+        replicas: 1
+        binary_name: build_ui
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: builder
+            - key: tier
+              value: ui
+        clients:
+            - dc-app-builder-build-broker:8080
+            - dc-service-active-directory:389
+    dc-app-builder-build-broker:
+        replicas: 1
+        binary_name: build_broker
+        servers:
+            - 8080
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: builder
+            - key: tier
+              value: build-broker
+        clients:
+            - dc-app-builder-build-region-1:441
+            - dc-app-builder-build-region-2:442
+            - dc-app-builder-build-region-3:443
+            - dc-app-builder-build-region-4:444
+            - dc-app-builder-build-region-5:445
+            - dc-app-builder-build-region-6:446
+    dc-app-builder-build-region-1:
+        replicas: 1
+        binary_name: build_region
+        servers:
+            - 441
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: builder
+            - key: tier
+              value: builder-region-1
+        clients:
+            - dc-service-message-queue:5672
+            - dc-service-postgres-db:3307
+            - dc-db-oracle:3306
+            - dc-service-dockerhub:2000
+            - dc-service-github:1337
+    dc-app-builder-build-region-2:
+        replicas: 1
+        binary_name: build_region
+        servers:
+            - 442
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: builder
+            - key: tier
+              value: builder-region-2
+        clients:
+            - dc-service-message-queue:5672
+            - dc-service-postgres-db:3307
+            - dc-db-oracle:3306
+            - dc-service-dockerhub:2000
+            - dc-service-github:1337
+    dc-app-builder-build-region-3:
+        replicas: 1
+        binary_name: build_region
+        servers:
+            - 443
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: builder
+            - key: tier
+              value: builder-region-3
+        clients:
+            - dc-service-message-queue:5672
+            - dc-service-postgres-db:3307
+            - dc-db-oracle:3306
+            - dc-service-dockerhub:2000
+            - dc-service-github:1337
+    dc-app-builder-build-region-4:
+        replicas: 1
+        binary_name: build_region
+        servers:
+            - 444
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: builder
+            - key: tier
+              value: builder-region-4
+        clients:
+            - dc-service-message-queue:5672
+            - dc-service-postgres-db:3307
+            - dc-db-oracle:3306
+            - dc-service-dockerhub:2000
+            - dc-service-github:1337
+    dc-app-builder-build-region-5:
+        replicas: 1
+        binary_name: build_region
+        servers:
+            - 445
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: builder
+            - key: tier
+              value: builder-region-5
+        clients:
+            - dc-service-message-queue:5672
+            - dc-service-postgres-db:3307
+            - dc-db-oracle:3306
+            - dc-service-dockerhub:2000
+            - dc-service-github:1337
+    dc-app-builder-build-region-6:
+        replicas: 1
+        binary_name: build_region
+        servers:
+            - 446
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: builder
+            - key: tier
+              value: builder-region-6
+        clients:
+            - dc-service-message-queue:5672
+            - dc-service-postgres-db:3307
+            - dc-db-oracle:3306
+            - dc-service-dockerhub:2000
+            - dc-service-github:1337
+
+    # app: payment
+    dc-app-payment-frontend:
+        ui:
+            title: "Welcome to the Payments & Billing App"
+            body: "This application is highly secure and should only be accessed by finance administrators"
+        replicas: 1
+        binary_name: payment_ui
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: payment
+            - key: tier
+              value: frontend
+        clients:
+            - dc-app-payment-card-processing-broker:80
+            - dc-app-payment-bill-generator:4000
+            - dc-service-active-directory:389
+    dc-app-payment-card-processing-broker:
+        replicas: 1
+        binary_name: card_broker
+        servers:
+            - 80
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: payment
+            - key: tier
+              value: card-processing-broker
+        clients:
+            - dc-app-payment-card-processing-active:9000
+            - dc-app-payment-card-processing-standby:9001
+            - dc-service-key-value-store:6379
+    dc-app-payment-card-processing-active:
+        replicas: 1
+        binary_name:  card_processor_java
+        servers:
+            - 9000
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: payment
+            - key: tier
+              value: card-processing-active
+        clients:
+            - dc-service-message-queue:5672
+            - dc-db-postgres:4306
+            - dc-service-key-value-store:6379
+    dc-app-payment-card-processing-standby:
+        replicas: 1
+        binary_name:  card_processor_java
+        servers:
+            - 9001
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: payment
+            - key: tier
+              value: card-processing-standby
+        clients:
+            - dc-service-message-queue:5672
+            - dc-db-postgres:4306
+            - dc-service-key-value-store:6379
+    dc-app-payment-bill-generator:
+        replicas: 1
+        binary_name: bill_generator
+        servers:
+            - 4000
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: app
+            - key: app
+              value: payment
+            - key: tier
+              value: bill-generator
+        clients:
+            - dc-service-message-queue:5672
+            - dc-db-postgres:4306
+            - dc-service-key-value-store:6379
+            - dc-service-smtp:25
+
+    # services
+    dc-service-active-directory:
+        replicas: 1
+        binary_name: active_directory.exe
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: service
+            - key: service
+              value: active-directory
+        servers:
+            - 389
+    dc-service-message-queue:
+        replicas: 1
+        binary_name: rabbitmq
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: service
+            - key: service
+              value: message-queue
+        servers:
+            - 5672
+    dc-service-key-value-store:
+        replicas: 1
+        binary_name: redis
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: service
+            - key: service
+              value: key-value-store
+        servers:
+            - 6379
+    dc-service-smtp:
+        binary_name: smtpd
+        replicas: 1
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: service
+            - key: service
+              value: smtp
+        clients:
+            - dc-service-active-directory:389
+        servers:
+            - 25
+    dc-service-docker-registry:
+        replicas: 1
+        binary_name: docker_registry_daemon
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: service
+            - key: service
+              value: registry
+        clients:
+            - dc-service-active-directory:389
+        servers:
+            - 8008
+    dc-service-github:
+        replicas: 1
+        binary_name: github_daemon
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: service
+            - key: service
+              value: github
+        clients:
+            - dc-service-active-directory:389
+        servers:
+            - 1337
+
+    # databases
+    dc-db-oracle:
+        replicas: 1
+        binary_name: oracled
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: db
+            - key: db
+              value: oracle
+        clients:
+            - dc-db-oracle-active:33010
+            - dc-db-oracle-standby:33011
+        servers:
+            - 3306
+    dc-db-oracle-active:
+        replicas: 1
+        binary_name: oracled
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: db
+            - key: db
+              value: oracle-active
+        clients:
+            - dc-db-oracle-standby:4567
+        servers:
+            - 4567
+            - 33010
+    dc-db-oracle-standby:
+        replicas: 1
+        binary_name: oracled
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: db
+            - key: db
+              value: oracle-standby
+        clients:
+            - dc-db-oracle-active:4567
+        servers:
+            - 4567
+            - 33011
+
+    dc-db-postgres:
+        replicas: 1
+        binary_name: postgres
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: db
+            - key: db
+              value: postgres
+        clients:
+            - dc-db-postgres-active:43010
+            - dc-db-postgres-standby:43011
+        servers:
+            - 4306
+    dc-db-postgres-active:
+        replicas: 1
+        binary_name: postgres
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: db
+            - key: db
+              value: postgres-active
+        servers:
+            - 43010
+    dc-db-postgres-standby:
+        replicas: 1
+        binary_name: postgres
+        tags:
+            - key: location
+              value: dc
+            - key: type
+              value: db
+            - key: db
+              value: postgres-standby
+        servers:
+            - 43011
+
+    # cloud 1 databases
+    cloud-1-db-mongo:
+        replicas: 1
+        binary_name: mongod
+        tags:
+            - key: location
+              value: cloud-1
+            - key: type
+              value: db
+            - key: db
+              value: mongo
+        clients:
+            - cloud-1-db-mongo-active:8081
+            - cloud-1-db-mongo-standby:8082
+        servers:
+            - 8083
+    cloud-1-db-mongo-active:
+        replicas: 1
+        binary_name: mongod
+        tags:
+            - key: location
+              value: cloud-1
+            - key: type
+              value: db
+            - key: db
+              value: mongo-active
+        servers:
+            - 8081
+    cloud-1-db-mongo-standby:
+        replicas: 1
+        binary_name: mongod
+        tags:
+            - key: location
+              value: cloud-1
+            - key: type
+              value: db
+            - key: db
+              value: mongo-standby
+        servers:
+            - 8082
+
+    # cloud 2 databases
+    cloud-2-db-mongo:
+        replicas: 1
+        binary_name: mongod
+        tags:
+            - key: location
+              value: cloud-2
+            - key: type
+              value: db
+            - key: db
+              value: mongo
+        clients:
+            - cloud-2-db-mongo-active:9091
+            - cloud-2-db-mongo-standby:9092
+        servers:
+            - 9093
+    cloud-2-db-mongo-active:
+        replicas: 1
+        binary_name: mongod
+        tags:
+            - key: location
+              value: cloud-2
+            - key: type
+              value: db
+            - key: db
+              value: mongo-active
+        servers:
+            - 9091
+    cloud-2-db-mongo-standby:
+        replicas: 1
+        binary_name: mongod
+        tags:
+            - key: location
+              value: cloud-2
+            - key: type
+              value: db
+            - key: db
+              value: mongo-standby
+        servers:
+            - 9092
+
+    # multi-cloud-app
+    cloud-1-blog-frontend:
+        replicas: 1
+        binary_name: nginx
+        tags:
+            - key: location
+              value: cloud-1
+            - key: type
+              value: app
+            - key: app
+              value: blog
+            - key: tier
+              value: frontend
+        clients:
+            - cloud-1-blog-middleware:1081
+            - dc-service-docker-registry:8008
+        servers:
+            - 1080
+    cloud-1-blog-middleware:
+        replicas: 1
+        binary_name: wordpress.exe
+        tags:
+            - key: location
+              value: cloud-1
+            - key: type
+              value: app
+            - key: app
+              value: blog
+            - key: tier
+              value: middleware
+        clients:
+            - cloud-1-blog-datasync:1082
+            - dc-service-active-directory:389
+        servers:
+            - 1081
+    cloud-1-blog-datasync:
+        replicas: 1
+        binary_name: rsync
+        tags:
+            - key: location
+              value: cloud-1
+            - key: type
+              value: app
+            - key: app
+              value: blog
+            - key: tier
+              value: datasync
+        clients:
+            - cloud-2-blog-datasync:1092
+            - cloud-1-db-mongo:8083
+        servers:
+            - 1082
+
+    cloud-2-blog-frontend:
+        replicas: 1
+        binary_name: nginx
+        tags:
+            - key: location
+              value: cloud-2
+            - key: type
+              value: app
+            - key: app
+              value: blog
+            - key: tier
+              value: frontend
+        clients:
+            - cloud-2-blog-middleware:1091
+            - dc-service-docker-registry:8008
+        servers:
+            - 1090
+    cloud-2-blog-middleware:
+        replicas: 1
+        binary_name: wordpress.exe
+        tags:
+            - key: location
+              value: cloud-2
+            - key: type
+              value: app
+            - key: app
+              value: blog
+            - key: tier
+              value: middleware
+        clients:
+            - cloud-2-blog-datasync:1092
+            - dc-service-active-directory:389
+        servers:
+            - 1091
+    cloud-2-blog-datasync:
+        replicas: 1
+        binary_name: rsync
+        tags:
+            - key: location
+              value: cloud-2
+            - key: type
+              value: app
+            - key: app
+              value: blog
+            - key: tier
+              value: datasync
+        clients:
+            - cloud-1-blog-datasync:1082
+            - cloud-2-db-mongo:9093
+        servers:
+            - 1092
