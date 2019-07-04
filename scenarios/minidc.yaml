@@ -8,8 +8,6 @@ ships:
             image: "http://www.newdesignfile.com/postpic/2011/11/data-center-server-icon_177314.png"
             favicon: "https://cdn3.iconfinder.com/data/icons/fatcow/32/cog.png"
             port: 30101
-        vulnerabilities:
-            - shell
         replicas: 1
         binary_name: build_ui
         tags:
