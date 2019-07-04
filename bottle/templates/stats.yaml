@@ -3,6 +3,7 @@
 {{- $scope := .Values.scope -}}
 {{- $key := .Values.key -}}
 {{- $shipname := "stats" }}
+{{- $statsPort := .Values.statsPort -}}
 {{- if .Values.stats  }}
 
 kind: Service
@@ -38,6 +39,9 @@ spec:
    - name: stats
      protocol: TCP
      port: 8080
+     {{- if $statsPort }}
+     nodePort: {{ int $statsPort }}
+     {{- end}}
 
 ---
 

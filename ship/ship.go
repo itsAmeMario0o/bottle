@@ -38,11 +38,11 @@ type Ship struct {
 
 // Config holds the traffic generator settings
 type Config struct {
-	Clients []string `yaml:"clients"`
-	Servers []int    `yaml:"servers"`
-	Tags    []Tag    `yaml:"tags"`
-	UI      UI
+	Clients         []string `yaml:"clients"`
+	Servers         []int    `yaml:"servers"`
+	Tags            []Tag    `yaml:"tags"`
 	Vulnerabilities []string `yaml:"vulnerabilities"`
+	UI              UI
 }
 
 // Tag holds a key value pair applied as annotations in TA
@@ -55,6 +55,8 @@ type Tag struct {
 type UI struct {
 	Title      string `yaml:"title"`
 	Body       string `yaml:"body"`
+	Image      string `yaml:"image"`
+	Favicon    string `yaml:"favicon"`
 	ClientAddr string
 	Hostname   string
 }

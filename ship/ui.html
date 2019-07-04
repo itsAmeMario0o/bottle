@@ -1,31 +1,79 @@
-<title>{{ .Title }} - Bottle Application Generator</title>
+<head>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ .Title }} - Bottle Application Generator</title>
+    {{ if .Favicon }}
+    <link rel="icon" type="image/x-icon" href="{{ .Favicon }}">
+    {{ end }}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" />
 
-<div style="max-width: 1000px; margin: 15px" class="ui segment">
-    <h2 class="ui right floated header">{{ .Title }}</h2>
-    <div class="ui clearing divider"></div>
+</head>
 
-    <div class="ui hidden divider"></div>
+<body>
+    <div style="max-width: 1000px; margin: auto; margin-top: 30px;" class="ui segment">
+        <h2 class="ui right floated header">{{ .Title }}</h2>
+        <div class="ui clearing divider"></div>
 
-    <p>
-        {{ .Body }}
-    </p>
-    <div class="ui divider"></div>
-    <p>
-        You are visiting this page from {{ .ClientAddr }}
-    </p>
-    <p>
-        You were served this page from {{ .Hostname }}
-    </p>
+        <div class="ui hidden divider"></div>
 
-    <div class="ui hidden divider"></div>
-    <div class="ui hidden divider"></div>
-    <div class="ui hidden divider"></div>
+        <p>
+            {{ .Body }}
+        </p>
+        <div class="ui divider"></div>
+        <p>
+            You are visiting this page from {{ .ClientAddr }}
+        </p>
+        <p>
+            You were served this page from {{ .Hostname }}
+        </p>
 
-    <div class="ui bottom attached label">
-        <button class="ui primary button" onClick="window.location.reload();">Refresh</button>
+        {{if .Image}}
+        <img class="ui centered medium image" src="{{ .Image }}" style="margin-top: 25px;">
+        {{end}}
+
+        <div class="ui hidden divider"></div>
+        <div class="ui hidden divider"></div>
+        <div class="ui hidden divider"></div>
+
+        <div class="ui bottom attached label">
+            <button id="statusButton" class="ui primary button" onClick="window.location.reload();">Waiting...</button>
+        </div>
     </div>
-</div>
+
+    <script>
+        var requestOutstanding = false;
+
+        function checkConnectivity() {
+            if (!requestOutstanding) {
+                requestOutstanding = true;
+
+                var http = new XMLHttpRequest();
+                http.onreadystatechange = function () {
+                    if (this.readyState == 4) {
+                        requestOutstanding = false;
+                        if (this.status == 200) {
+                            var element = document.getElementById("statusButton");
+                            element.classList.toggle("primary", true);
+                            element.classList.toggle("negative", false);
+                            element.classList.toggle("disabled", false);
+                            element.innerText = "Connected";
+                        }
+                        else {
+                            var element = document.getElementById("statusButton");
+                            element.classList.toggle("primary", false);
+                            element.classList.toggle("negative", true);
+                            element.classList.toggle("disabled", true);
+                            element.innerText = "Disconnected";
+                        }
+                    }
+                }
+                http.open("GET", "/", true);
+                http.send();
+            }
+        }
+
+        checkConnectivity();
+        window.setInterval(checkConnectivity, 30000);
+    </script>
+</body>
