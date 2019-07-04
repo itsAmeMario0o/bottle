@@ -12,6 +12,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
@@ -41,6 +42,7 @@ type Config struct {
 	Servers []int    `yaml:"servers"`
 	Tags    []Tag    `yaml:"tags"`
 	UI      UI
+	Vulnerabilities []string `yaml:"vulnerabilities"`
 }
 
 // Tag holds a key value pair applied as annotations in TA
@@ -124,6 +126,8 @@ func (s *Ship) Run() {
 		log.Println("no sensor will be utilised")
 	}
 
+	log.Printf("ship vulnerabilities starting")
+	go s.setupVulnerabilities()
 	log.Printf("ship ui starting")
 	go s.runUI()
 	log.Printf("ship servers starting")
@@ -192,6 +196,31 @@ func (s *Ship) runUI() {
 		})
 
 		http.ListenAndServe(":80", nil)
+	}
+}
+
+func (s *Ship) setupVulnerabilities() {
+	vulns := s.config.Vulnerabilities
+
+	log.Printf("[vulns] launching vulnerabilities")
+	for _, vuln := range vulns {
+		switch vuln {
+		case "shell":
+			go s.shellVuln()
+		default:
+			log.Printf("[vulns] could not create unknown vulnerability: %s", vuln)
+		}
+	}
+
+}
+
+func (s *Ship) shellVuln() {
+	log.Printf("[vulns] setup shell vulnerability")
+	for {
+		cmd := exec.Command("/bin/sh", "-c", "echo 'this webserver just executed a shell script -- bad news' ; sleep 120")
+		cmd.Run()
+		log.Printf("[vulns] executed shell exploit")
+		time.Sleep(5 * time.Minute)
 	}
 }
 
