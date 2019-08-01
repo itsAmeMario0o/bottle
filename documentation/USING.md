@@ -57,7 +57,7 @@ Generate an API key with the following credentials:
 Create the docker image
 
 ```bash
-> git clone https://cto-github.cisco.comcom/tigarner/bottle
+> git clone https://github.com/tetration-exchange/bottle.git
 
 > cd bottle
 

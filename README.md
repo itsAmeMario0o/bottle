@@ -4,7 +4,7 @@
   <img alt="ship in a bottle" src="documentation/bottle.jpg" />
 </p>
 
->self-contained, simple, and scalable application-like traffic simulator
+>self-contained, simple, and scalable application-like traffic generator
 
 Bottle uses Kubernetes to deploy distributed stateful traffic generators ("ships") that behave like real application components.
 
@@ -12,7 +12,9 @@ Bottle allows the user to spin up complex and high scaling scenarios with very l
 
 Bottle integrates with Tetration sensors to monitor and map application traffic and optionally enforce segmentation policy.
 
-[A detailed walkthrough of using Bottle with Tetration scopes, dependency mapping, and enforcement](documentation/USING.md)
+[Read a detailed walk through of using Bottle with Tetration scopes, dependency mapping, and enforcement](documentation/USING.md)
+
+Or, if you're familiar with the technologies involved, follow the Quick Start below.
 
 ## Getting Started
 
@@ -27,13 +29,19 @@ To use bottle, you will need:
 
 ```bash
 # clone the repository
-> git clone https://cto-github.cisco.com/tigarner/bottle
+> git clone https://github.com/tetration-exchange/bottle.git
 > cd bottle
 
-# copy your clusters agent rpm
+# you will need to download the CentOS 7.6 agent from your Tetration cluster
+# assuming it was saved into your "Downloads" folder, copy your clusters agent into the sensor folder
+# it MUST be renamed to "sensor.rpm"
 > cp ~/Downloads/myclustersensor.rpm sensor/sensor.rpm
 
-# copy your clusters api credentials (must have sw agent privilege)
+# you will need to create API credentials on your Tetration cluster
+# the API credentials must include the following capabilities: 
+# - software sensor management
+# - user data upload
+# assuming it was downloaded into your "Downloads" folder, copy your clusters credentials
 > cp ~/Downloads/api_credentials.json sensor/api_credentials.json
 
 # build the image and tag
@@ -174,7 +182,7 @@ The traffic generator pods will be deployed using the image you provide, this im
 The sensor you provide should meet the following criteria:
 
 * Enforcement
-* CentOS 7.5
+* CentOS 7.6
 
 ### Credentials
 
@@ -270,7 +278,50 @@ stats-3tier   NodePort   10.99.196.98   <none>        8080:30533/TCP   23h
 > open http://10.28.121.31:30533
 ```
 
+## UI
+
+You may want to run a faux user interface to demonstrate access to an "application".
+
+The title, description, icon, and image can be customized through a simple configuration, no web development experience necessary.
+
+The interface page will display a dynamically updated "Connected" or "Disconnected" icon depending on back-end reachability (which can be affected by policy enforcement).
+
+![example bottle ui](./documentation/images/app-ui.png)
+
+Each "ship" in the configuration YAML can provide a key `ui` which will trigger the UI to be served on port 80 and exposed via NodePort service in the same way [stats](#stats-and-visualization) are shown.
+
+The `ui` can be configured as such:
+
+```yaml
+ui:
+    title: "Welcome to the Payments & Billing App"
+    body: "This application is highly secure and should only be accessed by finance administrators"
+    image: "https://image-url.png"
+    favicon: "https://icon-url.ico"
+    port: 30102 # optional, choose a static NodePort rather than have a system allocated port
+```
+
+You can have as many UIs as you desire. If you are exposing a UI, _do not also configure a `server` on port 80_ for that application tier.
+
+
 ## Tips
+
+### Static Ports
+
+When configuring the [stats](#stats-and-visualization) or [ui](#ui), you expose an internal Kubernetes service via a `NodePort` object.
+
+By default, `NodePort` randomly allocates a port in the range `30000-32767`.
+
+Each time you deploy a scenario, the `NodePort` will change. This may be undesirable if you want to keep a bookmark to the stats or ui webserver.
+
+When configuring a `ui`, pass the `port` key and specify an integer in the above range. 
+
+When configuring `stats`, pass the command line flag `--set statsPort=30000` with the desired port.
+
+_`NodePorts` must be globally unique. You can not have multiple tiers using the same `NodePort`. 
+
+You may not re-use a static `NodePort` if you have multiple bottle scenarios running at the same time.
+
 
 ### Remote VRF
 
