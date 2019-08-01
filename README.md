@@ -294,11 +294,11 @@ The `ui` can be configured as such:
 
 ```yaml
 ui:
-    title: "Welcome to the Payments & Billing App"
-    body: "This application is highly secure and should only be accessed by finance administrators"
-    image: "https://image-url.png"
-    favicon: "https://icon-url.ico"
-    port: 30102 # optional, choose a static NodePort rather than have a system allocated port
+  title: "Welcome to the Payments & Billing App"
+  body: "This application is highly secure and should only be accessed by finance administrators"
+  image: "https://image-url.png"
+  favicon: "https://icon-url.ico"
+  port: 30102 # optional, choose a static NodePort rather than have a system allocated port
 ```
 
 You can have as many UIs as you desire. If you are exposing a UI, _do not also configure a `server` on port 80_ for that application tier.
@@ -318,7 +318,7 @@ When configuring a `ui`, pass the `port` key and specify an integer in the above
 
 When configuring `stats`, pass the command line flag `--set statsPort=30000` with the desired port.
 
-_`NodePorts` must be globally unique. You can not have multiple tiers using the same `NodePort`. 
+`NodePorts` must be globally unique. You can not have multiple tiers using the same `NodePort`. 
 
 You may not re-use a static `NodePort` if you have multiple bottle scenarios running at the same time.
 
