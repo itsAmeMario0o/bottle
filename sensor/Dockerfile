@@ -15,6 +15,7 @@ RUN touch /.sensor_container
 
 COPY sensor/sensor.rpm .
 COPY sensor/api_credentials.json .
+COPY sensor/launch_ship.sh .
 
 COPY --from=builder /go/src/ship/ship .
 COPY --from=builder /go/src/ship/ui.html .

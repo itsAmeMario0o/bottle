@@ -3,6 +3,7 @@
 {{- $scope := .Values.scope -}}
 {{- $key := .Values.key -}}
 {{- $shipname := "stats" }}
+{{- $binary_name := "stats" }}
 {{- $statsPort := .Values.statsPort -}}
 {{- if .Values.stats  }}
 
@@ -60,25 +61,19 @@ spec:
           volumeMounts:
             - mountPath: /etc/cargo
               name: stats-config
-        - name: sensor
+        - name: ship
           image: {{ $image | default "bottle:latest" }}
-          command: ["/bin/sh", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; echo 'ACTIVATION_KEY={{ $key }}' > user.cfg ; ./start_sensor.sh"]
-          volumeMounts:
-            - mountPath: /usr/local/tet
-              name: tet
+          command: ["/bin/sh", "-c", "./launch_ship.sh {{ $binary_name }}"]
+          lifecycle:
+            preStop:
+                exec:
+                  command: ["/bin/sh","-c","killall -SIGUSR1 {{ $binary_name }}; sleep 10"]
           securityContext:
             capabilities:
                 add:
                     - SYS_PTRACE
                     - NET_ADMIN
                     - NET_RAW
-        - name: generator
-          image: {{ $image | default "bottle:latest" }}
-          command: ["./ship"]
-          lifecycle:
-            preStop:
-                exec:
-                  command: ["/bin/sh","-c","killall -SIGUSR1 ship; sleep 10"]
           env:
             - name: BOTTLE_SCOPE
               value: {{ $scope | default "Default"}}
@@ -89,8 +84,6 @@ spec:
           volumeMounts:
             - mountPath: /etc/ship
               name: config
-            - mountPath: /usr/local/tet
-              name: tet
     volumes:
         - name: stats-config
           configMap:

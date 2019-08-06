@@ -27,39 +27,20 @@ spec:
                 scenario: {{ $scenario }}
                 ship: {{ $shipname }}
         spec:
-            shareProcessNamespace: true
             containers:
-                - name: sensor
+                - name: ship
                   image: {{ $image | default "bottle:latest" }}
-                  command: ["/bin/sh", "-c", "rpm -Uvh --nodeps sensor.rpm ; cd /usr/local/tet ; echo 'ACTIVATION_KEY={{ $key }}' > user.cfg ; ./start_sensor.sh"]
-                  volumeMounts:
-                      - mountPath: /usr/local/tet
-                        name: tet
-                  securityContext:
-                    capabilities:
-                        add:
-                            - SYS_PTRACE
-                            - NET_ADMIN
-                            - NET_RAW
-                - name: enforcer
-                  image: {{ $image | default "bottle:latest" }}
-                  command: ["/bin/sh", "-c", "sleep 120; cd /usr/local/tet ; ./tet-enforcer --logtostderr"]
-                  volumeMounts:
-                      - mountPath: /usr/local/tet
-                        name: tet
-                  securityContext:
-                    capabilities:
-                        add:
-                            - SYS_PTRACE
-                            - NET_ADMIN
-                            - NET_RAW
-                - name: generator
-                  image: {{ $image | default "bottle:latest" }}
-                  command: ["/bin/sh", "-c", "mv ship {{ $binary_name }}; ./{{ $binary_name }}"]
+                  command: ["/bin/sh", "-c", "./launch_ship.sh {{ $binary_name }}"]
                   lifecycle:
                     preStop:
                         exec:
                           command: ["/bin/sh","-c","killall -SIGUSR1 {{ $binary_name }}; sleep 10"]
+                  securityContext:
+                    capabilities:
+                        add:
+                            - SYS_PTRACE
+                            - NET_ADMIN
+                            - NET_RAW
                   env:
                     - name: BOTTLE_SCOPE
                       value: {{ $scope | default "Default"}}
@@ -72,12 +53,6 @@ spec:
                   volumeMounts:
                     - mountPath: /etc/ship
                       name: config
-                    - mountPath: /usr/local/tet
-                      name: tet
-                  securityContext:
-                    capabilities:
-                        add:
-                            - SYS_PTRACE
             volumes:
                 - name: tet
                   emptyDir: {}
