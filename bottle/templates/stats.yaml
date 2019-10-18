@@ -67,7 +67,7 @@ spec:
           lifecycle:
             preStop:
                 exec:
-                  command: ["/bin/sh","-c","killall -SIGUSR1 {{ $binary_name }}; sleep 10"]
+                  command: ["/bin/sh","-c","killall -SIGUSR1 {{ $binary_name }}; sleep 4"]
           securityContext:
             capabilities:
                 add:
@@ -81,6 +81,8 @@ spec:
               value: {{ $scenario }}
             - name: BOTTLE_SHIP
               value: {{ $shipname }}
+            - name: BOTTLE_SENSOR
+              value: {{ $sensor | default "true" }}
           volumeMounts:
             - mountPath: /etc/ship
               name: config

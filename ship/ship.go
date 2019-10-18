@@ -122,7 +122,7 @@ func (s *Ship) Run() {
 		log.Println("stats will be logged to collector")
 	}
 
-	if os.Getenv("BOTTLE_NO_SENSOR") == "true" {
+	if os.Getenv("BOTTLE_SENSOR") == "false" {
 		log.Println("no sensor will be utilised")
 	}
 
@@ -342,7 +342,7 @@ func (s *Ship) cleanup() {
 	log.Println("finishing!")
 	s.annotateOnTearDown()
 	log.Println("removed annotations")
-	if os.Getenv("BOTTLE_NO_SENSOR") != "true" {
+	if os.Getenv("BOTTLE_SENSOR") != "false" {
 		err := s.tetration.Delete("/sensors/"+s.uuid, "")
 		if err != nil && !strings.Contains(err.Error(), "Other Error (204)") {
 			log.Fatalf("failed to unregister sensor, error=#%v", err)
@@ -417,7 +417,7 @@ func (s *Ship) setupTetration() {
 	s.credentials.getCredentials()
 
 	var url string
-	if os.Getenv("BOTTLE_NO_SENSOR") != "true" {
+	if os.Getenv("BOTTLE_SENSOR") != "false" {
 		var uuid string
 
 		for i := 1; i <= 12; i++ {

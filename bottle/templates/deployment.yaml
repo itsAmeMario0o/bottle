@@ -2,6 +2,7 @@
 {{- $image := .Values.image -}}
 {{- $scope := .Values.scope -}}
 {{- $stats := .Values.stats -}}
+{{- $sensor := .Values.sensor -}}
 {{- $key := .Values.key -}}
 {{ range $shipname, $ship := .Values.ships }}
 {{- $binary_name := $ship.binary_name | default "ship" -}}
@@ -50,6 +51,8 @@ spec:
                       value: {{ $shipname }}
                     - name: BOTTLE_STATS
                       value: {{ $stats | default "false" | toString | quote }}
+                    - name: BOTTLE_SENSOR
+                      value: {{ $sensor | default "true" }}
                   volumeMounts:
                     - mountPath: /etc/ship
                       name: config
