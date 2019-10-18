@@ -2,6 +2,7 @@
 {{- $image := .Values.image -}}
 {{- $scope := .Values.scope -}}
 {{- $key := .Values.key -}}
+{{- $sensor := .Values.sensor -}}
 {{- $shipname := "stats" }}
 {{- $binary_name := "stats" }}
 {{- $statsPort := .Values.statsPort -}}
