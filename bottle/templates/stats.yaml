@@ -83,7 +83,7 @@ spec:
             - name: BOTTLE_SHIP
               value: {{ $shipname }}
             - name: BOTTLE_SENSOR
-              value: {{ $sensor | default "true" }}
+              value: {{ $sensor | default "true" | toString | quote }}
           volumeMounts:
             - mountPath: /etc/ship
               name: config
