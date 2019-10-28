@@ -1,0 +1,160 @@
+scenario: datalake
+ships:
+    cash-points:
+        replicas: 10
+        binary_name: cash_point_terminal
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Datalake
+            - key: Tier
+              value: cashpoints
+            - key: Environment
+              value: Prod
+        clients:
+            - datalake-importer:50100
+    datalake-importer:
+        replicas: 5
+        binary_name: importer
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: importer
+            - key: Environment
+              value: Prod
+        servers:
+          - 50100
+        clients:
+          - executor:8301
+    executor:
+        replicas: 1
+        binary_name: importer
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: importer
+            - key: Environment
+              value: Prod
+        servers:
+            - 8301
+        clients:
+            - pipeline-sort:32000
+            - pipeline-dedup:33000
+            - pipeline-merge:34000
+    pipeline-sort:
+        replicas: 1
+        binary_name: importer
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: importer
+            - key: Environment
+              value: Prod
+        servers:
+            - 32000
+        clients:
+            - pipeline-index:454545
+    pipeline-dedup:
+        replicas: 1
+        binary_name: importer
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: importer
+            - key: Environment
+              value: Prod
+        servers:
+            - 33000
+        clients:
+            - pipeline-index:454545
+    pipeline-merge:
+        replicas: 1
+        binary_name: importer
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: importer
+            - key: Environment
+              value: Prod
+        servers:
+            - 34000
+        clients:
+            - pipeline-index:454545
+    pipeline-index:
+        replicas: 2
+        binary_name: importer
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: importer
+            - key: Environment
+              value: Prod
+        servers:
+            - 454545
+        clients:
+            - data-persister:50100
+    data-persister:
+        replicas: 1
+        binary_name: importer
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: importer
+            - key: Environment
+              value: Prod
+        servers:
+            - 50100

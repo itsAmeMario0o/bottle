@@ -1,0 +1,209 @@
+scenario: acme
+ships:
+    campus-user:
+        replicas: 10
+        binary_name: chrome
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Campus
+        clients:
+            - banking-web:443
+    banking-web:
+        replicas: 3
+        binary_name: nginx
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: web
+            - key: Environment
+              value: Prod
+        servers:
+            - 443
+        clients:
+            - banking-app-active:8080
+            - banking-app-standby:8080
+    banking-app-active:
+        replicas: 1
+        binary_name: banking_app
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: app-active
+            - key: Environment
+              value: Prod
+        servers:
+            - 8080
+        clients:
+            - banking-database-lb:3306
+            - banking-statement-generator:9000
+            - service-key-value-store:6379
+            - service-message-queue:5672
+    banking-app-standby:
+        replicas: 1
+        binary_name: banking_app
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: app-standby
+            - key: Environment
+              value: Prod
+        servers:
+            - 8080
+        clients:
+            - banking-database-lb:3306
+            - banking-statement-generator:9000
+            - service-key-value-store:6379
+            - service-message-queue:5672
+    banking-statement-generator:
+        replicas: 1
+        binary_name: statement_generator
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: statement-generator
+            - key: Environment
+              value: Prod
+        servers:
+            - 9000
+    banking-database-lb:
+        replicas: 2
+        binary_name: haproxy
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: database-lb
+            - key: Environment
+              value: Prod
+        servers:
+            - 3306
+        clients:
+            - db-replica-1:5000
+            - db-replica-2:6000
+    db-replica-1:
+        replicas: 1
+        binary_name: mysqld
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: db-replica-1
+            - key: Environment
+              value: Prod
+        servers:
+            - 5000
+            - 10000
+            - 10005
+            - 10010
+            - 10015
+            - 10020
+            - 10025
+            - 10030
+            - 10035
+            - 10040
+            - 10045
+            - 10050
+    db-replica-2:
+        replicas: 1
+        binary_name: mysqld
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Apps
+            - key: App
+              value: Banking
+            - key: Tier
+              value: db-replica-2
+            - key: Environment
+              value: Prod
+        servers:
+            - 6000
+        clients:
+            - db-replica-1:10000
+            - db-replica-1:10005
+            - db-replica-1:10010
+            - db-replica-1:10015
+            - db-replica-1:10020
+            - db-replica-1:10025
+            - db-replica-1:10030
+            - db-replica-1:10035
+            - db-replica-1:10040
+            - db-replica-1:10045
+            - db-replica-1:10050
+    service-key-value-store:
+        replicas: 1
+        binary_name: redis
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Services
+            - key: Environment
+              value: Prod
+            - key: Role
+              value: Key Value Store
+        servers:
+            - 6379
+    service-message-queue:
+        replicas: 1
+        binary_name: rabbitmq
+        tags:
+            - key: Org
+              value: Acme
+            - key: Type
+              value: Cloud
+            - key: Service
+              value: Services
+            - key: Environment
+              value: Prod
+            - key: Role
+              value: Message Queue
+        servers:
+            - 5672
