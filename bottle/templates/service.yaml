@@ -1,5 +1,5 @@
 {{- $scenario := .Values.scenario -}}
-{{ range $shipname, $ship := .Values.ships }}
+{{- range $shipname, $ship := .Values.ships -}}
 {{- if $ship.servers }}
 kind: Service
 apiVersion: v1
@@ -18,6 +18,6 @@ spec:
      protocol: TCP
      port: {{ $service }}
 {{- end }}
-{{- end }}
 ---
-{{ end }}
+{{- end }}
+{{- end -}}

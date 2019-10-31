@@ -7,7 +7,6 @@
 {{- $binary_name := "stats" }}
 {{- $statsPort := .Values.statsPort -}}
 {{- if .Values.stats  }}
-
 kind: Service
 apiVersion: v1
 metadata:
@@ -23,9 +22,7 @@ spec:
    - name: stats
      protocol: TCP
      port: 8080
-
 ---
-
 kind: Service
 apiVersion: v1
 metadata:
@@ -44,9 +41,7 @@ spec:
      {{- if $statsPort }}
      nodePort: {{ int $statsPort }}
      {{- end}}
-
 ---
-
 kind: Pod
 apiVersion: v1
 metadata:
@@ -104,7 +99,6 @@ spec:
           emptyDir: {}
 
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:

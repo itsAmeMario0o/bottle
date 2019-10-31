@@ -8,12 +8,10 @@
 {{- $binary_name := $ship.binary_name | default "ship" -}}
 kind: Deployment
 apiVersion: apps/v1
-
 metadata:
     name: {{ $shipname }}
     labels:
         scenario: {{ $scenario }}
-
 spec:
     replicas: {{ $ship.replicas }}
 
@@ -21,7 +19,6 @@ spec:
         matchLabels:
             scenario: {{ $scenario }}
             ship: {{ $shipname }}
-
     template:
         metadata:
             labels:
