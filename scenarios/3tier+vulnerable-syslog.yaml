@@ -1,0 +1,36 @@
+scenario: 3tier
+ships:
+    web:
+        ui:
+            title: "Welcome to the Example Three Tier App"
+            body: "This content is specified under the 'UI' key in the scenario file."
+        replicas: 1
+        clients:
+            - app:80
+            - syslog:514
+    app:
+        replicas: 1
+        packages:
+            - name: "struts"
+              version: "2.3.31"
+              release: "1"
+        servers:
+            - 80
+        clients:
+            - db:3306
+            - syslog:514
+    db:
+        replicas: 1
+        servers:
+            - 3306
+        clients:
+            - syslog:514
+    syslog:
+        replicas: 1
+        binary_name: rsyslogd
+        servers:
+            - 514
+        packages:
+            - name: "rsyslog"
+              version: "8.1908.0"
+              release: "0"

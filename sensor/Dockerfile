@@ -9,7 +9,7 @@ RUN go build ship
 
 FROM centos:7
 
-RUN yum install -y iptables ipset which redhat-lsb-core openssl net-tools lsof
+RUN yum install -y iptables ipset which redhat-lsb-core openssl net-tools lsof rpm-build
 
 RUN touch /.sensor_container
 
