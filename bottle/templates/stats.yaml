@@ -2,6 +2,7 @@
 {{- $image := .Values.image -}}
 {{- $scope := .Values.scope -}}
 {{- $key := .Values.key -}}
+{{- $proxy := .Values.proxy -}}
 {{- $sensor := .Values.sensor -}}
 {{- $shipname := "stats" }}
 {{- $binary_name := "stats" }}
@@ -59,7 +60,7 @@ spec:
               name: stats-config
         - name: ship
           image: {{ $image | default "bottle:latest" }}
-          command: ["/bin/sh", "-c", "./launch_ship.sh {{ $binary_name }}"]
+          command: ["/bin/sh", "-c", "./launch_ship.sh {{ $binary_name }} {{ $key }} {{ $proxy }}"]
           lifecycle:
             preStop:
                 exec:
@@ -71,6 +72,10 @@ spec:
                     - NET_ADMIN
                     - NET_RAW
           env:
+            {{- if $proxy  }}
+            - name: HTTPS_PROXY
+              value: {{ $proxy }}
+            {{- end }}
             - name: BOTTLE_SCOPE
               value: {{ $scope | default "Default"}}
             - name: BOTTLE_SCENARIO
