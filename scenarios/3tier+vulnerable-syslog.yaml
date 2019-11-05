@@ -32,5 +32,5 @@ ships:
             - 514
         packages:
             - name: "rsyslog"
-              version: "8.1908.0"
-              release: "0"
+              version: "8.24.0"
+              release: "16"
