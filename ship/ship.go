@@ -219,13 +219,37 @@ func (s *Ship) runUI() {
 	}
 }
 
-func (s *Ship) shortClient(host string, port string) {
+func lookupHost(host string) []string {
+	// Repeat forever until we get a positive result for this host
 	for {
-
 		backends, err := net.LookupHost(host)
 		if err != nil {
 			log.Printf("[client] DNS lookup error, err=%s", err)
 			time.Sleep(20 * time.Second)
+		}
+		return backends
+	}
+}
+
+func (s *Ship) shortClient(host string, port string) {
+
+	iteration := 0
+	backends := lookupHost(host)
+
+	for {
+
+		// lookupHost is pretty expensive as it fires off a DNS request
+		// so, to avoid that we cache the available backends for 5 minutes
+		// as each iteration is around ~30 seconds
+		if iteration == 10 {
+			backends = lookupHost(host)
+			iteration = 0
+		}
+
+		if len(backends) == 0 {
+			log.Printf("[client] service %s did not resolve to any hosts", host)
+			time.Sleep(20 * time.Second)
+			iteration = 10
 			continue
 		}
 
@@ -252,6 +276,7 @@ func (s *Ship) shortClient(host string, port string) {
 		_, err = bufio.NewReader(conn).ReadString('\n')
 		conn.Close()
 		log.Printf("[client] closed connection to %s on %s", conn.RemoteAddr(), conn.LocalAddr())
+		iteration++
 		time.Sleep(30 * time.Second)
 	}
 }
