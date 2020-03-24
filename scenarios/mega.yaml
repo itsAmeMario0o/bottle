@@ -1,0 +1,6368 @@
+scenario: mega
+ships:
+  active-directory:
+    clients: []
+    replicas: 1
+    servers:
+    - 389
+    tags:
+    - key: type
+      value: infra
+    - key: name
+      value: active-directory
+    - key: service
+      value: active-directory
+  card-authorizer-app:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - kafka:3544
+    - zeromq:6289
+    - lucene:6379
+    - elastic-search:1727
+    - docker-registry:13623
+    - rabbitmq:26887
+    - redis:7309
+    - hazelcast:23647
+    - sale-signer-load-balancer:25017
+    - card-builder-writer:14705
+    - customer-streamer-batch:15114
+    - sale-logger-generator:17181
+    replicas: 1
+    servers:
+    - 26619
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: card-authorizer
+  card-authorizer-cache:
+    clients:
+    - dns:53
+    - syslog:514
+    - active-directory:389
+    - ntp:123
+    - docker-registry:13623
+    - kafka:3544
+    - zeromq:6289
+    - rabbitmq:26887
+    - redis:7309
+    - lucene:6379
+    - elastic-search:1727
+    - mongodb:3808
+    - microsoftsql:6293
+    - mysql:26430
+    - cassandra:14787
+    - oracle:14860
+    - mariadb:19425
+    - postgres:6991
+    - couchdb:16344
+    - payment-signer-log:19766
+    - payment-signer-executor:5291
+    - sale-builder-log:15719
+    - payment-streamer-web:14040
+    replicas: 1
+    servers:
+    - 7479
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: card-authorizer
+  card-authorizer-generator:
+    clients:
+    - dns:53
+    - ntp:123
+    - syslog:514
+    - redis:7309
+    - docker-registry:13623
+    - oracle:14860
+    - postgres:6991
+    - couchdb:16344
+    - neo4j:22479
+    - microsoftsql:6293
+    - cassandra:14787
+    - hazelcast:23647
+    - mariadb:19425
+    - mongodb:3808
+    - customer-signer-load-balancer:4570
+    - sale-logger-generator:17181
+    - subscriber-logger-load-balancer:17919
+    - customer-streamer-proxy:5092
+    replicas: 1
+    servers:
+    - 29053
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: card-authorizer
+  card-authorizer-processor:
+    clients:
+    - ntp:123
+    - dns:53
+    - redis:7309
+    - elastic-search:1727
+    - docker-registry:13623
+    - lucene:6379
+    - rabbitmq:26887
+    - cassandra:14787
+    - mariadb:19425
+    - couchdb:16344
+    - oracle:14860
+    - card-authorizer-processor:19159
+    - card-signer-load-balancer:3471
+    - sale-builder-log:15719
+    - subscriber-authorizer-reader:6079
+    replicas: 1
+    servers:
+    - 19159
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: card-authorizer
+  card-authorizer-proxy:
+    clients:
+    - syslog:514
+    - ntp:123
+    - active-directory:389
+    - kafka:3544
+    - zeromq:6289
+    - rabbitmq:26887
+    - microsoftsql:6293
+    - mariadb:19425
+    - payment-signer-log:19766
+    - subscriber-logger-cache:27468
+    - subscriber-authorizer-cache:14985
+    - patient-logger-cache:8262
+    replicas: 1
+    servers:
+    - 16186
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: card-authorizer
+  card-builder-cache:
+    clients:
+    - active-directory:389
+    - redis:7309
+    - zeromq:6289
+    - rabbitmq:26887
+    - docker-registry:13623
+    - lucene:6379
+    - logstash:19228
+    - kafka:3544
+    - postgres:6991
+    - oracle:14860
+    - subscriber-logger-web:28979
+    - payment-signer-generator:24092
+    - sale-builder-writer:15602
+    replicas: 1
+    servers:
+    - 10805
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: card-builder
+  card-builder-generator:
+    clients:
+    - syslog:514
+    - ntp:123
+    - dns:53
+    - active-directory:389
+    - logstash:19228
+    - docker-registry:13623
+    - elastic-search:1727
+    - rabbitmq:26887
+    - zeromq:6289
+    - redis:7309
+    - lucene:6379
+    - mysql:26430
+    - hazelcast:23647
+    - oracle:14860
+    - mariadb:19425
+    - postgres:6991
+    - mongodb:3808
+    - microsoftsql:6293
+    - neo4j:22479
+    - couchdb:16344
+    - payment-streamer-generator:21543
+    - sale-builder-load-balancer:22460
+    - subscriber-authorizer-reader:6079
+    - payment-signer-executor:5291
+    replicas: 1
+    servers:
+    - 7778
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: card-builder
+  card-builder-load-balancer:
+    clients:
+    - ntp:123
+    - syslog:514
+    - dns:53
+    - active-directory:389
+    - redis:7309
+    - zeromq:6289
+    - lucene:6379
+    - elastic-search:1727
+    - kafka:3544
+    - rabbitmq:26887
+    - hazelcast:23647
+    - microsoftsql:6293
+    - subscriber-logger-load-balancer:17919
+    - customer-streamer-batch:15114
+    - card-signer-web:10988
+    - card-signer-batch:17040
+    replicas: 1
+    servers:
+    - 24136
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: card-builder
+  card-builder-web:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - zeromq:6289
+    - lucene:6379
+    - elastic-search:1727
+    - kafka:3544
+    - postgres:6991
+    - microsoftsql:6293
+    - couchdb:16344
+    - hazelcast:23647
+    - cassandra:14787
+    - mongodb:3808
+    - oracle:14860
+    - mariadb:19425
+    - patient-processing-load-balancer:21911
+    - stream-processing-load-balancer:3653
+    replicas: 1
+    servers:
+    - 3270
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: card-builder
+  card-builder-writer:
+    clients:
+    - ntp:123
+    - syslog:514
+    - lucene:6379
+    - logstash:19228
+    - docker-registry:13623
+    - rabbitmq:26887
+    - zeromq:6289
+    - redis:7309
+    - oracle:14860
+    - hazelcast:23647
+    - customer-authorizer-cache:9713
+    - card-authorizer-proxy:16186
+    - sale-builder-processor:17030
+    - sale-logger-processor:25230
+    replicas: 1
+    servers:
+    - 14705
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: card-builder
+  card-logger-generator:
+    clients:
+    - ntp:123
+    - dns:53
+    - docker-registry:13623
+    - redis:7309
+    - rabbitmq:26887
+    - lucene:6379
+    - zeromq:6289
+    - kafka:3544
+    - logstash:19228
+    - microsoftsql:6293
+    - card-processing-executor:2840
+    - stream-processing-reader:23304
+    - sale-signer-load-balancer:25017
+    replicas: 1
+    servers:
+    - 20455
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: card-logger
+  card-logger-reader:
+    clients:
+    - dns:53
+    - active-directory:389
+    - syslog:514
+    - ntp:123
+    - zeromq:6289
+    - kafka:3544
+    - docker-registry:13623
+    - elastic-search:1727
+    - redis:7309
+    - lucene:6379
+    - rabbitmq:26887
+    - logstash:19228
+    - mariadb:19425
+    - postgres:6991
+    - mongodb:3808
+    - oracle:14860
+    - cassandra:14787
+    - microsoftsql:6293
+    - hazelcast:23647
+    - couchdb:16344
+    - neo4j:22479
+    - sale-logger-processor:25230
+    - sale-processing-proxy:17649
+    replicas: 1
+    servers:
+    - 8320
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: card-logger
+  card-logger-writer:
+    clients:
+    - dns:53
+    - active-directory:389
+    - zeromq:6289
+    - lucene:6379
+    - rabbitmq:26887
+    - mariadb:19425
+    - mysql:26430
+    - subscriber-authorizer-web:7979
+    - payment-authorizer-generator:18847
+    replicas: 1
+    servers:
+    - 17562
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: card-logger
+  card-processing-batch:
+    clients:
+    - syslog:514
+    - ntp:123
+    - dns:53
+    - active-directory:389
+    - lucene:6379
+    - oracle:14860
+    - hazelcast:23647
+    - couchdb:16344
+    - stream-streamer-proxy:8970
+    - payment-builder-batch:16425
+    replicas: 1
+    servers:
+    - 3044
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: card-processing
+  card-processing-executor:
+    clients:
+    - syslog:514
+    - dns:53
+    - ntp:123
+    - kafka:3544
+    - docker-registry:13623
+    - cassandra:14787
+    - postgres:6991
+    - mysql:26430
+    - sale-processing-cache:13448
+    - subscriber-logger-generator:26684
+    replicas: 1
+    servers:
+    - 2840
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: card-processing
+  card-processing-log:
+    clients:
+    - syslog:514
+    - lucene:6379
+    - docker-registry:13623
+    - elastic-search:1727
+    - rabbitmq:26887
+    - redis:7309
+    - logstash:19228
+    - mysql:26430
+    - mariadb:19425
+    - postgres:6991
+    - mongodb:3808
+    - customer-streamer-load-balancer:2449
+    - stream-streamer-generator:16680
+    - sale-logger-reader:24727
+    - customer-builder-cache:2190
+    replicas: 1
+    servers:
+    - 14078
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: card-processing
+  card-processing-reader:
+    clients:
+    - syslog:514
+    - zeromq:6289
+    - docker-registry:13623
+    - kafka:3544
+    - rabbitmq:26887
+    - lucene:6379
+    - elastic-search:1727
+    - redis:7309
+    - postgres:6991
+    - mariadb:19425
+    - card-signer-processor:24476
+    - payment-streamer-batch:26773
+    - patient-authorizer-executor:9876
+    replicas: 1
+    servers:
+    - 19908
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: card-processing
+  card-processing-writer:
+    clients:
+    - syslog:514
+    - active-directory:389
+    - ntp:123
+    - dns:53
+    - docker-registry:13623
+    - rabbitmq:26887
+    - zeromq:6289
+    - redis:7309
+    - lucene:6379
+    - mysql:26430
+    - couchdb:16344
+    - microsoftsql:6293
+    - mariadb:19425
+    - oracle:14860
+    - postgres:6991
+    - hazelcast:23647
+    - cassandra:14787
+    - mongodb:3808
+    - neo4j:22479
+    - payment-builder-executor:18368
+    - customer-signer-load-balancer:4570
+    - sale-builder-reader:4763
+    replicas: 1
+    servers:
+    - 28643
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: card-processing
+  card-signer-app:
+    clients:
+    - ntp:123
+    - logstash:19228
+    - zeromq:6289
+    - oracle:14860
+    - couchdb:16344
+    - postgres:6991
+    - mongodb:3808
+    - hazelcast:23647
+    - neo4j:22479
+    - cassandra:14787
+    - mysql:26430
+    - subscriber-logger-web:28979
+    - customer-streamer-executor:12415
+    - sale-signer-reader:27865
+    - stream-logger-app:8682
+    replicas: 1
+    servers:
+    - 27772
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: card-signer
+  card-signer-batch:
+    clients:
+    - dns:53
+    - syslog:514
+    - logstash:19228
+    - rabbitmq:26887
+    - hazelcast:23647
+    - postgres:6991
+    - patient-streamer-load-balancer:3783
+    - sale-authorizer-app:15118
+    - payment-logger-batch:26621
+    - subscriber-processing-writer:8433
+    replicas: 1
+    servers:
+    - 17040
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: card-signer
+  card-signer-cache:
+    clients:
+    - active-directory:389
+    - elastic-search:1727
+    - kafka:3544
+    - lucene:6379
+    - redis:7309
+    - zeromq:6289
+    - logstash:19228
+    - hazelcast:23647
+    - neo4j:22479
+    - oracle:14860
+    - customer-streamer-generator:23298
+    - subscriber-processing-reader:9642
+    replicas: 1
+    servers:
+    - 5761
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: card-signer
+  card-signer-executor:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - syslog:514
+    - docker-registry:13623
+    - kafka:3544
+    - couchdb:16344
+    - cassandra:14787
+    - neo4j:22479
+    - mariadb:19425
+    - subscriber-logger-processor:13379
+    - payment-builder-generator:27840
+    - card-authorizer-cache:7479
+    replicas: 1
+    servers:
+    - 21760
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: card-signer
+  card-signer-generator:
+    clients:
+    - syslog:514
+    - ntp:123
+    - kafka:3544
+    - elastic-search:1727
+    - docker-registry:13623
+    - rabbitmq:26887
+    - logstash:19228
+    - redis:7309
+    - postgres:6991
+    - oracle:14860
+    - cassandra:14787
+    - couchdb:16344
+    - hazelcast:23647
+    - microsoftsql:6293
+    - neo4j:22479
+    - customer-authorizer-load-balancer:2362
+    - stream-logger-log:3880
+    - subscriber-processing-app:18562
+    - subscriber-logger-proxy:18029
+    replicas: 1
+    servers:
+    - 3519
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: card-signer
+  card-signer-load-balancer:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - syslog:514
+    - dns:53
+    - kafka:3544
+    - zeromq:6289
+    - elastic-search:1727
+    - logstash:19228
+    - redis:7309
+    - docker-registry:13623
+    - rabbitmq:26887
+    - couchdb:16344
+    - neo4j:22479
+    - hazelcast:23647
+    - microsoftsql:6293
+    - mongodb:3808
+    - cassandra:14787
+    - postgres:6991
+    - mysql:26430
+    - payment-signer-load-balancer:25469
+    - stream-logger-writer:21752
+    - subscriber-streamer-batch:22946
+    replicas: 1
+    servers:
+    - 3471
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: card-signer
+  card-signer-log:
+    clients:
+    - syslog:514
+    - active-directory:389
+    - dns:53
+    - ntp:123
+    - docker-registry:13623
+    - lucene:6379
+    - cassandra:14787
+    - mysql:26430
+    - microsoftsql:6293
+    - oracle:14860
+    - hazelcast:23647
+    - mongodb:3808
+    - postgres:6991
+    - mariadb:19425
+    - neo4j:22479
+    - subscriber-processing-writer:8433
+    - payment-signer-load-balancer:25469
+    - card-signer-log:16078
+    - payment-builder-batch:16425
+    replicas: 1
+    servers:
+    - 16078
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: card-signer
+  card-signer-processor:
+    clients:
+    - syslog:514
+    - zeromq:6289
+    - docker-registry:13623
+    - elastic-search:1727
+    - logstash:19228
+    - lucene:6379
+    - kafka:3544
+    - rabbitmq:26887
+    - couchdb:16344
+    - neo4j:22479
+    - postgres:6991
+    - payment-signer-executor:5291
+    - payment-streamer-generator:21543
+    - card-builder-load-balancer:24136
+    replicas: 1
+    servers:
+    - 24476
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: card-signer
+  card-signer-proxy:
+    clients:
+    - active-directory:389
+    - dns:53
+    - ntp:123
+    - elastic-search:1727
+    - docker-registry:13623
+    - redis:7309
+    - logstash:19228
+    - rabbitmq:26887
+    - lucene:6379
+    - kafka:3544
+    - zeromq:6289
+    - neo4j:22479
+    - postgres:6991
+    - mariadb:19425
+    - couchdb:16344
+    - cassandra:14787
+    - mongodb:3808
+    - hazelcast:23647
+    - mysql:26430
+    - microsoftsql:6293
+    - oracle:14860
+    - payment-streamer-batch:26773
+    - payment-streamer-processor:9435
+    - payment-streamer-reader:15300
+    - stream-logger-app:8682
+    replicas: 1
+    servers:
+    - 4769
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: card-signer
+  card-signer-reader:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - dns:53
+    - syslog:514
+    - logstash:19228
+    - docker-registry:13623
+    - oracle:14860
+    - mariadb:19425
+    - postgres:6991
+    - mongodb:3808
+    - mysql:26430
+    - payment-builder-web:27080
+    - subscriber-logger-load-balancer:17919
+    - subscriber-authorizer-writer:14206
+    - payment-processing-batch:8419
+    replicas: 1
+    servers:
+    - 12132
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: card-signer
+  card-signer-web:
+    clients:
+    - ntp:123
+    - dns:53
+    - active-directory:389
+    - syslog:514
+    - redis:7309
+    - postgres:6991
+    - mysql:26430
+    - oracle:14860
+    - couchdb:16344
+    - microsoftsql:6293
+    - stream-logger-writer:21752
+    - sale-builder-proxy:7979
+    replicas: 1
+    servers:
+    - 10988
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: card-signer
+  card-signer-writer:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - kafka:3544
+    - redis:7309
+    - elastic-search:1727
+    - rabbitmq:26887
+    - zeromq:6289
+    - logstash:19228
+    - docker-registry:13623
+    - mariadb:19425
+    - postgres:6991
+    - microsoftsql:6293
+    - oracle:14860
+    - cassandra:14787
+    - neo4j:22479
+    - mysql:26430
+    - payment-signer-load-balancer:25469
+    - stream-processing-writer:2555
+    replicas: 1
+    servers:
+    - 7347
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: card-signer
+  card-streamer-log:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - dns:53
+    - syslog:514
+    - kafka:3544
+    - logstash:19228
+    - redis:7309
+    - elastic-search:1727
+    - zeromq:6289
+    - microsoftsql:6293
+    - mysql:26430
+    - mariadb:19425
+    - hazelcast:23647
+    - cassandra:14787
+    - mongodb:3808
+    - oracle:14860
+    - neo4j:22479
+    - card-signer-proxy:4769
+    - subscriber-logger-batch:17507
+    - sale-builder-log:15719
+    - customer-processing-log:10615
+    replicas: 1
+    servers:
+    - 17414
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: card-streamer
+  cassandra:
+    clients:
+    - dns:53
+    - active-directory:389
+    - ntp:123
+    replicas: 1
+    servers:
+    - 14787
+    tags:
+    - key: type
+      value: db
+    - key: name
+      value: cassandra
+    - key: service
+      value: cassandra
+  couchdb:
+    clients:
+    - syslog:514
+    replicas: 1
+    servers:
+    - 16344
+    tags:
+    - key: type
+      value: db
+    - key: name
+      value: couchdb
+    - key: service
+      value: couchdb
+  customer-authorizer-cache:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - elastic-search:1727
+    - cassandra:14787
+    - mariadb:19425
+    - mysql:26430
+    - hazelcast:23647
+    - neo4j:22479
+    - patient-streamer-web:20337
+    - subscriber-authorizer-batch:19299
+    - sale-logger-reader:24727
+    - subscriber-streamer-load-balancer:24063
+    replicas: 1
+    servers:
+    - 9713
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: customer-authorizer
+  customer-authorizer-load-balancer:
+    clients:
+    - dns:53
+    - logstash:19228
+    - redis:7309
+    - docker-registry:13623
+    - elastic-search:1727
+    - couchdb:16344
+    - mysql:26430
+    - hazelcast:23647
+    - cassandra:14787
+    - neo4j:22479
+    - mariadb:19425
+    - mongodb:3808
+    - oracle:14860
+    - microsoftsql:6293
+    - postgres:6991
+    - subscriber-streamer-cache:23632
+    - stream-builder-writer:19558
+    replicas: 1
+    servers:
+    - 2362
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: customer-authorizer
+  customer-builder-cache:
+    clients:
+    - active-directory:389
+    - kafka:3544
+    - rabbitmq:26887
+    - docker-registry:13623
+    - elastic-search:1727
+    - neo4j:22479
+    - mariadb:19425
+    - microsoftsql:6293
+    - customer-signer-proxy:24492
+    - subscriber-streamer-app:18910
+    replicas: 1
+    servers:
+    - 2190
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: customer-builder
+  customer-logger-cache:
+    clients:
+    - syslog:514
+    - ntp:123
+    - active-directory:389
+    - dns:53
+    - lucene:6379
+    - zeromq:6289
+    - rabbitmq:26887
+    - elastic-search:1727
+    - kafka:3544
+    - docker-registry:13623
+    - logstash:19228
+    - redis:7309
+    - microsoftsql:6293
+    - subscriber-authorizer-batch:19299
+    - patient-streamer-log:12051
+    - patient-authorizer-executor:9876
+    replicas: 1
+    servers:
+    - 14661
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: customer-logger
+  customer-logger-writer:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - redis:7309
+    - cassandra:14787
+    - mysql:26430
+    - mongodb:3808
+    - postgres:6991
+    - microsoftsql:6293
+    - mariadb:19425
+    - sale-authorizer-app:15118
+    - sale-logger-log:4650
+    - customer-signer-log:19147
+    - stream-logger-app:8682
+    replicas: 1
+    servers:
+    - 23779
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: customer-logger
+  customer-processing-log:
+    clients:
+    - syslog:514
+    - rabbitmq:26887
+    - kafka:3544
+    - redis:7309
+    - elastic-search:1727
+    - lucene:6379
+    - zeromq:6289
+    - docker-registry:13623
+    - logstash:19228
+    - mariadb:19425
+    - microsoftsql:6293
+    - couchdb:16344
+    - oracle:14860
+    - postgres:6991
+    - hazelcast:23647
+    - mysql:26430
+    - neo4j:22479
+    - cassandra:14787
+    - mongodb:3808
+    - patient-signer-cache:8048
+    - patient-streamer-load-balancer:3783
+    replicas: 1
+    servers:
+    - 10615
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: customer-processing
+  customer-processing-processor:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - dns:53
+    - syslog:514
+    - zeromq:6289
+    - logstash:19228
+    - rabbitmq:26887
+    - oracle:14860
+    - mongodb:3808
+    - mysql:26430
+    - neo4j:22479
+    - stream-streamer-generator:16680
+    - customer-builder-cache:2190
+    replicas: 1
+    servers:
+    - 3074
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: customer-processing
+  customer-processing-writer:
+    clients:
+    - ntp:123
+    - syslog:514
+    - dns:53
+    - active-directory:389
+    - zeromq:6289
+    - lucene:6379
+    - docker-registry:13623
+    - redis:7309
+    - logstash:19228
+    - elastic-search:1727
+    - mongodb:3808
+    - cassandra:14787
+    - oracle:14860
+    - microsoftsql:6293
+    - customer-processing-writer:12299
+    - card-logger-generator:20455
+    replicas: 1
+    servers:
+    - 12299
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: customer-processing
+  customer-signer-cache:
+    clients:
+    - syslog:514
+    - docker-registry:13623
+    - logstash:19228
+    - lucene:6379
+    - rabbitmq:26887
+    - zeromq:6289
+    - redis:7309
+    - postgres:6991
+    - neo4j:22479
+    - microsoftsql:6293
+    - oracle:14860
+    - hazelcast:23647
+    - mariadb:19425
+    - mongodb:3808
+    - customer-streamer-cache:13343
+    - sale-logger-generator:17181
+    - customer-streamer-batch:15114
+    replicas: 1
+    servers:
+    - 7405
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: customer-signer
+  customer-signer-executor:
+    clients:
+    - syslog:514
+    - ntp:123
+    - active-directory:389
+    - kafka:3544
+    - oracle:14860
+    - neo4j:22479
+    - cassandra:14787
+    - mysql:26430
+    - microsoftsql:6293
+    - patient-signer-cache:8048
+    - subscriber-authorizer-batch:19299
+    - sale-authorizer-batch:4769
+    - customer-signer-reader:29203
+    replicas: 1
+    servers:
+    - 19757
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: customer-signer
+  customer-signer-generator:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - ntp:123
+    - logstash:19228
+    - zeromq:6289
+    - oracle:14860
+    - cassandra:14787
+    - couchdb:16344
+    - mariadb:19425
+    - mysql:26430
+    - mongodb:3808
+    - microsoftsql:6293
+    - hazelcast:23647
+    - neo4j:22479
+    - postgres:6991
+    - customer-processing-log:10615
+    - payment-signer-generator:24092
+    replicas: 1
+    servers:
+    - 23415
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: customer-signer
+  customer-signer-load-balancer:
+    clients:
+    - ntp:123
+    - dns:53
+    - syslog:514
+    - docker-registry:13623
+    - kafka:3544
+    - redis:7309
+    - zeromq:6289
+    - couchdb:16344
+    - cassandra:14787
+    - card-authorizer-app:26619
+    - patient-builder-log:28511
+    - patient-streamer-executor:6890
+    replicas: 1
+    servers:
+    - 4570
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: customer-signer
+  customer-signer-log:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - kafka:3544
+    - lucene:6379
+    - docker-registry:13623
+    - rabbitmq:26887
+    - elastic-search:1727
+    - oracle:14860
+    - cassandra:14787
+    - microsoftsql:6293
+    - neo4j:22479
+    - mariadb:19425
+    - hazelcast:23647
+    - couchdb:16344
+    - postgres:6991
+    - mysql:26430
+    - payment-authorizer-cache:27719
+    - sale-builder-generator:16646
+    - card-logger-generator:20455
+    replicas: 1
+    servers:
+    - 19147
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: customer-signer
+  customer-signer-processor:
+    clients:
+    - dns:53
+    - docker-registry:13623
+    - rabbitmq:26887
+    - zeromq:6289
+    - logstash:19228
+    - kafka:3544
+    - redis:7309
+    - lucene:6379
+    - elastic-search:1727
+    - hazelcast:23647
+    - mysql:26430
+    - oracle:14860
+    - mongodb:3808
+    - patient-signer-app:25575
+    - card-builder-writer:14705
+    - payment-signer-load-balancer:25469
+    - stream-processing-writer:2555
+    replicas: 1
+    servers:
+    - 13522
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: customer-signer
+  customer-signer-proxy:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - syslog:514
+    - dns:53
+    - logstash:19228
+    - rabbitmq:26887
+    - elastic-search:1727
+    - docker-registry:13623
+    - lucene:6379
+    - kafka:3544
+    - microsoftsql:6293
+    - postgres:6991
+    - sale-logger-processor:25230
+    - sale-logger-log:4650
+    replicas: 1
+    servers:
+    - 24492
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: customer-signer
+  customer-signer-reader:
+    clients:
+    - dns:53
+    - ntp:123
+    - syslog:514
+    - docker-registry:13623
+    - zeromq:6289
+    - elastic-search:1727
+    - logstash:19228
+    - redis:7309
+    - lucene:6379
+    - rabbitmq:26887
+    - kafka:3544
+    - microsoftsql:6293
+    - postgres:6991
+    - sale-signer-load-balancer:25017
+    - customer-signer-executor:19757
+    - sale-streamer-executor:7631
+    replicas: 1
+    servers:
+    - 29203
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: customer-signer
+  customer-signer-web:
+    clients:
+    - dns:53
+    - redis:7309
+    - couchdb:16344
+    - mariadb:19425
+    - oracle:14860
+    - postgres:6991
+    - cassandra:14787
+    - mysql:26430
+    - card-processing-executor:2840
+    - sale-builder-load-balancer:22460
+    - sale-logger-processor:25230
+    - sale-logger-cache:27818
+    replicas: 1
+    servers:
+    - 16208
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: customer-signer
+  customer-streamer-batch:
+    clients:
+    - syslog:514
+    - dns:53
+    - ntp:123
+    - redis:7309
+    - docker-registry:13623
+    - lucene:6379
+    - logstash:19228
+    - kafka:3544
+    - elastic-search:1727
+    - zeromq:6289
+    - oracle:14860
+    - neo4j:22479
+    - patient-logger-reader:21647
+    - card-signer-cache:5761
+    - card-builder-load-balancer:24136
+    replicas: 1
+    servers:
+    - 15114
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: customer-streamer
+  customer-streamer-cache:
+    clients:
+    - ntp:123
+    - kafka:3544
+    - rabbitmq:26887
+    - zeromq:6289
+    - elastic-search:1727
+    - docker-registry:13623
+    - cassandra:14787
+    - mongodb:3808
+    - neo4j:22479
+    - hazelcast:23647
+    - couchdb:16344
+    - microsoftsql:6293
+    - mysql:26430
+    - postgres:6991
+    - mariadb:19425
+    - payment-builder-writer:11330
+    - card-builder-generator:7778
+    - patient-logger-reader:21647
+    - sale-streamer-batch:12489
+    replicas: 1
+    servers:
+    - 13343
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: customer-streamer
+  customer-streamer-executor:
+    clients:
+    - syslog:514
+    - elastic-search:1727
+    - rabbitmq:26887
+    - docker-registry:13623
+    - zeromq:6289
+    - kafka:3544
+    - mongodb:3808
+    - postgres:6991
+    - mysql:26430
+    - subscriber-logger-cache:27468
+    - sale-builder-load-balancer:22460
+    replicas: 1
+    servers:
+    - 12415
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: customer-streamer
+  customer-streamer-generator:
+    clients:
+    - ntp:123
+    - elastic-search:1727
+    - kafka:3544
+    - lucene:6379
+    - logstash:19228
+    - zeromq:6289
+    - docker-registry:13623
+    - redis:7309
+    - rabbitmq:26887
+    - cassandra:14787
+    - hazelcast:23647
+    - postgres:6991
+    - neo4j:22479
+    - mariadb:19425
+    - mongodb:3808
+    - oracle:14860
+    - microsoftsql:6293
+    - couchdb:16344
+    - sale-streamer-web:25832
+    - subscriber-streamer-executor:28033
+    - payment-builder-web:27080
+    - stream-authorizer-log:26615
+    replicas: 1
+    servers:
+    - 23298
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: customer-streamer
+  customer-streamer-load-balancer:
+    clients:
+    - ntp:123
+    - syslog:514
+    - logstash:19228
+    - kafka:3544
+    - lucene:6379
+    - rabbitmq:26887
+    - elastic-search:1727
+    - mysql:26430
+    - mariadb:19425
+    - postgres:6991
+    - cassandra:14787
+    - couchdb:16344
+    - mongodb:3808
+    - hazelcast:23647
+    - stream-signer-app:17241
+    - payment-processing-executor:19696
+    replicas: 1
+    servers:
+    - 2449
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: customer-streamer
+  customer-streamer-proxy:
+    clients:
+    - syslog:514
+    - ntp:123
+    - dns:53
+    - zeromq:6289
+    - redis:7309
+    - neo4j:22479
+    - oracle:14860
+    - card-signer-load-balancer:3471
+    - sale-processing-web:22454
+    replicas: 1
+    servers:
+    - 5092
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: customer-streamer
+  customer-streamer-reader:
+    clients:
+    - ntp:123
+    - syslog:514
+    - active-directory:389
+    - dns:53
+    - lucene:6379
+    - redis:7309
+    - docker-registry:13623
+    - elastic-search:1727
+    - couchdb:16344
+    - mariadb:19425
+    - cassandra:14787
+    - neo4j:22479
+    - oracle:14860
+    - hazelcast:23647
+    - mysql:26430
+    - microsoftsql:6293
+    - postgres:6991
+    - mongodb:3808
+    - sale-processing-proxy:17649
+    - sale-processing-generator:23298
+    replicas: 1
+    servers:
+    - 29983
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: customer-streamer
+  dns:
+    clients: []
+    replicas: 1
+    servers:
+    - 53
+    tags:
+    - key: type
+      value: infra
+    - key: name
+      value: dns
+    - key: service
+      value: dns
+  docker-registry:
+    clients:
+    - ntp:123
+    - dns:53
+    replicas: 1
+    servers:
+    - 13623
+    tags:
+    - key: type
+      value: service
+    - key: name
+      value: docker-registry
+    - key: service
+      value: docker-registry
+  elastic-search:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - ntp:123
+    replicas: 1
+    servers:
+    - 1727
+    tags:
+    - key: type
+      value: service
+    - key: name
+      value: elastic-search
+    - key: service
+      value: elastic-search
+  hazelcast:
+    clients:
+    - active-directory:389
+    replicas: 1
+    servers:
+    - 23647
+    tags:
+    - key: type
+      value: db
+    - key: name
+      value: hazelcast
+    - key: service
+      value: hazelcast
+  kafka:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - dns:53
+    replicas: 1
+    servers:
+    - 3544
+    tags:
+    - key: type
+      value: service
+    - key: name
+      value: kafka
+    - key: service
+      value: kafka
+  logstash:
+    clients:
+    - active-directory:389
+    replicas: 1
+    servers:
+    - 19228
+    tags:
+    - key: type
+      value: service
+    - key: name
+      value: logstash
+    - key: service
+      value: logstash
+  lucene:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - ntp:123
+    - dns:53
+    replicas: 1
+    servers:
+    - 6379
+    tags:
+    - key: type
+      value: service
+    - key: name
+      value: lucene
+    - key: service
+      value: lucene
+  mariadb:
+    clients:
+    - syslog:514
+    - active-directory:389
+    - ntp:123
+    - dns:53
+    replicas: 1
+    servers:
+    - 19425
+    tags:
+    - key: type
+      value: db
+    - key: name
+      value: mariadb
+    - key: service
+      value: mariadb
+  microsoftsql:
+    clients:
+    - syslog:514
+    - active-directory:389
+    replicas: 1
+    servers:
+    - 6293
+    tags:
+    - key: type
+      value: db
+    - key: name
+      value: microsoftsql
+    - key: service
+      value: microsoftsql
+  mongodb:
+    clients:
+    - ntp:123
+    - active-directory:389
+    replicas: 1
+    servers:
+    - 3808
+    tags:
+    - key: type
+      value: db
+    - key: name
+      value: mongodb
+    - key: service
+      value: mongodb
+  mysql:
+    clients:
+    - dns:53
+    - active-directory:389
+    - ntp:123
+    - syslog:514
+    replicas: 1
+    servers:
+    - 26430
+    tags:
+    - key: type
+      value: db
+    - key: name
+      value: mysql
+    - key: service
+      value: mysql
+  neo4j:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - ntp:123
+    replicas: 1
+    servers:
+    - 22479
+    tags:
+    - key: type
+      value: db
+    - key: name
+      value: neo4j
+    - key: service
+      value: neo4j
+  ntp:
+    clients: []
+    replicas: 1
+    servers:
+    - 123
+    tags:
+    - key: type
+      value: infra
+    - key: name
+      value: ntp
+    - key: service
+      value: ntp
+  oracle:
+    clients:
+    - dns:53
+    - active-directory:389
+    - syslog:514
+    replicas: 1
+    servers:
+    - 14860
+    tags:
+    - key: type
+      value: db
+    - key: name
+      value: oracle
+    - key: service
+      value: oracle
+  patient-authorizer-executor:
+    clients:
+    - syslog:514
+    - lucene:6379
+    - kafka:3544
+    - rabbitmq:26887
+    - docker-registry:13623
+    - logstash:19228
+    - mongodb:3808
+    - cassandra:14787
+    - oracle:14860
+    - mysql:26430
+    - postgres:6991
+    - couchdb:16344
+    - subscriber-logger-processor:13379
+    - subscriber-builder-log:16114
+    - customer-processing-log:10615
+    - sale-builder-reader:4763
+    replicas: 1
+    servers:
+    - 9876
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: patient-authorizer
+  patient-builder-cache:
+    clients:
+    - syslog:514
+    - dns:53
+    - active-directory:389
+    - redis:7309
+    - docker-registry:13623
+    - lucene:6379
+    - logstash:19228
+    - elastic-search:1727
+    - kafka:3544
+    - zeromq:6289
+    - postgres:6991
+    - subscriber-processing-load-balancer:18756
+    - customer-signer-proxy:24492
+    replicas: 1
+    servers:
+    - 13758
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: patient-builder
+  patient-builder-generator:
+    clients:
+    - active-directory:389
+    - rabbitmq:26887
+    - lucene:6379
+    - zeromq:6289
+    - redis:7309
+    - docker-registry:13623
+    - kafka:3544
+    - cassandra:14787
+    - microsoftsql:6293
+    - hazelcast:23647
+    - oracle:14860
+    - mongodb:3808
+    - neo4j:22479
+    - postgres:6991
+    - mysql:26430
+    - couchdb:16344
+    - mariadb:19425
+    - payment-processing-processor:19860
+    - patient-logger-generator:28026
+    - card-authorizer-app:26619
+    - payment-processing-writer:29858
+    replicas: 1
+    servers:
+    - 24479
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: patient-builder
+  patient-builder-log:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - dns:53
+    - syslog:514
+    - lucene:6379
+    - docker-registry:13623
+    - kafka:3544
+    - oracle:14860
+    - mongodb:3808
+    - microsoftsql:6293
+    - mysql:26430
+    - hazelcast:23647
+    - postgres:6991
+    - mariadb:19425
+    - cassandra:14787
+    - couchdb:16344
+    - subscriber-signer-writer:10971
+    - sale-processing-proxy:17649
+    - card-processing-executor:2840
+    replicas: 1
+    servers:
+    - 28511
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: patient-builder
+  patient-logger-cache:
+    clients:
+    - syslog:514
+    - ntp:123
+    - kafka:3544
+    - lucene:6379
+    - redis:7309
+    - zeromq:6289
+    - elastic-search:1727
+    - mongodb:3808
+    - mariadb:19425
+    - cassandra:14787
+    - mysql:26430
+    - subscriber-signer-web:25322
+    - customer-streamer-executor:12415
+    replicas: 1
+    servers:
+    - 8262
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: patient-logger
+  patient-logger-generator:
+    clients:
+    - ntp:123
+    - syslog:514
+    - lucene:6379
+    - kafka:3544
+    - zeromq:6289
+    - elastic-search:1727
+    - hazelcast:23647
+    - couchdb:16344
+    - oracle:14860
+    - cassandra:14787
+    - mongodb:3808
+    - mysql:26430
+    - sale-streamer-executor:7631
+    - payment-signer-reader:15243
+    - subscriber-authorizer-batch:19299
+    replicas: 1
+    servers:
+    - 28026
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: patient-logger
+  patient-logger-reader:
+    clients:
+    - dns:53
+    - syslog:514
+    - redis:7309
+    - zeromq:6289
+    - lucene:6379
+    - elastic-search:1727
+    - kafka:3544
+    - rabbitmq:26887
+    - microsoftsql:6293
+    - oracle:14860
+    - mongodb:3808
+    - postgres:6991
+    - couchdb:16344
+    - mariadb:19425
+    - cassandra:14787
+    - card-signer-batch:17040
+    - payment-builder-reader:23200
+    - customer-authorizer-load-balancer:2362
+    replicas: 1
+    servers:
+    - 21647
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: patient-logger
+  patient-logger-web:
+    clients:
+    - dns:53
+    - ntp:123
+    - syslog:514
+    - zeromq:6289
+    - lucene:6379
+    - rabbitmq:26887
+    - kafka:3544
+    - logstash:19228
+    - docker-registry:13623
+    - redis:7309
+    - couchdb:16344
+    - neo4j:22479
+    - oracle:14860
+    - mongodb:3808
+    - mariadb:19425
+    - microsoftsql:6293
+    - postgres:6991
+    - cassandra:14787
+    - mysql:26430
+    - hazelcast:23647
+    - card-signer-web:10988
+    - subscriber-streamer-batch:22946
+    - sale-streamer-web:25832
+    - customer-signer-proxy:24492
+    replicas: 1
+    servers:
+    - 10921
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: patient-logger
+  patient-logger-writer:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - ntp:123
+    - rabbitmq:26887
+    - logstash:19228
+    - redis:7309
+    - zeromq:6289
+    - docker-registry:13623
+    - kafka:3544
+    - mysql:26430
+    - oracle:14860
+    - hazelcast:23647
+    - mariadb:19425
+    - microsoftsql:6293
+    - sale-logger-log:4650
+    - payment-signer-batch:16118
+    - stream-authorizer-log:26615
+    replicas: 1
+    servers:
+    - 21182
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: patient-logger
+  patient-processing-load-balancer:
+    clients:
+    - active-directory:389
+    - zeromq:6289
+    - logstash:19228
+    - docker-registry:13623
+    - elastic-search:1727
+    - rabbitmq:26887
+    - kafka:3544
+    - lucene:6379
+    - redis:7309
+    - microsoftsql:6293
+    - neo4j:22479
+    - mysql:26430
+    - hazelcast:23647
+    - oracle:14860
+    - mariadb:19425
+    - customer-signer-generator:23415
+    - sale-builder-processor:17030
+    replicas: 1
+    servers:
+    - 21911
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: patient-processing
+  patient-processing-reader:
+    clients:
+    - ntp:123
+    - syslog:514
+    - active-directory:389
+    - dns:53
+    - rabbitmq:26887
+    - zeromq:6289
+    - kafka:3544
+    - docker-registry:13623
+    - lucene:6379
+    - redis:7309
+    - logstash:19228
+    - elastic-search:1727
+    - hazelcast:23647
+    - oracle:14860
+    - mariadb:19425
+    - postgres:6991
+    - couchdb:16344
+    - microsoftsql:6293
+    - mongodb:3808
+    - mysql:26430
+    - cassandra:14787
+    - neo4j:22479
+    - payment-builder-generator:27840
+    - patient-streamer-executor:6890
+    - sale-streamer-batch:12489
+    - subscriber-logger-executor:13912
+    replicas: 1
+    servers:
+    - 7798
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: patient-processing
+  patient-processing-writer:
+    clients:
+    - syslog:514
+    - active-directory:389
+    - ntp:123
+    - logstash:19228
+    - zeromq:6289
+    - elastic-search:1727
+    - oracle:14860
+    - microsoftsql:6293
+    - mariadb:19425
+    - couchdb:16344
+    - sale-authorizer-processor:27243
+    - stream-builder-writer:19558
+    - subscriber-logger-web:28979
+    - payment-authorizer-executor:21300
+    replicas: 1
+    servers:
+    - 22391
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: patient-processing
+  patient-signer-app:
+    clients:
+    - dns:53
+    - zeromq:6289
+    - logstash:19228
+    - kafka:3544
+    - redis:7309
+    - elastic-search:1727
+    - docker-registry:13623
+    - lucene:6379
+    - mongodb:3808
+    - oracle:14860
+    - card-signer-web:10988
+    - sale-logger-cache:27818
+    - payment-logger-batch:26621
+    replicas: 1
+    servers:
+    - 25575
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: patient-signer
+  patient-signer-cache:
+    clients:
+    - dns:53
+    - elastic-search:1727
+    - rabbitmq:26887
+    - zeromq:6289
+    - lucene:6379
+    - logstash:19228
+    - docker-registry:13623
+    - redis:7309
+    - kafka:3544
+    - microsoftsql:6293
+    - neo4j:22479
+    - hazelcast:23647
+    - customer-authorizer-cache:9713
+    - payment-authorizer-executor:21300
+    - stream-processing-reader:23304
+    - payment-streamer-web:14040
+    replicas: 1
+    servers:
+    - 8048
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: patient-signer
+  patient-signer-processor:
+    clients:
+    - ntp:123
+    - dns:53
+    - active-directory:389
+    - syslog:514
+    - rabbitmq:26887
+    - elastic-search:1727
+    - redis:7309
+    - logstash:19228
+    - postgres:6991
+    - oracle:14860
+    - cassandra:14787
+    - mysql:26430
+    - microsoftsql:6293
+    - mongodb:3808
+    - mariadb:19425
+    - neo4j:22479
+    - couchdb:16344
+    - subscriber-processing-generator:27559
+    - card-signer-reader:12132
+    - sale-authorizer-batch:4769
+    - payment-builder-web:27080
+    replicas: 1
+    servers:
+    - 20345
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: patient-signer
+  patient-signer-writer:
+    clients:
+    - syslog:514
+    - dns:53
+    - active-directory:389
+    - ntp:123
+    - rabbitmq:26887
+    - kafka:3544
+    - logstash:19228
+    - elastic-search:1727
+    - zeromq:6289
+    - hazelcast:23647
+    - neo4j:22479
+    - postgres:6991
+    - couchdb:16344
+    - mariadb:19425
+    - mysql:26430
+    - payment-streamer-app:2766
+    - sale-processing-cache:13448
+    - subscriber-streamer-app:18910
+    - card-processing-reader:19908
+    replicas: 1
+    servers:
+    - 29070
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: patient-signer
+  patient-streamer-executor:
+    clients:
+    - dns:53
+    - syslog:514
+    - ntp:123
+    - elastic-search:1727
+    - rabbitmq:26887
+    - oracle:14860
+    - microsoftsql:6293
+    - neo4j:22479
+    - payment-builder-reader:23200
+    - card-signer-writer:7347
+    replicas: 1
+    servers:
+    - 6890
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: patient-streamer
+  patient-streamer-load-balancer:
+    clients:
+    - dns:53
+    - active-directory:389
+    - lucene:6379
+    - elastic-search:1727
+    - zeromq:6289
+    - rabbitmq:26887
+    - redis:7309
+    - kafka:3544
+    - microsoftsql:6293
+    - mariadb:19425
+    - mysql:26430
+    - mongodb:3808
+    - postgres:6991
+    - couchdb:16344
+    - subscriber-streamer-batch:22946
+    - customer-streamer-generator:23298
+    - patient-streamer-processor:14904
+    replicas: 1
+    servers:
+    - 3783
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: patient-streamer
+  patient-streamer-log:
+    clients:
+    - dns:53
+    - ntp:123
+    - active-directory:389
+    - lucene:6379
+    - kafka:3544
+    - elastic-search:1727
+    - docker-registry:13623
+    - redis:7309
+    - rabbitmq:26887
+    - logstash:19228
+    - mariadb:19425
+    - mongodb:3808
+    - card-builder-generator:7778
+    - payment-processing-reader:23857
+    replicas: 1
+    servers:
+    - 12051
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: patient-streamer
+  patient-streamer-processor:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - kafka:3544
+    - lucene:6379
+    - elastic-search:1727
+    - docker-registry:13623
+    - zeromq:6289
+    - redis:7309
+    - logstash:19228
+    - rabbitmq:26887
+    - postgres:6991
+    - oracle:14860
+    - microsoftsql:6293
+    - mariadb:19425
+    - couchdb:16344
+    - mysql:26430
+    - neo4j:22479
+    - card-signer-reader:12132
+    - sale-processing-web:22454
+    - payment-streamer-app:2766
+    - sale-builder-processor:17030
+    replicas: 1
+    servers:
+    - 14904
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: patient-streamer
+  patient-streamer-proxy:
+    clients:
+    - syslog:514
+    - dns:53
+    - active-directory:389
+    - ntp:123
+    - rabbitmq:26887
+    - logstash:19228
+    - docker-registry:13623
+    - redis:7309
+    - zeromq:6289
+    - lucene:6379
+    - neo4j:22479
+    - cassandra:14787
+    - couchdb:16344
+    - oracle:14860
+    - microsoftsql:6293
+    - customer-authorizer-load-balancer:2362
+    - payment-authorizer-generator:18847
+    - subscriber-streamer-generator:17739
+    replicas: 1
+    servers:
+    - 21837
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: patient-streamer
+  patient-streamer-web:
+    clients:
+    - syslog:514
+    - ntp:123
+    - active-directory:389
+    - elastic-search:1727
+    - rabbitmq:26887
+    - redis:7309
+    - logstash:19228
+    - lucene:6379
+    - docker-registry:13623
+    - kafka:3544
+    - zeromq:6289
+    - cassandra:14787
+    - mariadb:19425
+    - hazelcast:23647
+    - neo4j:22479
+    - patient-signer-processor:20345
+    - card-processing-log:14078
+    - subscriber-streamer-writer:8550
+    replicas: 1
+    servers:
+    - 20337
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: patient-streamer
+  payment-authorizer-cache:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - dns:53
+    - redis:7309
+    - lucene:6379
+    - zeromq:6289
+    - elastic-search:1727
+    - kafka:3544
+    - neo4j:22479
+    - sale-authorizer-writer:4503
+    - patient-processing-reader:7798
+    - payment-builder-cache:20505
+    - payment-builder-web:27080
+    replicas: 1
+    servers:
+    - 27719
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: payment-authorizer
+  payment-authorizer-executor:
+    clients:
+    - ntp:123
+    - docker-registry:13623
+    - zeromq:6289
+    - elastic-search:1727
+    - lucene:6379
+    - mongodb:3808
+    - cassandra:14787
+    - couchdb:16344
+    - sale-authorizer-batch:4769
+    - card-processing-writer:28643
+    - subscriber-processing-batch:25568
+    - card-signer-proxy:4769
+    replicas: 1
+    servers:
+    - 21300
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: payment-authorizer
+  payment-authorizer-generator:
+    clients:
+    - dns:53
+    - active-directory:389
+    - ntp:123
+    - redis:7309
+    - mariadb:19425
+    - cassandra:14787
+    - neo4j:22479
+    - customer-signer-load-balancer:4570
+    - payment-builder-proxy:27372
+    replicas: 1
+    servers:
+    - 18847
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: payment-authorizer
+  payment-builder-app:
+    clients:
+    - syslog:514
+    - ntp:123
+    - rabbitmq:26887
+    - hazelcast:23647
+    - oracle:14860
+    - postgres:6991
+    - couchdb:16344
+    - mariadb:19425
+    - mongodb:3808
+    - patient-logger-generator:28026
+    - patient-streamer-processor:14904
+    - sale-builder-batch:9765
+    replicas: 1
+    servers:
+    - 25015
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: payment-builder
+  payment-builder-batch:
+    clients:
+    - active-directory:389
+    - dns:53
+    - ntp:123
+    - syslog:514
+    - lucene:6379
+    - rabbitmq:26887
+    - redis:7309
+    - docker-registry:13623
+    - elastic-search:1727
+    - mariadb:19425
+    - microsoftsql:6293
+    - mongodb:3808
+    - subscriber-logger-app:19217
+    - customer-streamer-cache:13343
+    - sale-streamer-executor:7631
+    - payment-streamer-processor:9435
+    replicas: 1
+    servers:
+    - 16425
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: payment-builder
+  payment-builder-cache:
+    clients:
+    - syslog:514
+    - ntp:123
+    - dns:53
+    - active-directory:389
+    - lucene:6379
+    - kafka:3544
+    - redis:7309
+    - microsoftsql:6293
+    - postgres:6991
+    - mariadb:19425
+    - payment-authorizer-generator:18847
+    - sale-builder-cache:22317
+    - card-signer-executor:21760
+    - patient-logger-writer:21182
+    replicas: 1
+    servers:
+    - 20505
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: payment-builder
+  payment-builder-executor:
+    clients:
+    - dns:53
+    - ntp:123
+    - syslog:514
+    - active-directory:389
+    - redis:7309
+    - lucene:6379
+    - kafka:3544
+    - zeromq:6289
+    - logstash:19228
+    - rabbitmq:26887
+    - docker-registry:13623
+    - microsoftsql:6293
+    - subscriber-processing-app:18562
+    - card-signer-executor:21760
+    - card-builder-writer:14705
+    - patient-builder-generator:24479
+    replicas: 1
+    servers:
+    - 18368
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: payment-builder
+  payment-builder-generator:
+    clients:
+    - ntp:123
+    - dns:53
+    - kafka:3544
+    - redis:7309
+    - microsoftsql:6293
+    - hazelcast:23647
+    - mongodb:3808
+    - sale-authorizer-proxy:10461
+    - subscriber-streamer-executor:28033
+    replicas: 1
+    servers:
+    - 27840
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: payment-builder
+  payment-builder-proxy:
+    clients:
+    - dns:53
+    - rabbitmq:26887
+    - kafka:3544
+    - lucene:6379
+    - docker-registry:13623
+    - logstash:19228
+    - elastic-search:1727
+    - redis:7309
+    - hazelcast:23647
+    - mysql:26430
+    - oracle:14860
+    - mariadb:19425
+    - cassandra:14787
+    - card-logger-writer:17562
+    - sale-processing-web:22454
+    - payment-signer-log:19766
+    - customer-processing-processor:3074
+    replicas: 1
+    servers:
+    - 27372
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: payment-builder
+  payment-builder-reader:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - zeromq:6289
+    - rabbitmq:26887
+    - logstash:19228
+    - lucene:6379
+    - kafka:3544
+    - redis:7309
+    - docker-registry:13623
+    - elastic-search:1727
+    - postgres:6991
+    - cassandra:14787
+    - mysql:26430
+    - hazelcast:23647
+    - microsoftsql:6293
+    - neo4j:22479
+    - oracle:14860
+    - mongodb:3808
+    - mariadb:19425
+    - customer-logger-cache:14661
+    - payment-processing-reader:23857
+    - stream-processing-generator:17131
+    - patient-builder-log:28511
+    replicas: 1
+    servers:
+    - 23200
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: payment-builder
+  payment-builder-web:
+    clients:
+    - syslog:514
+    - active-directory:389
+    - ntp:123
+    - kafka:3544
+    - zeromq:6289
+    - rabbitmq:26887
+    - docker-registry:13623
+    - redis:7309
+    - lucene:6379
+    - elastic-search:1727
+    - logstash:19228
+    - mongodb:3808
+    - mysql:26430
+    - oracle:14860
+    - neo4j:22479
+    - postgres:6991
+    - hazelcast:23647
+    - cassandra:14787
+    - card-builder-writer:14705
+    - card-signer-writer:7347
+    replicas: 1
+    servers:
+    - 27080
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: payment-builder
+  payment-builder-writer:
+    clients:
+    - dns:53
+    - ntp:123
+    - active-directory:389
+    - syslog:514
+    - logstash:19228
+    - docker-registry:13623
+    - lucene:6379
+    - rabbitmq:26887
+    - couchdb:16344
+    - mongodb:3808
+    - neo4j:22479
+    - hazelcast:23647
+    - mysql:26430
+    - payment-builder-writer:11330
+    - customer-builder-cache:2190
+    - card-processing-log:14078
+    - card-signer-proxy:4769
+    replicas: 1
+    servers:
+    - 11330
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: payment-builder
+  payment-logger-batch:
+    clients:
+    - ntp:123
+    - lucene:6379
+    - kafka:3544
+    - docker-registry:13623
+    - oracle:14860
+    - mariadb:19425
+    - microsoftsql:6293
+    - mongodb:3808
+    - cassandra:14787
+    - stream-signer-app:17241
+    - sale-streamer-web:25832
+    - payment-streamer-executor:23699
+    replicas: 1
+    servers:
+    - 26621
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: payment-logger
+  payment-logger-log:
+    clients:
+    - dns:53
+    - ntp:123
+    - active-directory:389
+    - kafka:3544
+    - microsoftsql:6293
+    - mysql:26430
+    - payment-authorizer-cache:27719
+    - stream-processing-executor:7129
+    - card-authorizer-cache:7479
+    - sale-builder-batch:9765
+    replicas: 1
+    servers:
+    - 23198
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: payment-logger
+  payment-logger-writer:
+    clients:
+    - active-directory:389
+    - dns:53
+    - ntp:123
+    - logstash:19228
+    - elastic-search:1727
+    - redis:7309
+    - docker-registry:13623
+    - zeromq:6289
+    - lucene:6379
+    - rabbitmq:26887
+    - kafka:3544
+    - postgres:6991
+    - cassandra:14787
+    - oracle:14860
+    - neo4j:22479
+    - mysql:26430
+    - couchdb:16344
+    - mongodb:3808
+    - hazelcast:23647
+    - patient-streamer-executor:6890
+    - subscriber-signer-writer:10971
+    - customer-processing-writer:12299
+    replicas: 1
+    servers:
+    - 8172
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: payment-logger
+  payment-processing-batch:
+    clients:
+    - active-directory:389
+    - dns:53
+    - docker-registry:13623
+    - kafka:3544
+    - elastic-search:1727
+    - rabbitmq:26887
+    - logstash:19228
+    - redis:7309
+    - zeromq:6289
+    - hazelcast:23647
+    - mongodb:3808
+    - mariadb:19425
+    - cassandra:14787
+    - neo4j:22479
+    - subscriber-logger-app:19217
+    - card-authorizer-processor:19159
+    replicas: 1
+    servers:
+    - 8419
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: payment-processing
+  payment-processing-executor:
+    clients:
+    - ntp:123
+    - syslog:514
+    - active-directory:389
+    - dns:53
+    - docker-registry:13623
+    - postgres:6991
+    - mysql:26430
+    - microsoftsql:6293
+    - couchdb:16344
+    - mongodb:3808
+    - cassandra:14787
+    - hazelcast:23647
+    - mariadb:19425
+    - neo4j:22479
+    - oracle:14860
+    - sale-logger-log:4650
+    - stream-authorizer-proxy:4488
+    - card-signer-app:27772
+    - stream-processing-executor:7129
+    replicas: 1
+    servers:
+    - 19696
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: payment-processing
+  payment-processing-processor:
+    clients:
+    - dns:53
+    - active-directory:389
+    - ntp:123
+    - zeromq:6289
+    - redis:7309
+    - kafka:3544
+    - docker-registry:13623
+    - elastic-search:1727
+    - logstash:19228
+    - lucene:6379
+    - postgres:6991
+    - mongodb:3808
+    - hazelcast:23647
+    - mariadb:19425
+    - mysql:26430
+    - neo4j:22479
+    - sale-authorizer-cache:5367
+    - customer-processing-log:10615
+    replicas: 1
+    servers:
+    - 19860
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: payment-processing
+  payment-processing-proxy:
+    clients:
+    - dns:53
+    - ntp:123
+    - rabbitmq:26887
+    - docker-registry:13623
+    - redis:7309
+    - elastic-search:1727
+    - lucene:6379
+    - logstash:19228
+    - hazelcast:23647
+    - mongodb:3808
+    - neo4j:22479
+    - mariadb:19425
+    - microsoftsql:6293
+    - couchdb:16344
+    - postgres:6991
+    - cassandra:14787
+    - mysql:26430
+    - payment-processing-reader:23857
+    - stream-logger-log:3880
+    replicas: 1
+    servers:
+    - 8882
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: payment-processing
+  payment-processing-reader:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - dns:53
+    - syslog:514
+    - lucene:6379
+    - logstash:19228
+    - docker-registry:13623
+    - kafka:3544
+    - rabbitmq:26887
+    - zeromq:6289
+    - redis:7309
+    - hazelcast:23647
+    - microsoftsql:6293
+    - mongodb:3808
+    - neo4j:22479
+    - couchdb:16344
+    - postgres:6991
+    - cassandra:14787
+    - oracle:14860
+    - mysql:26430
+    - mariadb:19425
+    - payment-streamer-executor:23699
+    - sale-builder-batch:9765
+    replicas: 1
+    servers:
+    - 23857
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: payment-processing
+  payment-processing-writer:
+    clients:
+    - dns:53
+    - syslog:514
+    - active-directory:389
+    - ntp:123
+    - redis:7309
+    - zeromq:6289
+    - lucene:6379
+    - logstash:19228
+    - rabbitmq:26887
+    - elastic-search:1727
+    - hazelcast:23647
+    - couchdb:16344
+    - postgres:6991
+    - payment-streamer-executor:23699
+    - card-builder-cache:10805
+    replicas: 1
+    servers:
+    - 29858
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: payment-processing
+  payment-signer-app:
+    clients:
+    - active-directory:389
+    - dns:53
+    - ntp:123
+    - zeromq:6289
+    - logstash:19228
+    - elastic-search:1727
+    - postgres:6991
+    - mariadb:19425
+    - mysql:26430
+    - couchdb:16344
+    - cassandra:14787
+    - hazelcast:23647
+    - neo4j:22479
+    - mongodb:3808
+    - microsoftsql:6293
+    - oracle:14860
+    - sale-signer-reader:27865
+    - subscriber-streamer-app:18910
+    - sale-streamer-executor:7631
+    - sale-logger-cache:27818
+    replicas: 1
+    servers:
+    - 20314
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: payment-signer
+  payment-signer-batch:
+    clients:
+    - active-directory:389
+    - logstash:19228
+    - postgres:6991
+    - sale-authorizer-batch:4769
+    - stream-processing-app:10137
+    - subscriber-processing-load-balancer:18756
+    - patient-logger-reader:21647
+    replicas: 1
+    servers:
+    - 16118
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: payment-signer
+  payment-signer-cache:
+    clients:
+    - ntp:123
+    - syslog:514
+    - dns:53
+    - rabbitmq:26887
+    - docker-registry:13623
+    - logstash:19228
+    - redis:7309
+    - elastic-search:1727
+    - kafka:3544
+    - postgres:6991
+    - mongodb:3808
+    - mysql:26430
+    - neo4j:22479
+    - mariadb:19425
+    - oracle:14860
+    - hazelcast:23647
+    - cassandra:14787
+    - microsoftsql:6293
+    - couchdb:16344
+    - card-signer-web:10988
+    - patient-streamer-executor:6890
+    replicas: 1
+    servers:
+    - 10881
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: payment-signer
+  payment-signer-executor:
+    clients:
+    - syslog:514
+    - dns:53
+    - docker-registry:13623
+    - zeromq:6289
+    - kafka:3544
+    - redis:7309
+    - rabbitmq:26887
+    - lucene:6379
+    - microsoftsql:6293
+    - neo4j:22479
+    - cassandra:14787
+    - sale-processing-generator:23298
+    - card-builder-load-balancer:24136
+    replicas: 1
+    servers:
+    - 5291
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: payment-signer
+  payment-signer-generator:
+    clients:
+    - active-directory:389
+    - redis:7309
+    - logstash:19228
+    - lucene:6379
+    - rabbitmq:26887
+    - elastic-search:1727
+    - docker-registry:13623
+    - postgres:6991
+    - couchdb:16344
+    - cassandra:14787
+    - oracle:14860
+    - mongodb:3808
+    - neo4j:22479
+    - microsoftsql:6293
+    - mariadb:19425
+    - mysql:26430
+    - hazelcast:23647
+    - subscriber-processing-app:18562
+    - customer-signer-reader:29203
+    - card-signer-reader:12132
+    - payment-signer-cache:10881
+    replicas: 1
+    servers:
+    - 24092
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: payment-signer
+  payment-signer-load-balancer:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - syslog:514
+    - dns:53
+    - docker-registry:13623
+    - elastic-search:1727
+    - redis:7309
+    - rabbitmq:26887
+    - kafka:3544
+    - zeromq:6289
+    - couchdb:16344
+    - mariadb:19425
+    - hazelcast:23647
+    - stream-builder-writer:19558
+    - subscriber-streamer-executor:28033
+    replicas: 1
+    servers:
+    - 25469
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: payment-signer
+  payment-signer-log:
+    clients:
+    - ntp:123
+    - dns:53
+    - syslog:514
+    - active-directory:389
+    - kafka:3544
+    - redis:7309
+    - rabbitmq:26887
+    - neo4j:22479
+    - cassandra:14787
+    - sale-logger-cache:27818
+    - card-processing-writer:28643
+    replicas: 1
+    servers:
+    - 19766
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: payment-signer
+  payment-signer-processor:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - dns:53
+    - ntp:123
+    - docker-registry:13623
+    - postgres:6991
+    - mariadb:19425
+    - cassandra:14787
+    - oracle:14860
+    - hazelcast:23647
+    - neo4j:22479
+    - mongodb:3808
+    - microsoftsql:6293
+    - subscriber-authorizer-batch:19299
+    - sale-builder-cache:22317
+    - card-processing-batch:3044
+    replicas: 1
+    servers:
+    - 13978
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: payment-signer
+  payment-signer-proxy:
+    clients:
+    - syslog:514
+    - active-directory:389
+    - dns:53
+    - ntp:123
+    - zeromq:6289
+    - lucene:6379
+    - redis:7309
+    - cassandra:14787
+    - hazelcast:23647
+    - mariadb:19425
+    - mongodb:3808
+    - oracle:14860
+    - mysql:26430
+    - neo4j:22479
+    - postgres:6991
+    - couchdb:16344
+    - sale-authorizer-proxy:10461
+    - subscriber-authorizer-proxy:16207
+    replicas: 1
+    servers:
+    - 7170
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: payment-signer
+  payment-signer-reader:
+    clients:
+    - syslog:514
+    - dns:53
+    - lucene:6379
+    - rabbitmq:26887
+    - mariadb:19425
+    - payment-signer-batch:16118
+    - patient-authorizer-executor:9876
+    replicas: 1
+    servers:
+    - 15243
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: payment-signer
+  payment-signer-web:
+    clients:
+    - dns:53
+    - active-directory:389
+    - logstash:19228
+    - redis:7309
+    - elastic-search:1727
+    - zeromq:6289
+    - cassandra:14787
+    - postgres:6991
+    - hazelcast:23647
+    - mongodb:3808
+    - neo4j:22479
+    - oracle:14860
+    - mysql:26430
+    - couchdb:16344
+    - customer-processing-processor:3074
+    - sale-authorizer-proxy:10461
+    - sale-processing-web:22454
+    - sale-authorizer-cache:5367
+    replicas: 1
+    servers:
+    - 9698
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: payment-signer
+  payment-signer-writer:
+    clients:
+    - syslog:514
+    - redis:7309
+    - rabbitmq:26887
+    - kafka:3544
+    - zeromq:6289
+    - elastic-search:1727
+    - lucene:6379
+    - docker-registry:13623
+    - mongodb:3808
+    - neo4j:22479
+    - cassandra:14787
+    - couchdb:16344
+    - hazelcast:23647
+    - mysql:26430
+    - mariadb:19425
+    - customer-processing-log:10615
+    - subscriber-signer-app:7172
+    replicas: 1
+    servers:
+    - 20710
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: payment-signer
+  payment-streamer-app:
+    clients:
+    - syslog:514
+    - active-directory:389
+    - dns:53
+    - redis:7309
+    - kafka:3544
+    - postgres:6991
+    - microsoftsql:6293
+    - mysql:26430
+    - hazelcast:23647
+    - mariadb:19425
+    - mongodb:3808
+    - sale-streamer-generator:10763
+    - card-signer-batch:17040
+    - stream-logger-writer:21752
+    replicas: 1
+    servers:
+    - 2766
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: payment-streamer
+  payment-streamer-batch:
+    clients:
+    - active-directory:389
+    - elastic-search:1727
+    - redis:7309
+    - logstash:19228
+    - kafka:3544
+    - cassandra:14787
+    - oracle:14860
+    - postgres:6991
+    - mongodb:3808
+    - couchdb:16344
+    - card-authorizer-proxy:16186
+    - payment-processing-proxy:8882
+    - patient-streamer-load-balancer:3783
+    replicas: 1
+    servers:
+    - 26773
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: payment-streamer
+  payment-streamer-executor:
+    clients:
+    - syslog:514
+    - dns:53
+    - ntp:123
+    - logstash:19228
+    - lucene:6379
+    - couchdb:16344
+    - cassandra:14787
+    - oracle:14860
+    - mysql:26430
+    - mongodb:3808
+    - postgres:6991
+    - subscriber-logger-processor:13379
+    - sale-builder-log:15719
+    - subscriber-streamer-writer:8550
+    replicas: 1
+    servers:
+    - 23699
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: payment-streamer
+  payment-streamer-generator:
+    clients:
+    - syslog:514
+    - elastic-search:1727
+    - mariadb:19425
+    - postgres:6991
+    - mongodb:3808
+    - microsoftsql:6293
+    - customer-signer-generator:23415
+    - stream-signer-processor:11713
+    - sale-authorizer-batch:4769
+    replicas: 1
+    servers:
+    - 21543
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: payment-streamer
+  payment-streamer-processor:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - zeromq:6289
+    - kafka:3544
+    - redis:7309
+    - lucene:6379
+    - mariadb:19425
+    - subscriber-streamer-executor:28033
+    - subscriber-logger-log:26690
+    - payment-builder-app:25015
+    replicas: 1
+    servers:
+    - 9435
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: payment-streamer
+  payment-streamer-reader:
+    clients:
+    - syslog:514
+    - lucene:6379
+    - zeromq:6289
+    - rabbitmq:26887
+    - kafka:3544
+    - logstash:19228
+    - docker-registry:13623
+    - redis:7309
+    - mysql:26430
+    - microsoftsql:6293
+    - hazelcast:23647
+    - mongodb:3808
+    - payment-processing-reader:23857
+    - patient-builder-cache:13758
+    - patient-signer-cache:8048
+    replicas: 1
+    servers:
+    - 15300
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: payment-streamer
+  payment-streamer-web:
+    clients:
+    - ntp:123
+    - logstash:19228
+    - docker-registry:13623
+    - kafka:3544
+    - rabbitmq:26887
+    - redis:7309
+    - elastic-search:1727
+    - lucene:6379
+    - postgres:6991
+    - neo4j:22479
+    - card-builder-generator:7778
+    - subscriber-authorizer-batch:19299
+    - subscriber-logger-cache:27468
+    replicas: 1
+    servers:
+    - 14040
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: payment-streamer
+  payment-streamer-writer:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - docker-registry:13623
+    - redis:7309
+    - rabbitmq:26887
+    - mongodb:3808
+    - couchdb:16344
+    - mysql:26430
+    - neo4j:22479
+    - sale-processing-generator:23298
+    - sale-processing-batch:6052
+    - payment-builder-writer:11330
+    - card-authorizer-generator:29053
+    replicas: 1
+    servers:
+    - 5396
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: payment-streamer
+  postgres:
+    clients:
+    - ntp:123
+    - dns:53
+    - active-directory:389
+    - syslog:514
+    replicas: 1
+    servers:
+    - 6991
+    tags:
+    - key: type
+      value: db
+    - key: name
+      value: postgres
+    - key: service
+      value: postgres
+  rabbitmq:
+    clients:
+    - active-directory:389
+    replicas: 1
+    servers:
+    - 26887
+    tags:
+    - key: type
+      value: service
+    - key: name
+      value: rabbitmq
+    - key: service
+      value: rabbitmq
+  redis:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - dns:53
+    replicas: 1
+    servers:
+    - 7309
+    tags:
+    - key: type
+      value: service
+    - key: name
+      value: redis
+    - key: service
+      value: redis
+  sale-authorizer-app:
+    clients:
+    - active-directory:389
+    - dns:53
+    - syslog:514
+    - ntp:123
+    - elastic-search:1727
+    - rabbitmq:26887
+    - mariadb:19425
+    - cassandra:14787
+    - postgres:6991
+    - oracle:14860
+    - couchdb:16344
+    - mongodb:3808
+    - mysql:26430
+    - microsoftsql:6293
+    - hazelcast:23647
+    - neo4j:22479
+    - sale-builder-proxy:7979
+    - customer-processing-writer:12299
+    replicas: 1
+    servers:
+    - 15118
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: sale-authorizer
+  sale-authorizer-batch:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - syslog:514
+    - dns:53
+    - kafka:3544
+    - mysql:26430
+    - cassandra:14787
+    - mongodb:3808
+    - oracle:14860
+    - hazelcast:23647
+    - postgres:6991
+    - couchdb:16344
+    - microsoftsql:6293
+    - mariadb:19425
+    - neo4j:22479
+    - card-processing-reader:19908
+    - subscriber-logger-cache:27468
+    replicas: 1
+    servers:
+    - 4769
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: sale-authorizer
+  sale-authorizer-cache:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - syslog:514
+    - dns:53
+    - logstash:19228
+    - redis:7309
+    - zeromq:6289
+    - kafka:3544
+    - oracle:14860
+    - mysql:26430
+    - hazelcast:23647
+    - mongodb:3808
+    - couchdb:16344
+    - neo4j:22479
+    - postgres:6991
+    - cassandra:14787
+    - subscriber-signer-writer:10971
+    - customer-signer-proxy:24492
+    - subscriber-authorizer-batch:19299
+    - payment-logger-writer:8172
+    replicas: 1
+    servers:
+    - 5367
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: sale-authorizer
+  sale-authorizer-processor:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - dns:53
+    - elastic-search:1727
+    - lucene:6379
+    - rabbitmq:26887
+    - redis:7309
+    - docker-registry:13623
+    - zeromq:6289
+    - mysql:26430
+    - card-signer-executor:21760
+    - payment-builder-cache:20505
+    - customer-logger-cache:14661
+    replicas: 1
+    servers:
+    - 27243
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: sale-authorizer
+  sale-authorizer-proxy:
+    clients:
+    - syslog:514
+    - ntp:123
+    - dns:53
+    - active-directory:389
+    - docker-registry:13623
+    - microsoftsql:6293
+    - mysql:26430
+    - card-authorizer-app:26619
+    - payment-processing-processor:19860
+    - subscriber-streamer-proxy:11853
+    replicas: 1
+    servers:
+    - 10461
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: sale-authorizer
+  sale-authorizer-writer:
+    clients:
+    - ntp:123
+    - syslog:514
+    - rabbitmq:26887
+    - lucene:6379
+    - logstash:19228
+    - elastic-search:1727
+    - kafka:3544
+    - oracle:14860
+    - sale-streamer-generator:10763
+    - payment-builder-batch:16425
+    replicas: 1
+    servers:
+    - 4503
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: sale-authorizer
+  sale-builder-app:
+    clients:
+    - ntp:123
+    - dns:53
+    - syslog:514
+    - rabbitmq:26887
+    - microsoftsql:6293
+    - mariadb:19425
+    - mongodb:3808
+    - mysql:26430
+    - hazelcast:23647
+    - oracle:14860
+    - cassandra:14787
+    - neo4j:22479
+    - stream-logger-executor:4250
+    - payment-signer-app:20314
+    - patient-logger-reader:21647
+    - card-signer-proxy:4769
+    replicas: 1
+    servers:
+    - 17268
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: sale-builder
+  sale-builder-batch:
+    clients:
+    - dns:53
+    - active-directory:389
+    - ntp:123
+    - syslog:514
+    - kafka:3544
+    - lucene:6379
+    - zeromq:6289
+    - rabbitmq:26887
+    - docker-registry:13623
+    - mariadb:19425
+    - microsoftsql:6293
+    - neo4j:22479
+    - payment-streamer-reader:15300
+    - subscriber-signer-app:7172
+    - sale-builder-writer:15602
+    replicas: 1
+    servers:
+    - 9765
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: sale-builder
+  sale-builder-cache:
+    clients:
+    - active-directory:389
+    - elastic-search:1727
+    - redis:7309
+    - lucene:6379
+    - rabbitmq:26887
+    - docker-registry:13623
+    - oracle:14860
+    - mongodb:3808
+    - cassandra:14787
+    - microsoftsql:6293
+    - mariadb:19425
+    - hazelcast:23647
+    - couchdb:16344
+    - postgres:6991
+    - patient-streamer-proxy:21837
+    - sale-authorizer-cache:5367
+    - subscriber-logger-executor:13912
+    - sale-builder-reader:4763
+    replicas: 1
+    servers:
+    - 22317
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: sale-builder
+  sale-builder-executor:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - syslog:514
+    - logstash:19228
+    - elastic-search:1727
+    - zeromq:6289
+    - kafka:3544
+    - cassandra:14787
+    - hazelcast:23647
+    - neo4j:22479
+    - postgres:6991
+    - subscriber-streamer-batch:22946
+    - subscriber-signer-app:7172
+    - payment-signer-load-balancer:25469
+    replicas: 1
+    servers:
+    - 4716
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: sale-builder
+  sale-builder-generator:
+    clients:
+    - ntp:123
+    - dns:53
+    - rabbitmq:26887
+    - lucene:6379
+    - elastic-search:1727
+    - redis:7309
+    - mariadb:19425
+    - couchdb:16344
+    - cassandra:14787
+    - microsoftsql:6293
+    - payment-builder-cache:20505
+    - patient-streamer-web:20337
+    - subscriber-logger-generator:26684
+    - stream-streamer-load-balancer:4756
+    replicas: 1
+    servers:
+    - 16646
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: sale-builder
+  sale-builder-load-balancer:
+    clients:
+    - dns:53
+    - ntp:123
+    - elastic-search:1727
+    - cassandra:14787
+    - mysql:26430
+    - stream-logger-app:8682
+    - stream-streamer-batch:24921
+    - card-logger-generator:20455
+    - payment-signer-generator:24092
+    replicas: 1
+    servers:
+    - 22460
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: sale-builder
+  sale-builder-log:
+    clients:
+    - dns:53
+    - active-directory:389
+    - rabbitmq:26887
+    - couchdb:16344
+    - cassandra:14787
+    - mariadb:19425
+    - microsoftsql:6293
+    - subscriber-processing-batch:25568
+    - patient-authorizer-executor:9876
+    replicas: 1
+    servers:
+    - 15719
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: sale-builder
+  sale-builder-processor:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - ntp:123
+    - dns:53
+    - zeromq:6289
+    - logstash:19228
+    - lucene:6379
+    - rabbitmq:26887
+    - kafka:3544
+    - docker-registry:13623
+    - elastic-search:1727
+    - redis:7309
+    - neo4j:22479
+    - mysql:26430
+    - oracle:14860
+    - cassandra:14787
+    - hazelcast:23647
+    - microsoftsql:6293
+    - mongodb:3808
+    - postgres:6991
+    - couchdb:16344
+    - mariadb:19425
+    - subscriber-authorizer-processor:3484
+    - sale-authorizer-app:15118
+    - sale-builder-load-balancer:22460
+    replicas: 1
+    servers:
+    - 17030
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: sale-builder
+  sale-builder-proxy:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - dns:53
+    - logstash:19228
+    - docker-registry:13623
+    - zeromq:6289
+    - redis:7309
+    - rabbitmq:26887
+    - kafka:3544
+    - elastic-search:1727
+    - oracle:14860
+    - mysql:26430
+    - mongodb:3808
+    - hazelcast:23647
+    - card-signer-app:27772
+    - payment-signer-log:19766
+    - stream-streamer-batch:24921
+    replicas: 1
+    servers:
+    - 7979
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: sale-builder
+  sale-builder-reader:
+    clients:
+    - ntp:123
+    - dns:53
+    - active-directory:389
+    - zeromq:6289
+    - logstash:19228
+    - elastic-search:1727
+    - hazelcast:23647
+    - microsoftsql:6293
+    - oracle:14860
+    - couchdb:16344
+    - mysql:26430
+    - neo4j:22479
+    - postgres:6991
+    - cassandra:14787
+    - stream-processing-proxy:28424
+    - sale-processing-app:4805
+    - patient-streamer-executor:6890
+    - sale-builder-web:16180
+    replicas: 1
+    servers:
+    - 4763
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: sale-builder
+  sale-builder-web:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - dns:53
+    - ntp:123
+    - lucene:6379
+    - oracle:14860
+    - hazelcast:23647
+    - neo4j:22479
+    - mysql:26430
+    - mariadb:19425
+    - mongodb:3808
+    - couchdb:16344
+    - sale-authorizer-app:15118
+    - patient-signer-cache:8048
+    - patient-logger-cache:8262
+    - payment-builder-web:27080
+    replicas: 1
+    servers:
+    - 16180
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: sale-builder
+  sale-builder-writer:
+    clients:
+    - dns:53
+    - syslog:514
+    - active-directory:389
+    - ntp:123
+    - redis:7309
+    - zeromq:6289
+    - kafka:3544
+    - elastic-search:1727
+    - lucene:6379
+    - rabbitmq:26887
+    - logstash:19228
+    - docker-registry:13623
+    - cassandra:14787
+    - neo4j:22479
+    - mysql:26430
+    - couchdb:16344
+    - postgres:6991
+    - mongodb:3808
+    - mariadb:19425
+    - oracle:14860
+    - hazelcast:23647
+    - payment-signer-load-balancer:25469
+    - stream-processing-reader:23304
+    replicas: 1
+    servers:
+    - 15602
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: sale-builder
+  sale-logger-cache:
+    clients:
+    - syslog:514
+    - ntp:123
+    - redis:7309
+    - lucene:6379
+    - elastic-search:1727
+    - docker-registry:13623
+    - logstash:19228
+    - zeromq:6289
+    - mariadb:19425
+    - mysql:26430
+    - oracle:14860
+    - stream-builder-writer:19558
+    - sale-processing-proxy:17649
+    - payment-streamer-app:2766
+    replicas: 1
+    servers:
+    - 27818
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: sale-logger
+  sale-logger-generator:
+    clients:
+    - active-directory:389
+    - dns:53
+    - ntp:123
+    - syslog:514
+    - docker-registry:13623
+    - logstash:19228
+    - kafka:3544
+    - lucene:6379
+    - postgres:6991
+    - microsoftsql:6293
+    - oracle:14860
+    - mysql:26430
+    - mariadb:19425
+    - neo4j:22479
+    - couchdb:16344
+    - sale-processing-cache:13448
+    - sale-authorizer-processor:27243
+    - card-processing-log:14078
+    - payment-streamer-generator:21543
+    replicas: 1
+    servers:
+    - 17181
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: sale-logger
+  sale-logger-log:
+    clients:
+    - syslog:514
+    - dns:53
+    - active-directory:389
+    - ntp:123
+    - logstash:19228
+    - zeromq:6289
+    - redis:7309
+    - kafka:3544
+    - rabbitmq:26887
+    - lucene:6379
+    - docker-registry:13623
+    - cassandra:14787
+    - mongodb:3808
+    - hazelcast:23647
+    - postgres:6991
+    - mysql:26430
+    - neo4j:22479
+    - oracle:14860
+    - mariadb:19425
+    - couchdb:16344
+    - microsoftsql:6293
+    - payment-signer-executor:5291
+    - sale-logger-processor:25230
+    - payment-builder-generator:27840
+    replicas: 1
+    servers:
+    - 4650
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: sale-logger
+  sale-logger-processor:
+    clients:
+    - active-directory:389
+    - zeromq:6289
+    - logstash:19228
+    - docker-registry:13623
+    - lucene:6379
+    - elastic-search:1727
+    - couchdb:16344
+    - mariadb:19425
+    - oracle:14860
+    - postgres:6991
+    - mongodb:3808
+    - customer-authorizer-load-balancer:2362
+    - payment-builder-cache:20505
+    - card-processing-reader:19908
+    - subscriber-processing-reader:9642
+    replicas: 1
+    servers:
+    - 25230
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: sale-logger
+  sale-logger-reader:
+    clients:
+    - dns:53
+    - active-directory:389
+    - ntp:123
+    - syslog:514
+    - kafka:3544
+    - elastic-search:1727
+    - hazelcast:23647
+    - mariadb:19425
+    - mongodb:3808
+    - cassandra:14787
+    - mysql:26430
+    - customer-signer-processor:13522
+    - customer-streamer-load-balancer:2449
+    - sale-processing-app:4805
+    replicas: 1
+    servers:
+    - 24727
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: sale-logger
+  sale-logger-web:
+    clients:
+    - active-directory:389
+    - dns:53
+    - syslog:514
+    - ntp:123
+    - redis:7309
+    - zeromq:6289
+    - neo4j:22479
+    - postgres:6991
+    - patient-logger-web:10921
+    - payment-processing-executor:19696
+    replicas: 1
+    servers:
+    - 24235
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: sale-logger
+  sale-processing-app:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - dns:53
+    - logstash:19228
+    - lucene:6379
+    - oracle:14860
+    - postgres:6991
+    - mongodb:3808
+    - mysql:26430
+    - neo4j:22479
+    - couchdb:16344
+    - card-streamer-log:17414
+    - sale-builder-web:16180
+    - stream-logger-log:3880
+    replicas: 1
+    servers:
+    - 4805
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: sale-processing
+  sale-processing-batch:
+    clients:
+    - ntp:123
+    - dns:53
+    - redis:7309
+    - elastic-search:1727
+    - rabbitmq:26887
+    - docker-registry:13623
+    - kafka:3544
+    - logstash:19228
+    - lucene:6379
+    - neo4j:22479
+    - cassandra:14787
+    - mysql:26430
+    - microsoftsql:6293
+    - couchdb:16344
+    - postgres:6991
+    - mariadb:19425
+    - hazelcast:23647
+    - oracle:14860
+    - mongodb:3808
+    - stream-processing-reader:23304
+    - payment-builder-batch:16425
+    - sale-logger-cache:27818
+    - subscriber-logger-processor:13379
+    replicas: 1
+    servers:
+    - 6052
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: sale-processing
+  sale-processing-cache:
+    clients:
+    - syslog:514
+    - dns:53
+    - ntp:123
+    - active-directory:389
+    - lucene:6379
+    - elastic-search:1727
+    - redis:7309
+    - rabbitmq:26887
+    - docker-registry:13623
+    - zeromq:6289
+    - logstash:19228
+    - mongodb:3808
+    - oracle:14860
+    - hazelcast:23647
+    - mariadb:19425
+    - neo4j:22479
+    - postgres:6991
+    - mysql:26430
+    - cassandra:14787
+    - payment-signer-executor:5291
+    - payment-authorizer-executor:21300
+    - subscriber-processing-batch:25568
+    - sale-authorizer-processor:27243
+    replicas: 1
+    servers:
+    - 13448
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: sale-processing
+  sale-processing-generator:
+    clients:
+    - syslog:514
+    - dns:53
+    - active-directory:389
+    - logstash:19228
+    - docker-registry:13623
+    - kafka:3544
+    - neo4j:22479
+    - microsoftsql:6293
+    - mongodb:3808
+    - couchdb:16344
+    - cassandra:14787
+    - stream-processing-reader:23304
+    - subscriber-authorizer-proxy:16207
+    replicas: 1
+    servers:
+    - 23298
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: sale-processing
+  sale-processing-proxy:
+    clients:
+    - active-directory:389
+    - dns:53
+    - docker-registry:13623
+    - redis:7309
+    - couchdb:16344
+    - subscriber-builder-log:16114
+    - payment-signer-writer:20710
+    - payment-processing-reader:23857
+    replicas: 1
+    servers:
+    - 17649
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: sale-processing
+  sale-processing-web:
+    clients:
+    - active-directory:389
+    - docker-registry:13623
+    - lucene:6379
+    - rabbitmq:26887
+    - kafka:3544
+    - couchdb:16344
+    - postgres:6991
+    - mariadb:19425
+    - cassandra:14787
+    - sale-authorizer-writer:4503
+    - patient-signer-processor:20345
+    replicas: 1
+    servers:
+    - 22454
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: sale-processing
+  sale-processing-writer:
+    clients:
+    - dns:53
+    - active-directory:389
+    - syslog:514
+    - logstash:19228
+    - docker-registry:13623
+    - rabbitmq:26887
+    - cassandra:14787
+    - neo4j:22479
+    - mysql:26430
+    - couchdb:16344
+    - payment-signer-web:9698
+    - sale-streamer-log:26619
+    - stream-processing-generator:17131
+    - sale-signer-load-balancer:25017
+    replicas: 1
+    servers:
+    - 26188
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: sale-processing
+  sale-signer-batch:
+    clients:
+    - ntp:123
+    - dns:53
+    - syslog:514
+    - active-directory:389
+    - kafka:3544
+    - logstash:19228
+    - redis:7309
+    - mariadb:19425
+    - payment-signer-batch:16118
+    - stream-processing-writer:2555
+    - patient-signer-processor:20345
+    - subscriber-authorizer-proxy:16207
+    replicas: 1
+    servers:
+    - 7272
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: sale-signer
+  sale-signer-load-balancer:
+    clients:
+    - dns:53
+    - active-directory:389
+    - zeromq:6289
+    - neo4j:22479
+    - hazelcast:23647
+    - payment-streamer-reader:15300
+    - card-builder-generator:7778
+    - patient-logger-writer:21182
+    replicas: 1
+    servers:
+    - 25017
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: sale-signer
+  sale-signer-reader:
+    clients:
+    - ntp:123
+    - dns:53
+    - syslog:514
+    - active-directory:389
+    - elastic-search:1727
+    - lucene:6379
+    - rabbitmq:26887
+    - zeromq:6289
+    - neo4j:22479
+    - microsoftsql:6293
+    - oracle:14860
+    - hazelcast:23647
+    - postgres:6991
+    - mysql:26430
+    - mariadb:19425
+    - mongodb:3808
+    - cassandra:14787
+    - couchdb:16344
+    - card-processing-executor:2840
+    - sale-builder-batch:9765
+    replicas: 1
+    servers:
+    - 27865
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: sale-signer
+  sale-streamer-batch:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - dns:53
+    - syslog:514
+    - zeromq:6289
+    - microsoftsql:6293
+    - postgres:6991
+    - oracle:14860
+    - neo4j:22479
+    - hazelcast:23647
+    - couchdb:16344
+    - mysql:26430
+    - cassandra:14787
+    - mongodb:3808
+    - mariadb:19425
+    - customer-signer-generator:23415
+    - stream-processing-generator:17131
+    replicas: 1
+    servers:
+    - 12489
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: sale-streamer
+  sale-streamer-executor:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - syslog:514
+    - rabbitmq:26887
+    - lucene:6379
+    - docker-registry:13623
+    - kafka:3544
+    - mariadb:19425
+    - oracle:14860
+    - couchdb:16344
+    - microsoftsql:6293
+    - cassandra:14787
+    - mongodb:3808
+    - neo4j:22479
+    - postgres:6991
+    - hazelcast:23647
+    - mysql:26430
+    - customer-signer-generator:23415
+    - subscriber-authorizer-batch:19299
+    replicas: 1
+    servers:
+    - 7631
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: sale-streamer
+  sale-streamer-generator:
+    clients:
+    - dns:53
+    - lucene:6379
+    - mysql:26430
+    - microsoftsql:6293
+    - mariadb:19425
+    - couchdb:16344
+    - oracle:14860
+    - cassandra:14787
+    - mongodb:3808
+    - postgres:6991
+    - neo4j:22479
+    - hazelcast:23647
+    - sale-logger-cache:27818
+    - sale-logger-generator:17181
+    - patient-streamer-web:20337
+    replicas: 1
+    servers:
+    - 10763
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: sale-streamer
+  sale-streamer-log:
+    clients:
+    - dns:53
+    - ntp:123
+    - lucene:6379
+    - elastic-search:1727
+    - redis:7309
+    - zeromq:6289
+    - logstash:19228
+    - kafka:3544
+    - neo4j:22479
+    - mysql:26430
+    - postgres:6991
+    - payment-processing-executor:19696
+    - payment-builder-proxy:27372
+    replicas: 1
+    servers:
+    - 26619
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: sale-streamer
+  sale-streamer-web:
+    clients:
+    - dns:53
+    - active-directory:389
+    - docker-registry:13623
+    - lucene:6379
+    - logstash:19228
+    - postgres:6991
+    - oracle:14860
+    - card-authorizer-cache:7479
+    - payment-processing-writer:29858
+    replicas: 1
+    servers:
+    - 25832
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: sale-streamer
+  stream-authorizer-log:
+    clients:
+    - active-directory:389
+    - rabbitmq:26887
+    - kafka:3544
+    - zeromq:6289
+    - redis:7309
+    - neo4j:22479
+    - couchdb:16344
+    - postgres:6991
+    - microsoftsql:6293
+    - cassandra:14787
+    - card-signer-generator:3519
+    - stream-processing-load-balancer:3653
+    - payment-authorizer-cache:27719
+    - card-authorizer-processor:19159
+    replicas: 1
+    servers:
+    - 26615
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: stream-authorizer
+  stream-authorizer-proxy:
+    clients:
+    - active-directory:389
+    - dns:53
+    - ntp:123
+    - syslog:514
+    - redis:7309
+    - docker-registry:13623
+    - elastic-search:1727
+    - couchdb:16344
+    - postgres:6991
+    - microsoftsql:6293
+    - oracle:14860
+    - mongodb:3808
+    - mysql:26430
+    - subscriber-processing-batch:25568
+    - customer-streamer-load-balancer:2449
+    replicas: 1
+    servers:
+    - 4488
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: stream-authorizer
+  stream-builder-reader:
+    clients:
+    - active-directory:389
+    - dns:53
+    - elastic-search:1727
+    - redis:7309
+    - zeromq:6289
+    - logstash:19228
+    - postgres:6991
+    - mongodb:3808
+    - cassandra:14787
+    - oracle:14860
+    - mariadb:19425
+    - patient-authorizer-executor:9876
+    - stream-processing-executor:7129
+    - subscriber-streamer-proxy:11853
+    replicas: 1
+    servers:
+    - 6830
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: stream-builder
+  stream-builder-writer:
+    clients:
+    - dns:53
+    - docker-registry:13623
+    - logstash:19228
+    - redis:7309
+    - elastic-search:1727
+    - lucene:6379
+    - kafka:3544
+    - rabbitmq:26887
+    - zeromq:6289
+    - neo4j:22479
+    - patient-signer-app:25575
+    - payment-processing-proxy:8882
+    - sale-builder-executor:4716
+    - stream-streamer-load-balancer:4756
+    replicas: 1
+    servers:
+    - 19558
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: stream-builder
+  stream-logger-app:
+    clients:
+    - dns:53
+    - syslog:514
+    - lucene:6379
+    - zeromq:6289
+    - logstash:19228
+    - elastic-search:1727
+    - docker-registry:13623
+    - kafka:3544
+    - rabbitmq:26887
+    - redis:7309
+    - postgres:6991
+    - neo4j:22479
+    - hazelcast:23647
+    - cassandra:14787
+    - mariadb:19425
+    - mongodb:3808
+    - mysql:26430
+    - microsoftsql:6293
+    - oracle:14860
+    - payment-streamer-generator:21543
+    - sale-signer-reader:27865
+    - card-streamer-log:17414
+    replicas: 1
+    servers:
+    - 8682
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: stream-logger
+  stream-logger-executor:
+    clients:
+    - ntp:123
+    - dns:53
+    - active-directory:389
+    - syslog:514
+    - zeromq:6289
+    - logstash:19228
+    - redis:7309
+    - kafka:3544
+    - lucene:6379
+    - rabbitmq:26887
+    - neo4j:22479
+    - mysql:26430
+    - microsoftsql:6293
+    - mongodb:3808
+    - oracle:14860
+    - hazelcast:23647
+    - postgres:6991
+    - cassandra:14787
+    - mariadb:19425
+    - sale-builder-processor:17030
+    - customer-signer-executor:19757
+    replicas: 1
+    servers:
+    - 4250
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: stream-logger
+  stream-logger-log:
+    clients:
+    - ntp:123
+    - dns:53
+    - active-directory:389
+    - syslog:514
+    - docker-registry:13623
+    - kafka:3544
+    - mongodb:3808
+    - postgres:6991
+    - oracle:14860
+    - couchdb:16344
+    - neo4j:22479
+    - mariadb:19425
+    - microsoftsql:6293
+    - hazelcast:23647
+    - stream-signer-processor:11713
+    - payment-signer-app:20314
+    replicas: 1
+    servers:
+    - 3880
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: stream-logger
+  stream-logger-writer:
+    clients:
+    - active-directory:389
+    - redis:7309
+    - lucene:6379
+    - hazelcast:23647
+    - mysql:26430
+    - oracle:14860
+    - cassandra:14787
+    - microsoftsql:6293
+    - sale-authorizer-processor:27243
+    - customer-signer-executor:19757
+    - customer-signer-generator:23415
+    replicas: 1
+    servers:
+    - 21752
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: stream-logger
+  stream-processing-app:
+    clients:
+    - active-directory:389
+    - lucene:6379
+    - zeromq:6289
+    - redis:7309
+    - elastic-search:1727
+    - rabbitmq:26887
+    - kafka:3544
+    - logstash:19228
+    - hazelcast:23647
+    - mongodb:3808
+    - customer-streamer-cache:13343
+    - subscriber-logger-proxy:18029
+    replicas: 1
+    servers:
+    - 10137
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: stream-processing
+  stream-processing-executor:
+    clients:
+    - syslog:514
+    - logstash:19228
+    - zeromq:6289
+    - redis:7309
+    - rabbitmq:26887
+    - kafka:3544
+    - lucene:6379
+    - cassandra:14787
+    - mongodb:3808
+    - oracle:14860
+    - hazelcast:23647
+    - mariadb:19425
+    - postgres:6991
+    - mysql:26430
+    - couchdb:16344
+    - microsoftsql:6293
+    - neo4j:22479
+    - customer-signer-generator:23415
+    - customer-processing-processor:3074
+    - sale-streamer-web:25832
+    replicas: 1
+    servers:
+    - 7129
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: stream-processing
+  stream-processing-generator:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - syslog:514
+    - logstash:19228
+    - kafka:3544
+    - rabbitmq:26887
+    - couchdb:16344
+    - postgres:6991
+    - microsoftsql:6293
+    - mysql:26430
+    - mariadb:19425
+    - cassandra:14787
+    - sale-builder-log:15719
+    - patient-builder-log:28511
+    replicas: 1
+    servers:
+    - 17131
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: stream-processing
+  stream-processing-load-balancer:
+    clients:
+    - syslog:514
+    - active-directory:389
+    - zeromq:6289
+    - lucene:6379
+    - redis:7309
+    - elastic-search:1727
+    - logstash:19228
+    - couchdb:16344
+    - mongodb:3808
+    - mysql:26430
+    - cassandra:14787
+    - neo4j:22479
+    - payment-signer-cache:10881
+    - payment-signer-writer:20710
+    - card-authorizer-generator:29053
+    - subscriber-logger-batch:17507
+    replicas: 1
+    servers:
+    - 3653
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: stream-processing
+  stream-processing-log:
+    clients:
+    - syslog:514
+    - ntp:123
+    - active-directory:389
+    - dns:53
+    - kafka:3544
+    - elastic-search:1727
+    - rabbitmq:26887
+    - oracle:14860
+    - hazelcast:23647
+    - mysql:26430
+    - sale-authorizer-proxy:10461
+    - sale-authorizer-batch:4769
+    - stream-authorizer-proxy:4488
+    - subscriber-signer-app:7172
+    replicas: 1
+    servers:
+    - 18106
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: stream-processing
+  stream-processing-proxy:
+    clients:
+    - syslog:514
+    - zeromq:6289
+    - docker-registry:13623
+    - elastic-search:1727
+    - rabbitmq:26887
+    - redis:7309
+    - kafka:3544
+    - postgres:6991
+    - mysql:26430
+    - neo4j:22479
+    - cassandra:14787
+    - hazelcast:23647
+    - microsoftsql:6293
+    - couchdb:16344
+    - mongodb:3808
+    - oracle:14860
+    - mariadb:19425
+    - stream-authorizer-log:26615
+    - sale-streamer-generator:10763
+    - payment-logger-writer:8172
+    - sale-builder-batch:9765
+    replicas: 1
+    servers:
+    - 28424
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: stream-processing
+  stream-processing-reader:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - dns:53
+    - rabbitmq:26887
+    - redis:7309
+    - lucene:6379
+    - zeromq:6289
+    - logstash:19228
+    - docker-registry:13623
+    - elastic-search:1727
+    - kafka:3544
+    - neo4j:22479
+    - microsoftsql:6293
+    - mariadb:19425
+    - cassandra:14787
+    - hazelcast:23647
+    - oracle:14860
+    - mysql:26430
+    - subscriber-streamer-writer:8550
+    - card-authorizer-processor:19159
+    - subscriber-signer-web:25322
+    - customer-signer-generator:23415
+    replicas: 1
+    servers:
+    - 23304
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: stream-processing
+  stream-processing-writer:
+    clients:
+    - dns:53
+    - logstash:19228
+    - elastic-search:1727
+    - mariadb:19425
+    - mongodb:3808
+    - oracle:14860
+    - mysql:26430
+    - hazelcast:23647
+    - couchdb:16344
+    - microsoftsql:6293
+    - cassandra:14787
+    - postgres:6991
+    - sale-logger-processor:25230
+    - subscriber-processing-writer:8433
+    replicas: 1
+    servers:
+    - 2555
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: stream-processing
+  stream-signer-app:
+    clients:
+    - active-directory:389
+    - logstash:19228
+    - elastic-search:1727
+    - redis:7309
+    - docker-registry:13623
+    - mongodb:3808
+    - mariadb:19425
+    - mysql:26430
+    - cassandra:14787
+    - microsoftsql:6293
+    - neo4j:22479
+    - postgres:6991
+    - oracle:14860
+    - hazelcast:23647
+    - couchdb:16344
+    - subscriber-authorizer-executor:4378
+    - patient-streamer-executor:6890
+    - sale-streamer-batch:12489
+    replicas: 1
+    servers:
+    - 17241
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: stream-signer
+  stream-signer-generator:
+    clients:
+    - active-directory:389
+    - rabbitmq:26887
+    - elastic-search:1727
+    - logstash:19228
+    - oracle:14860
+    - microsoftsql:6293
+    - mongodb:3808
+    - hazelcast:23647
+    - cassandra:14787
+    - payment-processing-processor:19860
+    - patient-streamer-load-balancer:3783
+    replicas: 1
+    servers:
+    - 9265
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: stream-signer
+  stream-signer-processor:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - syslog:514
+    - zeromq:6289
+    - docker-registry:13623
+    - logstash:19228
+    - mongodb:3808
+    - hazelcast:23647
+    - oracle:14860
+    - microsoftsql:6293
+    - mysql:26430
+    - subscriber-signer-writer:10971
+    - sale-logger-web:24235
+    - payment-builder-web:27080
+    - payment-streamer-reader:15300
+    replicas: 1
+    servers:
+    - 11713
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: stream-signer
+  stream-streamer-batch:
+    clients:
+    - active-directory:389
+    - dns:53
+    - syslog:514
+    - ntp:123
+    - rabbitmq:26887
+    - zeromq:6289
+    - redis:7309
+    - logstash:19228
+    - docker-registry:13623
+    - couchdb:16344
+    - oracle:14860
+    - hazelcast:23647
+    - microsoftsql:6293
+    - mysql:26430
+    - mariadb:19425
+    - mongodb:3808
+    - cassandra:14787
+    - postgres:6991
+    - stream-builder-writer:19558
+    - sale-signer-load-balancer:25017
+    - sale-processing-batch:6052
+    - payment-processing-batch:8419
+    replicas: 1
+    servers:
+    - 24921
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: stream-streamer
+  stream-streamer-generator:
+    clients:
+    - dns:53
+    - syslog:514
+    - docker-registry:13623
+    - postgres:6991
+    - oracle:14860
+    - hazelcast:23647
+    - microsoftsql:6293
+    - cassandra:14787
+    - sale-streamer-generator:10763
+    - customer-streamer-batch:15114
+    replicas: 1
+    servers:
+    - 16680
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: stream-streamer
+  stream-streamer-load-balancer:
+    clients:
+    - ntp:123
+    - syslog:514
+    - docker-registry:13623
+    - zeromq:6289
+    - logstash:19228
+    - redis:7309
+    - rabbitmq:26887
+    - lucene:6379
+    - mariadb:19425
+    - cassandra:14787
+    - postgres:6991
+    - neo4j:22479
+    - customer-signer-web:16208
+    - sale-builder-reader:4763
+    - customer-streamer-executor:12415
+    - sale-logger-generator:17181
+    replicas: 1
+    servers:
+    - 4756
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: stream-streamer
+  stream-streamer-proxy:
+    clients:
+    - dns:53
+    - active-directory:389
+    - syslog:514
+    - docker-registry:13623
+    - rabbitmq:26887
+    - kafka:3544
+    - elastic-search:1727
+    - zeromq:6289
+    - hazelcast:23647
+    - microsoftsql:6293
+    - oracle:14860
+    - mariadb:19425
+    - patient-processing-reader:7798
+    - subscriber-logger-web:28979
+    - subscriber-processing-batch:25568
+    - card-signer-writer:7347
+    replicas: 1
+    servers:
+    - 8970
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: stream-streamer
+  stream-streamer-reader:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - ntp:123
+    - kafka:3544
+    - lucene:6379
+    - zeromq:6289
+    - rabbitmq:26887
+    - docker-registry:13623
+    - elastic-search:1727
+    - cassandra:14787
+    - mariadb:19425
+    - customer-authorizer-cache:9713
+    - customer-processing-processor:3074
+    replicas: 1
+    servers:
+    - 27351
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: stream-streamer
+  subscriber-authorizer-batch:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - syslog:514
+    - dns:53
+    - elastic-search:1727
+    - kafka:3544
+    - rabbitmq:26887
+    - microsoftsql:6293
+    - mysql:26430
+    - couchdb:16344
+    - mariadb:19425
+    - hazelcast:23647
+    - neo4j:22479
+    - card-signer-writer:7347
+    - subscriber-streamer-writer:8550
+    - payment-processing-reader:23857
+    replicas: 1
+    servers:
+    - 19299
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: subscriber-authorizer
+  subscriber-authorizer-cache:
+    clients:
+    - dns:53
+    - active-directory:389
+    - syslog:514
+    - ntp:123
+    - rabbitmq:26887
+    - kafka:3544
+    - lucene:6379
+    - redis:7309
+    - elastic-search:1727
+    - docker-registry:13623
+    - logstash:19228
+    - zeromq:6289
+    - cassandra:14787
+    - microsoftsql:6293
+    - oracle:14860
+    - mariadb:19425
+    - mongodb:3808
+    - couchdb:16344
+    - mysql:26430
+    - payment-logger-writer:8172
+    - subscriber-streamer-generator:17739
+    - stream-authorizer-proxy:4488
+    replicas: 1
+    servers:
+    - 14985
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: subscriber-authorizer
+  subscriber-authorizer-executor:
+    clients:
+    - ntp:123
+    - dns:53
+    - syslog:514
+    - active-directory:389
+    - docker-registry:13623
+    - logstash:19228
+    - rabbitmq:26887
+    - redis:7309
+    - lucene:6379
+    - elastic-search:1727
+    - zeromq:6289
+    - kafka:3544
+    - neo4j:22479
+    - mysql:26430
+    - couchdb:16344
+    - card-builder-writer:14705
+    - stream-processing-app:10137
+    replicas: 1
+    servers:
+    - 4378
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: subscriber-authorizer
+  subscriber-authorizer-processor:
+    clients:
+    - syslog:514
+    - active-directory:389
+    - dns:53
+    - kafka:3544
+    - cassandra:14787
+    - sale-builder-load-balancer:22460
+    - sale-logger-reader:24727
+    - payment-builder-proxy:27372
+    - card-signer-batch:17040
+    replicas: 1
+    servers:
+    - 3484
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: subscriber-authorizer
+  subscriber-authorizer-proxy:
+    clients:
+    - dns:53
+    - active-directory:389
+    - syslog:514
+    - rabbitmq:26887
+    - kafka:3544
+    - lucene:6379
+    - logstash:19228
+    - redis:7309
+    - elastic-search:1727
+    - oracle:14860
+    - mongodb:3808
+    - hazelcast:23647
+    - microsoftsql:6293
+    - neo4j:22479
+    - cassandra:14787
+    - postgres:6991
+    - mysql:26430
+    - subscriber-processing-reader:9642
+    - sale-processing-proxy:17649
+    - subscriber-processing-load-balancer:18756
+    - patient-processing-writer:22391
+    replicas: 1
+    servers:
+    - 16207
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: subscriber-authorizer
+  subscriber-authorizer-reader:
+    clients:
+    - dns:53
+    - kafka:3544
+    - redis:7309
+    - rabbitmq:26887
+    - docker-registry:13623
+    - mariadb:19425
+    - hazelcast:23647
+    - oracle:14860
+    - couchdb:16344
+    - mongodb:3808
+    - payment-streamer-writer:5396
+    - subscriber-authorizer-batch:19299
+    replicas: 1
+    servers:
+    - 6079
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: subscriber-authorizer
+  subscriber-authorizer-web:
+    clients:
+    - syslog:514
+    - active-directory:389
+    - logstash:19228
+    - oracle:14860
+    - payment-signer-proxy:7170
+    - sale-authorizer-proxy:10461
+    - card-authorizer-app:26619
+    replicas: 1
+    servers:
+    - 7979
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: subscriber-authorizer
+  subscriber-authorizer-writer:
+    clients:
+    - dns:53
+    - ntp:123
+    - zeromq:6289
+    - lucene:6379
+    - rabbitmq:26887
+    - docker-registry:13623
+    - redis:7309
+    - neo4j:22479
+    - postgres:6991
+    - cassandra:14787
+    - mongodb:3808
+    - hazelcast:23647
+    - microsoftsql:6293
+    - oracle:14860
+    - subscriber-logger-batch:17507
+    - payment-builder-web:27080
+    replicas: 1
+    servers:
+    - 14206
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: subscriber-authorizer
+  subscriber-builder-log:
+    clients:
+    - ntp:123
+    - syslog:514
+    - zeromq:6289
+    - docker-registry:13623
+    - redis:7309
+    - kafka:3544
+    - mariadb:19425
+    - mongodb:3808
+    - microsoftsql:6293
+    - postgres:6991
+    - cassandra:14787
+    - neo4j:22479
+    - mysql:26430
+    - oracle:14860
+    - subscriber-logger-load-balancer:17919
+    - subscriber-processing-load-balancer:18756
+    - patient-logger-writer:21182
+    replicas: 1
+    servers:
+    - 16114
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: subscriber-builder
+  subscriber-logger-app:
+    clients:
+    - active-directory:389
+    - dns:53
+    - ntp:123
+    - syslog:514
+    - logstash:19228
+    - zeromq:6289
+    - hazelcast:23647
+    - mysql:26430
+    - neo4j:22479
+    - microsoftsql:6293
+    - customer-signer-load-balancer:4570
+    - customer-streamer-proxy:5092
+    replicas: 1
+    servers:
+    - 19217
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: subscriber-logger
+  subscriber-logger-batch:
+    clients:
+    - active-directory:389
+    - dns:53
+    - syslog:514
+    - logstash:19228
+    - rabbitmq:26887
+    - redis:7309
+    - elastic-search:1727
+    - lucene:6379
+    - docker-registry:13623
+    - kafka:3544
+    - couchdb:16344
+    - card-logger-writer:17562
+    - stream-logger-executor:4250
+    - sale-builder-web:16180
+    - card-logger-reader:8320
+    replicas: 1
+    servers:
+    - 17507
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: subscriber-logger
+  subscriber-logger-cache:
+    clients:
+    - ntp:123
+    - rabbitmq:26887
+    - redis:7309
+    - zeromq:6289
+    - docker-registry:13623
+    - hazelcast:23647
+    - neo4j:22479
+    - oracle:14860
+    - couchdb:16344
+    - mongodb:3808
+    - mariadb:19425
+    - subscriber-streamer-reader:19875
+    - subscriber-signer-writer:10971
+    replicas: 1
+    servers:
+    - 27468
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: subscriber-logger
+  subscriber-logger-executor:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - rabbitmq:26887
+    - redis:7309
+    - docker-registry:13623
+    - zeromq:6289
+    - logstash:19228
+    - kafka:3544
+    - oracle:14860
+    - postgres:6991
+    - mongodb:3808
+    - payment-builder-cache:20505
+    - stream-processing-app:10137
+    replicas: 1
+    servers:
+    - 13912
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: subscriber-logger
+  subscriber-logger-generator:
+    clients:
+    - dns:53
+    - ntp:123
+    - elastic-search:1727
+    - redis:7309
+    - logstash:19228
+    - lucene:6379
+    - docker-registry:13623
+    - rabbitmq:26887
+    - kafka:3544
+    - zeromq:6289
+    - couchdb:16344
+    - mariadb:19425
+    - neo4j:22479
+    - cassandra:14787
+    - mysql:26430
+    - patient-streamer-web:20337
+    - sale-streamer-web:25832
+    - sale-builder-log:15719
+    - customer-streamer-executor:12415
+    replicas: 1
+    servers:
+    - 26684
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: subscriber-logger
+  subscriber-logger-load-balancer:
+    clients:
+    - dns:53
+    - ntp:123
+    - syslog:514
+    - lucene:6379
+    - rabbitmq:26887
+    - redis:7309
+    - kafka:3544
+    - logstash:19228
+    - docker-registry:13623
+    - elastic-search:1727
+    - cassandra:14787
+    - mysql:26430
+    - microsoftsql:6293
+    - oracle:14860
+    - couchdb:16344
+    - mariadb:19425
+    - neo4j:22479
+    - card-signer-reader:12132
+    - customer-signer-load-balancer:4570
+    - subscriber-builder-log:16114
+    - subscriber-streamer-load-balancer:24063
+    replicas: 1
+    servers:
+    - 17919
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: subscriber-logger
+  subscriber-logger-log:
+    clients:
+    - ntp:123
+    - kafka:3544
+    - redis:7309
+    - logstash:19228
+    - neo4j:22479
+    - mysql:26430
+    - microsoftsql:6293
+    - couchdb:16344
+    - postgres:6991
+    - payment-signer-proxy:7170
+    - card-signer-app:27772
+    - subscriber-logger-cache:27468
+    - card-authorizer-proxy:16186
+    replicas: 1
+    servers:
+    - 26690
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: log
+    - key: service
+      value: subscriber-logger
+  subscriber-logger-processor:
+    clients:
+    - dns:53
+    - active-directory:389
+    - redis:7309
+    - zeromq:6289
+    - logstash:19228
+    - elastic-search:1727
+    - lucene:6379
+    - neo4j:22479
+    - customer-streamer-reader:29983
+    - customer-signer-log:19147
+    - sale-streamer-batch:12489
+    - payment-logger-writer:8172
+    replicas: 1
+    servers:
+    - 13379
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: processor
+    - key: service
+      value: subscriber-logger
+  subscriber-logger-proxy:
+    clients:
+    - active-directory:389
+    - redis:7309
+    - elastic-search:1727
+    - logstash:19228
+    - oracle:14860
+    - mariadb:19425
+    - couchdb:16344
+    - microsoftsql:6293
+    - hazelcast:23647
+    - mysql:26430
+    - mongodb:3808
+    - neo4j:22479
+    - payment-builder-reader:23200
+    - payment-processing-reader:23857
+    - subscriber-logger-batch:17507
+    - payment-builder-proxy:27372
+    replicas: 1
+    servers:
+    - 18029
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: subscriber-logger
+  subscriber-logger-web:
+    clients:
+    - ntp:123
+    - syslog:514
+    - active-directory:389
+    - dns:53
+    - logstash:19228
+    - zeromq:6289
+    - redis:7309
+    - rabbitmq:26887
+    - docker-registry:13623
+    - lucene:6379
+    - postgres:6991
+    - neo4j:22479
+    - subscriber-streamer-cache:23632
+    - stream-streamer-reader:27351
+    - stream-streamer-batch:24921
+    - customer-authorizer-cache:9713
+    replicas: 1
+    servers:
+    - 28979
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: subscriber-logger
+  subscriber-logger-writer:
+    clients:
+    - active-directory:389
+    - ntp:123
+    - syslog:514
+    - dns:53
+    - rabbitmq:26887
+    - couchdb:16344
+    - mariadb:19425
+    - neo4j:22479
+    - sale-authorizer-app:15118
+    - stream-signer-generator:9265
+    replicas: 1
+    servers:
+    - 16213
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: subscriber-logger
+  subscriber-processing-app:
+    clients:
+    - dns:53
+    - lucene:6379
+    - logstash:19228
+    - docker-registry:13623
+    - microsoftsql:6293
+    - postgres:6991
+    - cassandra:14787
+    - neo4j:22479
+    - customer-processing-processor:3074
+    - payment-signer-cache:10881
+    - customer-authorizer-cache:9713
+    - sale-builder-web:16180
+    replicas: 1
+    servers:
+    - 18562
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: subscriber-processing
+  subscriber-processing-batch:
+    clients:
+    - syslog:514
+    - dns:53
+    - active-directory:389
+    - ntp:123
+    - zeromq:6289
+    - elastic-search:1727
+    - kafka:3544
+    - redis:7309
+    - lucene:6379
+    - docker-registry:13623
+    - rabbitmq:26887
+    - cassandra:14787
+    - hazelcast:23647
+    - mariadb:19425
+    - couchdb:16344
+    - mysql:26430
+    - oracle:14860
+    - microsoftsql:6293
+    - postgres:6991
+    - mongodb:3808
+    - sale-streamer-log:26619
+    - stream-logger-writer:21752
+    replicas: 1
+    servers:
+    - 25568
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: subscriber-processing
+  subscriber-processing-generator:
+    clients:
+    - dns:53
+    - ntp:123
+    - syslog:514
+    - active-directory:389
+    - lucene:6379
+    - mariadb:19425
+    - couchdb:16344
+    - mysql:26430
+    - postgres:6991
+    - mongodb:3808
+    - microsoftsql:6293
+    - cassandra:14787
+    - neo4j:22479
+    - sale-authorizer-proxy:10461
+    - subscriber-signer-writer:10971
+    - customer-streamer-executor:12415
+    - payment-signer-cache:10881
+    replicas: 1
+    servers:
+    - 27559
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: subscriber-processing
+  subscriber-processing-load-balancer:
+    clients:
+    - ntp:123
+    - active-directory:389
+    - elastic-search:1727
+    - hazelcast:23647
+    - microsoftsql:6293
+    - mongodb:3808
+    - mysql:26430
+    - cassandra:14787
+    - couchdb:16344
+    - mariadb:19425
+    - postgres:6991
+    - neo4j:22479
+    - payment-streamer-app:2766
+    - patient-processing-writer:22391
+    - payment-builder-executor:18368
+    - stream-logger-app:8682
+    replicas: 1
+    servers:
+    - 18756
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: subscriber-processing
+  subscriber-processing-reader:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - ntp:123
+    - redis:7309
+    - elastic-search:1727
+    - kafka:3544
+    - docker-registry:13623
+    - zeromq:6289
+    - cassandra:14787
+    - mongodb:3808
+    - postgres:6991
+    - hazelcast:23647
+    - mariadb:19425
+    - microsoftsql:6293
+    - mysql:26430
+    - sale-logger-processor:25230
+    - card-signer-log:16078
+    replicas: 1
+    servers:
+    - 9642
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: subscriber-processing
+  subscriber-processing-writer:
+    clients:
+    - syslog:514
+    - zeromq:6289
+    - logstash:19228
+    - rabbitmq:26887
+    - lucene:6379
+    - hazelcast:23647
+    - microsoftsql:6293
+    - mysql:26430
+    - stream-authorizer-proxy:4488
+    - subscriber-authorizer-batch:19299
+    replicas: 1
+    servers:
+    - 8433
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: subscriber-processing
+  subscriber-signer-app:
+    clients:
+    - dns:53
+    - elastic-search:1727
+    - redis:7309
+    - logstash:19228
+    - neo4j:22479
+    - oracle:14860
+    - mysql:26430
+    - postgres:6991
+    - microsoftsql:6293
+    - mongodb:3808
+    - hazelcast:23647
+    - mariadb:19425
+    - couchdb:16344
+    - sale-processing-cache:13448
+    - patient-streamer-web:20337
+    - payment-logger-writer:8172
+    replicas: 1
+    servers:
+    - 7172
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: subscriber-signer
+  subscriber-signer-web:
+    clients:
+    - active-directory:389
+    - elastic-search:1727
+    - redis:7309
+    - hazelcast:23647
+    - microsoftsql:6293
+    - mariadb:19425
+    - payment-builder-reader:23200
+    - patient-logger-web:10921
+    replicas: 1
+    servers:
+    - 25322
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: web
+    - key: service
+      value: subscriber-signer
+  subscriber-signer-writer:
+    clients:
+    - active-directory:389
+    - logstash:19228
+    - kafka:3544
+    - lucene:6379
+    - docker-registry:13623
+    - redis:7309
+    - elastic-search:1727
+    - cassandra:14787
+    - oracle:14860
+    - microsoftsql:6293
+    - payment-signer-proxy:7170
+    - subscriber-processing-generator:27559
+    - payment-signer-executor:5291
+    replicas: 1
+    servers:
+    - 10971
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: subscriber-signer
+  subscriber-streamer-app:
+    clients:
+    - ntp:123
+    - syslog:514
+    - dns:53
+    - redis:7309
+    - logstash:19228
+    - zeromq:6289
+    - elastic-search:1727
+    - kafka:3544
+    - docker-registry:13623
+    - rabbitmq:26887
+    - hazelcast:23647
+    - couchdb:16344
+    - postgres:6991
+    - oracle:14860
+    - cassandra:14787
+    - mongodb:3808
+    - mariadb:19425
+    - mysql:26430
+    - neo4j:22479
+    - subscriber-authorizer-writer:14206
+    - sale-streamer-batch:12489
+    - payment-builder-generator:27840
+    replicas: 1
+    servers:
+    - 18910
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: app
+    - key: service
+      value: subscriber-streamer
+  subscriber-streamer-batch:
+    clients:
+    - active-directory:389
+    - dns:53
+    - syslog:514
+    - ntp:123
+    - logstash:19228
+    - kafka:3544
+    - zeromq:6289
+    - rabbitmq:26887
+    - docker-registry:13623
+    - elastic-search:1727
+    - redis:7309
+    - lucene:6379
+    - mysql:26430
+    - mariadb:19425
+    - mongodb:3808
+    - microsoftsql:6293
+    - hazelcast:23647
+    - neo4j:22479
+    - cassandra:14787
+    - subscriber-authorizer-web:7979
+    - payment-logger-log:23198
+    - patient-builder-cache:13758
+    replicas: 1
+    servers:
+    - 22946
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: batch
+    - key: service
+      value: subscriber-streamer
+  subscriber-streamer-cache:
+    clients:
+    - active-directory:389
+    - syslog:514
+    - dns:53
+    - ntp:123
+    - elastic-search:1727
+    - logstash:19228
+    - oracle:14860
+    - mariadb:19425
+    - mongodb:3808
+    - neo4j:22479
+    - hazelcast:23647
+    - postgres:6991
+    - couchdb:16344
+    - cassandra:14787
+    - mysql:26430
+    - microsoftsql:6293
+    - patient-logger-cache:8262
+    - customer-streamer-reader:29983
+    replicas: 1
+    servers:
+    - 23632
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: cache
+    - key: service
+      value: subscriber-streamer
+  subscriber-streamer-executor:
+    clients:
+    - syslog:514
+    - ntp:123
+    - active-directory:389
+    - kafka:3544
+    - docker-registry:13623
+    - rabbitmq:26887
+    - zeromq:6289
+    - elastic-search:1727
+    - logstash:19228
+    - lucene:6379
+    - redis:7309
+    - postgres:6991
+    - neo4j:22479
+    - microsoftsql:6293
+    - mysql:26430
+    - mongodb:3808
+    - couchdb:16344
+    - mariadb:19425
+    - subscriber-logger-load-balancer:17919
+    - card-streamer-log:17414
+    replicas: 1
+    servers:
+    - 28033
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: executor
+    - key: service
+      value: subscriber-streamer
+  subscriber-streamer-generator:
+    clients:
+    - syslog:514
+    - docker-registry:13623
+    - logstash:19228
+    - lucene:6379
+    - kafka:3544
+    - redis:7309
+    - elastic-search:1727
+    - couchdb:16344
+    - mariadb:19425
+    - mysql:26430
+    - microsoftsql:6293
+    - neo4j:22479
+    - hazelcast:23647
+    - oracle:14860
+    - mongodb:3808
+    - payment-streamer-executor:23699
+    - subscriber-authorizer-writer:14206
+    - sale-authorizer-processor:27243
+    - subscriber-processing-batch:25568
+    replicas: 1
+    servers:
+    - 17739
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: generator
+    - key: service
+      value: subscriber-streamer
+  subscriber-streamer-load-balancer:
+    clients:
+    - ntp:123
+    - syslog:514
+    - docker-registry:13623
+    - mongodb:3808
+    - microsoftsql:6293
+    - oracle:14860
+    - cassandra:14787
+    - mysql:26430
+    - mariadb:19425
+    - hazelcast:23647
+    - couchdb:16344
+    - neo4j:22479
+    - sale-builder-app:17268
+    - subscriber-logger-writer:16213
+    - customer-processing-processor:3074
+    - stream-processing-generator:17131
+    replicas: 1
+    servers:
+    - 24063
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: load-balancer
+    - key: service
+      value: subscriber-streamer
+  subscriber-streamer-proxy:
+    clients:
+    - ntp:123
+    - syslog:514
+    - rabbitmq:26887
+    - redis:7309
+    - lucene:6379
+    - elastic-search:1727
+    - kafka:3544
+    - zeromq:6289
+    - docker-registry:13623
+    - logstash:19228
+    - cassandra:14787
+    - customer-streamer-reader:29983
+    - customer-streamer-load-balancer:2449
+    - sale-streamer-web:25832
+    replicas: 1
+    servers:
+    - 11853
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: proxy
+    - key: service
+      value: subscriber-streamer
+  subscriber-streamer-reader:
+    clients:
+    - syslog:514
+    - rabbitmq:26887
+    - logstash:19228
+    - cassandra:14787
+    - mariadb:19425
+    - postgres:6991
+    - mysql:26430
+    - mongodb:3808
+    - oracle:14860
+    - couchdb:16344
+    - card-authorizer-app:26619
+    - sale-builder-executor:4716
+    replicas: 1
+    servers:
+    - 19875
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: reader
+    - key: service
+      value: subscriber-streamer
+  subscriber-streamer-writer:
+    clients:
+    - ntp:123
+    - syslog:514
+    - active-directory:389
+    - dns:53
+    - rabbitmq:26887
+    - logstash:19228
+    - zeromq:6289
+    - couchdb:16344
+    - microsoftsql:6293
+    - mongodb:3808
+    - neo4j:22479
+    - postgres:6991
+    - mariadb:19425
+    - hazelcast:23647
+    - oracle:14860
+    - cassandra:14787
+    - stream-streamer-generator:16680
+    - card-logger-generator:20455
+    - payment-signer-cache:10881
+    replicas: 1
+    servers:
+    - 8550
+    tags:
+    - key: type
+      value: app
+    - key: name
+      value: writer
+    - key: service
+      value: subscriber-streamer
+  syslog:
+    clients: []
+    replicas: 1
+    servers:
+    - 514
+    tags:
+    - key: type
+      value: infra
+    - key: name
+      value: syslog
+    - key: service
+      value: syslog
+  zeromq:
+    clients:
+    - dns:53
+    - ntp:123
+    - syslog:514
+    - active-directory:389
+    replicas: 1
+    servers:
+    - 6289
+    tags:
+    - key: type
+      value: service
+    - key: name
+      value: zeromq
+    - key: service
+      value: zeromq

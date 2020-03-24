@@ -2,6 +2,12 @@ scenario: minidc
 ships:
     # app: builder
     dc-app-builder-web:
+        ui:
+            title: "Welcome to the Engineering Build System"
+            body: "This application is highly secure and should only be accessed by engineers and system administrators"
+            image: "http://www.newdesignfile.com/postpic/2011/11/data-center-server-icon_177314.png"
+            favicon: "https://cdn3.iconfinder.com/data/icons/fatcow/32/cog.png"
+            port: 30601
         replicas: 1
         binary_name: build_ui
         tags:
@@ -160,6 +166,12 @@ ships:
 
     # app: payment
     dc-app-payment-frontend:
+        ui:
+            title: "Welcome to the Payments & Billing App"
+            body: "This application is highly secure and should only be accessed by finance administrators"
+            image: "https://cdn.merchantmaverick.com/wp-content/uploads/2018/04/bigstock-205461277.jpg"
+            favicon: "https://cdn2.iconfinder.com/data/icons/circle-icons-1/64/creditcard-32.png"
+            port: 30602
         replicas: 1
         binary_name: payment_ui
         tags:
