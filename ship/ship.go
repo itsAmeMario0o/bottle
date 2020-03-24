@@ -89,6 +89,16 @@ func NewAnnotation() *Annotation {
 
 func (c *Credentials) getCredentials() *Credentials {
 
+	envAPIKey, envAPISecret := os.Getenv("BOTTLE_API_KEY"), os.Getenv("BOTTLE_API_SECRET")
+
+	if envAPIKey != "" && envAPISecret != "" {
+		c.Key = envAPIKey
+		c.Secret = envAPISecret
+		log.Println("Using API key provided in environment variables")
+		return c
+	}
+
+	log.Println("Opening API key expected to be provided in api_credentials.json")
 	jsonFile, err := ioutil.ReadFile("api_credentials.json")
 	if err != nil {
 		log.Fatalf("error opening #%v ", err)
@@ -98,6 +108,7 @@ func (c *Credentials) getCredentials() *Credentials {
 		log.Fatalf("Unmarshal: %v", err)
 	}
 
+	log.Println("Using API key provided in api_credentials.json")
 	return c
 }
 

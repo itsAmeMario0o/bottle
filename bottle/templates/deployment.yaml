@@ -4,6 +4,8 @@
 {{- $stats := .Values.stats -}}
 {{- $sensor := .Values.sensor -}}
 {{- $key := .Values.key -}}
+{{- $api_key := .Values.api_key -}}
+{{- $api_secret := .Values.api_secret -}}
 {{- $proxy := .Values.proxy -}}
 {{ range $shipname, $ship := .Values.ships }}
 {{- $binary_name := $ship.binary_name | default "ship" -}}
@@ -55,6 +57,10 @@ spec:
                       value: {{ $stats | default "false" | toString | quote }}
                     - name: BOTTLE_SENSOR
                       value: {{ $sensor | default "true" | toString | quote }}
+                    - name: BOTTLE_API_KEY
+                      value: {{ $api_key }}
+                    - name: BOTTLE_API_SECRET
+                      value: {{ $api_secret }}
                   volumeMounts:
                     - mountPath: /etc/ship
                       name: config
