@@ -464,7 +464,7 @@ func (s *Ship) setupTetration() {
 	s.credentials.getCredentials()
 
 	var url string
-	if os.Getenv("BOTTLE_SENSOR") != "false" {
+	if os.Getenv("BOTTLE_SENSOR") != "false" && os.Getenv("BOTTLE_API_URL") == "" {
 		var uuid string
 
 		for i := 1; i <= 12; i++ {
@@ -500,7 +500,7 @@ func (s *Ship) setupTetration() {
 		url = strings.Trim(url, "\n")
 		url = strings.Trim(url, "\"")
 	} else {
-		url = os.Getenv("BOTTLE_URL")
+		url = os.Getenv("BOTTLE_API_URL")
 	}
 
 	s.tetration = tetration.NewH4(url, s.credentials.Secret, s.credentials.Key, "/openapi/v1", false)
