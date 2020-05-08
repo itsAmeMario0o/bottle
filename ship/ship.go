@@ -429,7 +429,14 @@ func (s *Ship) annotate(annotation Annotation) {
 				log.Printf("could not create annotation payload #error=%v", err)
 				return
 			}
-			_, err = s.tetration.Post("/inventory/tags/"+scope, string(payload))
+			if annotationURL := os.Getenv("BOTTLE_API_URL"); annotationURL != "" {
+				sensorClusterURL := s.tetration.Endpoint
+				s.tetration.Endpoint = annotationURL
+				_, err = s.tetration.Post("/inventory/tags/"+scope, string(payload))
+				s.tetration.Endpoint = sensorClusterURL
+			} else {
+				_, err = s.tetration.Post("/inventory/tags/"+scope, string(payload))
+			}
 			if err != nil {
 				log.Printf("could not post annotation #error=%v", err)
 				return
@@ -463,8 +470,8 @@ func (s *Ship) annotateOnTearDown() {
 func (s *Ship) setupTetration() {
 	s.credentials.getCredentials()
 
-	var url string
-	if os.Getenv("BOTTLE_SENSOR") != "false" && os.Getenv("BOTTLE_API_URL") == "" {
+	var sensorClusterURL string
+	if os.Getenv("BOTTLE_SENSOR") != "false" {
 		var uuid string
 
 		for i := 1; i <= 12; i++ {
@@ -496,14 +503,15 @@ func (s *Ship) setupTetration() {
 		}
 
 		configURL := strings.Split(string(result), "=")
-		url = configURL[1]
+		url := configURL[1]
 		url = strings.Trim(url, "\n")
 		url = strings.Trim(url, "\"")
+		sensorClusterURL = url
 	} else {
-		url = os.Getenv("BOTTLE_API_URL")
+		sensorClusterURL = os.Getenv("BOTTLE_API_URL")
 	}
 
-	s.tetration = tetration.NewH4(url, s.credentials.Secret, s.credentials.Key, "/openapi/v1", false)
+	s.tetration = tetration.NewH4(sensorClusterURL, s.credentials.Secret, s.credentials.Key, "/openapi/v1", false)
 
 	_, err := s.tetration.GetSWAgents()
 	if err != nil {
