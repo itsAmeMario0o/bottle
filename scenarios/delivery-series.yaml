@@ -1,0 +1,245 @@
+scenario: minidc
+ships:
+  insurance-users:
+    tags:
+      - key: Type
+        value: Campus
+      - key: Service
+        value: Insurance
+    replicas: 2
+    binary_name: iexplore
+    clients:
+      - app-insurance-web:443
+  banking-users:
+    tags:
+      - key: Type
+        value: Campus
+      - key: Service
+        value: Banking
+    replicas: 2
+    binary_name: chrome
+    clients:
+      - app-banking-frontend:443
+
+  # app: insurance
+  app-insurance-web:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Insurance
+      - key: App
+        value: Claims
+      - key: Tier
+        value: Web
+    replicas: 1
+    binary_name: insurance_web
+    servers:
+      - 443
+    clients:
+      - app-insurance-assessor:8080
+      - app-insurance-claims:9000
+      - service-redis:6379
+  app-insurance-assessor:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Insurance
+      - key: App
+        value: Claims
+      - key: Tier
+        value: Assessor
+    replicas: 1
+    binary_name: assessor
+    servers:
+      - 8080
+    clients:
+      - db-oracle:1521
+      - app-insurance-payment:10000
+  app-insurance-claims:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Insurance
+      - key: App
+        value: Claims
+      - key: Tier
+        value: Claims
+    replicas: 1
+    binary_name: claims
+    servers:
+      - 9000
+    clients:
+      - db-oracle:1521
+      - app-insurance-payment:10000
+  app-insurance-payment:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Insurance
+      - key: App
+        value: Claims
+      - key: Tier
+        value: Payment
+    replicas: 1
+    binary_name: payment
+    servers:
+      - 10000
+    clients:
+      - app-banking-card-processing-broker:9092
+
+  # app: banking
+  app-banking-frontend:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Banking
+      - key: App
+        value: Core
+      - key: Tier
+        value: Frontend
+    replicas: 1
+    binary_name: payment_web
+    servers:
+      - 443
+    clients:
+      - app-banking-card-processing-broker:9092
+      - app-banking-bill-generator:8000
+      - service-redis:6379
+  app-banking-card-processing-broker:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Banking
+      - key: App
+        value: Core
+      - key: Tier
+        value: Broker
+    replicas: 1
+    binary_name: card_broker
+    servers:
+      - 9092
+    clients:
+      - app-banking-card-processing-active:6000
+      - app-banking-card-processing-standby:7000
+      - app-banking-bill-generator:8000
+      - service-redis:6379
+  app-banking-card-processing-active:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Banking
+      - key: App
+        value: Core
+      - key: Tier
+        value: Processing Active
+    replicas: 1
+    binary_name: card_processor_java
+    servers:
+      - 6000
+    clients:
+      - db-postgres:5432
+  app-banking-card-processing-standby:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Banking
+      - key: App
+        value: Core
+      - key: Tier
+        value: Processing Standby
+    replicas: 1
+    binary_name: card_processor_java
+    servers:
+      - 7000
+    clients:
+      - db-postgres:5432
+  app-banking-bill-generator:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Banking
+      - key: App
+        value: Core
+      - key: Tier
+        value: Bill Generator
+    replicas: 1
+    binary_name: bill_generator
+    servers:
+      - 8000
+    clients:
+      - service-redis:6379
+      - db-postgres:5432
+
+  # services
+  service-redis:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Services
+      - key: App
+        value: Redis
+    replicas: 1
+    binary_name: redis
+    servers:
+      - 6379
+
+  # databases
+  db-oracle:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Services
+      - key: App
+        value: Oracle
+    replicas: 1
+    binary_name: oracled
+    servers:
+      - 1521
+
+  db-postgres:
+    tags:
+      - key: Type
+        value: Cloud
+      - key: Environment
+        value: Prod
+      - key: Service
+        value: Services
+      - key: App
+        value: Postgres
+    replicas: 1
+    binary_name: postgres
+    servers:
+      - 5432
